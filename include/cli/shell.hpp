@@ -1,0 +1,121 @@
+#ifndef YALLASQL_INCLUDE_CLI_SHELL_HPP
+#define YALLASQL_INCLUDE_CLI_SHELL_HPP
+
+#include <string>
+#include <vector>
+#include <replxx.hxx>
+#include "command.hpp"
+
+using Replxx = replxx::Replxx;
+
+/**
+ * @class YallaSQLShell
+ * @brief A command-line interface shell for interacting with the YallaSQL database.
+ */
+class YallaSQLShell {
+private:
+    Replxx rx;
+    std::vector<Command> commands; 
+    std::string current_db = "default"; 
+    std::string shell_history = "yallasql_history.txt";
+    bool running = true; 
+    
+    std::vector<std::string> keywords = {
+        "SELECT", "FROM", "WHERE", "AND", "OR", "INSERT", "UPDATE", "DELETE",
+        "CREATE", "DROP", "TABLE", "DATABASE", "INTO", "VALUES", "SET"
+    };
+public:
+    /**
+     * @brief Constructor to initialize the shell.
+     */
+    YallaSQLShell();
+
+    /**
+     * @brief Destructor to save history of shell.
+     */
+    ~YallaSQLShell();
+
+    /**
+     * @brief Starts the main loop of the shell.
+     */
+    void run();
+
+
+
+private:
+    /**
+     * @brief Initializes the list of available commands.
+     */
+    void initializeCommands();
+
+    /**
+     * @brief Configures the Replxx library for input handling.
+     */
+    void setupReplxx();
+    
+    /**
+     * @brief Prints a gradient title banner.
+     */
+    void printGradientTitle();
+
+    /**
+     * @brief Displays an animated welcome message.
+     */
+    void animateWelcome();
+
+    /**
+     * @brief Generates the shell prompt string.
+     * @return The prompt string.
+     */
+    std::string getPrompt();
+
+    /**
+     * @brief Provides command completions for Replxx.
+     * @return A list of possible completions.
+     */
+    Replxx::completions_t completeCommand(const std::string& input, int& context_len);
+
+    /**
+     * @brief Provides hints for commands in Replxx.
+     * @return A list of possible hints.
+     */
+    Replxx::hints_t hintCommand(const std::string& input, int& context_len, Replxx::Color& color);
+
+    /**
+     * @brief Highlights syntax in the input for Replxx.
+     * @param input The input string.
+     * @param colors The colors to apply to the input.
+     */
+    void highlightSyntax(const std::string& input, Replxx::colors_t& colors);
+
+    /**
+     * @brief Clears the terminal screen.
+     */
+    void clearScreen();
+
+    /**
+     * @brief Displays help information for commands.
+     * @param args The command to display help for (optional).
+     */
+    void showHelp(const std::string& args);
+
+    /**
+     * @brief Handles the `.load` command to load SQL from a file.
+     * @param args The filename to load.
+     */
+    void handleLoad(const std::string& args);
+
+    /**
+     * @brief Executes an SQL query.
+     * @param sql The SQL query to execute.
+     */
+    void executeSQL(const std::string& sql);
+
+    /**
+     * @brief Processes user input from the shell.
+     * @param input The input string.
+     */
+    void processInput(const std::string& input);
+};
+
+#endif // YALLASQL_INCLUDE_CLI_SHELL_HPP
