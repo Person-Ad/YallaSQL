@@ -23,7 +23,7 @@ YallaSQLShell::~YallaSQLShell() {
 
 void YallaSQLShell::initializeCommands() {
     commands = {
-        {"_load", "  Load SQL from a file", ".load <filename>", 
+        {"set_db", "  Load DB from Folder", "set_db <dirname>", 
         [this](const std::string& args) { handleLoad(args); }},
         {"_exit", "Exit the program", ".exit", 
         [this](const std::string& args) { running = false; }},
@@ -47,7 +47,7 @@ void YallaSQLShell::setupReplxx() {
     rx.set_complete_on_empty(false);
     rx.set_beep_on_ambiguous_completion(false);
     rx.set_max_hint_rows(4);
-    rx.set_hint_delay(10);
+    rx.set_hint_delay(1);
     
     // Load history from file
     rx.history_load("YallaSQLShell_history.txt");
@@ -71,10 +71,6 @@ void YallaSQLShell::setupReplxx() {
 
 
 
-
-
-
-
 Replxx::completions_t YallaSQLShell::completeCommand(const std::string& input, int& context_len) {
     Replxx::completions_t completions;
 
@@ -89,25 +85,14 @@ Replxx::completions_t YallaSQLShell::completeCommand(const std::string& input, i
 
 Replxx::hints_t YallaSQLShell::hintCommand(const std::string& input, int& context_len, Replxx::Color& color) {
     Replxx::hints_t hints;
+    if(input.length() == 0) return hints;
 
     for (const auto& cmd : commands) {
-        if (cmd.name == input) {
-            color = Replxx::Color::CYAN;
-            hints.emplace_back(" - " + cmd.description);
-            break;
-        } else if (cmd.name.find(input) == 0 && input != cmd.name) {
+        if (cmd.name.find(input) == 0) {
             color = Replxx::Color::YELLOW;
-            hints.emplace_back(cmd.name.substr(input.length()));
+            hints.emplace_back(cmd.name);
             break;
         }
-
-        // Special SQL hints
-        if (input == "SELECT" || input == "SELECT ") {
-            color = Replxx::Color::GREEN;
-            hints.emplace_back(" * FROM table_name [WHERE condition]");
-        }
-        
-        return hints;
     }
 
     return hints;
@@ -138,7 +123,7 @@ void YallaSQLShell::highlightSyntax(const std::string& input, Replxx::colors_t& 
             }
         }
         
-        // Highlight commands starting with '.'
+        // Highlight commands starting with '_'
         if (input[i] == '_' && (i == 0 || std::isspace(input[i-1]))) {
             colors[i] = Replxx::Color::YELLOW;
             size_t j = i + 1;
@@ -216,54 +201,54 @@ void YallaSQLShell::executeSQL(const std::string& sql) {
 }
 
 void YallaSQLShell::processInput(const std::string& input) {
-    if (input.empty()) return;
+    // if (input.empty()) return;
         
-    // Check for command
-    if (input[0] == '_') {
-        std::string cmd, args;
-        size_t space_pos = input.find(' ');
+    // // Check for command
+    // if (input[0] == '_') {
+    //     std::string cmd, args;
+    //     size_t space_pos = input.find(' ');
         
-        if (space_pos != std::string::npos) {
-            cmd = input.substr(0, space_pos);
-            args = input.substr(space_pos + 1);
-        } else {
-            cmd = input;
-            args = "";
-        }
+    //     if (space_pos != std::string::npos) {
+    //         cmd = input.substr(0, space_pos);
+    //         args = input.substr(space_pos + 1);
+    //     } else {
+    //         cmd = input;
+    //         args = "";
+    //     }
         
-        // Find and execute the command
-        for (const auto& command : commands) {
-            if (command.name == cmd) {
-                command.handler(args);
-                return;
-            }
-        }
+    //     // Find and execute the command
+    //     for (const auto& command : commands) {
+    //         if (command.name == cmd) {
+    //             command.handler(args);
+    //             return;
+    //         }
+    //     }
         
-        std::cout << Color::RED << "Unknown command: " << cmd << Color::RESET << "\n";
-    } else {
-        // Handle as SQL
-        std::string upper_input = input;
-        std::transform(upper_input.begin(), upper_input.end(), upper_input.begin(), ::toupper);
+    //     std::cout << Color::RED << "Unknown command: " << cmd << Color::RESET << "\n";
+    // } else {
+    //     // Handle as SQL
+    //     std::string upper_input = input;
+    //     std::transform(upper_input.begin(), upper_input.end(), upper_input.begin(), ::toupper);
         
-        // Extract first word as command
-        std::istringstream iss(upper_input);
-        std::string first_word;
-        iss >> first_word;
+    //     // Extract first word as command
+    //     std::istringstream iss(upper_input);
+    //     std::string first_word;
+    //     iss >> first_word;
         
-        bool found = false;
-        for (const auto& command : commands) {
-            if (command.name == first_word) {
-                std::string args = input.substr(first_word.length());
-                command.handler(args);
-                found = true;
-                break;
-            }
-        }
+    //     bool found = false;
+    //     for (const auto& command : commands) {
+    //         if (command.name == first_word) {
+    //             std::string args = input.substr(first_word.length());
+    //             command.handler(args);
+    //             found = true;
+    //             break;
+    //         }
+    //     }
         
-        if (!found) {
-            std::cout << Color::RED << "Unrecognized SQL command: " << input << Color::RESET << "\n";
-        }
-    }
+    //     if (!found) {
+    //         std::cout << Color::RED << "Unrecognized SQL command: " << input << Color::RESET << "\n";
+    //     }
+    // }
 }
 
 void YallaSQLShell::run() {
