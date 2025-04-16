@@ -4,7 +4,7 @@
 #include<vector>
 #include<string>
 #include<chrono>
-
+#include "quill/LogMacros.h"
 // Extended ANSI color codes for rich UI
 namespace Color {
     const std::string RESET = "\033[0m";
@@ -116,8 +116,8 @@ std::string title = R"(
             ╚██╗ ██╔╝██╔══██╗██║     ██║     ██╔══██╗    ██╔════╝██╔═══██╗    ██║     
              ╚████╔╝ ███████║██║     ██║     ███████║    ███████╗██║   ██║    ██║     
               ╚██╔╝  ██╔══██║██║     ██║     ██╔══██║    ╚════██║██║   ██║    ██║     
-               ██║   ██║  ██║███████╗███████╗██║  ██║    ███████║╚██████╔╝██  ███████╗
-               ╚═╝   ╚═╝  ╚═╝╚══════╝╚══════╝╚═╝  ╚═╝    ╚══════╝ ╚═════╝══╝  ╚══════╝
+               ██║   ██║  ██║███████╗███████╗██║  ██║    ███████║╚█████████╗  ███████╗
+               ╚═╝   ╚═╝  ╚═╝╚══════╝╚══════╝╚═╝  ╚═╝    ╚══════╝ ╚════════╝  ╚══════╝
               )";
         std::istringstream iss(title);
         std::string line;
@@ -131,4 +131,32 @@ std::string title = R"(
             }
         }
     }
+}
+
+
+namespace YALLASQL::UTILS {
+
+#define MEASURE_EXECUTION_TIME(label, code_block)                                         \
+{                                                                                         \
+    auto start = std::chrono::high_resolution_clock::now();                               \
+    code_block;                                                                           \
+    auto end = std::chrono::high_resolution_clock::now();                                 \
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);   \
+    std::cout << Color::BOLD << Color::MAGENTA << "[⏱️ " << label << "] "                \
+    << Color::RESET << Color::CYAN << duration.count() << " ms "                         \
+    << Color::YELLOW << reaction << Color::RESET << std::endl;                           \
+}
+
+#define MEASURE_EXECUTION_TIME_LOGGER(logger, label, code_block)                          \
+{                                                                                         \
+    auto start = std::chrono::high_resolution_clock::now();                               \
+    code_block;                                                                           \
+    auto end = std::chrono::high_resolution_clock::now();                                 \
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);   \
+    std::cout << Color::BOLD << Color::MAGENTA << "[⏱️ " << label << "] "                 \
+    << Color::RESET << Color::CYAN << duration.count() << " ms "                          \
+    << Color::YELLOW << reaction << Color::RESET << std::endl;                            \
+    LOG_INFO(logger, "{} took {} µs", std::string_view{label}, duration.count());         \
+}
+
 }

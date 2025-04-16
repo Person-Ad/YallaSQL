@@ -7,7 +7,7 @@
 #include <cctype>
 
 #include "cli/shell.hpp"
-#include "cli/ui.hpp"
+#include "ui.hpp"
 
 using Replxx = replxx::Replxx;
 

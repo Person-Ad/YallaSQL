@@ -8,7 +8,6 @@ include_directories(
 )
 
 set(CLI_SOURCES
-        include/cli/ui.hpp
         src/cli/shell.cpp
         src/db/db.cpp
 )
