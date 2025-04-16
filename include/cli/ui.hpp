@@ -55,7 +55,9 @@ namespace Cursor {
 }
 
 namespace UI {
-
+    /**
+     * @brief Generates the shell prompt string.
+     */
     std::string getPrompt() {
         auto now = std::chrono::system_clock::now();
         auto now_time = std::chrono::system_clock::to_time_t(now);
@@ -71,6 +73,9 @@ namespace UI {
         return prompt;
     }
 
+    /**
+     * @brief Displays an animated welcome message.
+     */
     void animateWelcome() {
         std::string message = "Welcome to YallaSQL v2.0 - The most Funny CLI database tool";
         for (size_t i = 0; i < message.size(); ++i) {
@@ -86,6 +91,9 @@ namespace UI {
                 << Color::RESET << "\n\n";
     }
 
+    /**
+     * @brief Prints a gradient title banner.
+     */
     void printGradientTitle() {
         std::vector<std::string> gradient_colors = {
             Color::rgb(255, 0, 102),    // Pink
@@ -104,12 +112,12 @@ namespace UI {
     
     
 std::string title = R"(
-            ██╗   ██╗ █████╗ ██╗     ██╗      █████╗     ███████╗ ██████╗ ██╗     
-            ╚██╗ ██╔╝██╔══██╗██║     ██║     ██╔══██╗    ██╔════╝██╔═══██╗██║     
-             ╚████╔╝ ███████║██║     ██║     ███████║    ███████╗██║   ██║██║     
-              ╚██╔╝  ██╔══██║██║     ██║     ██╔══██║    ╚════██║██║   ██║██║     
-               ██║   ██║  ██║███████╗███████╗██║  ██║    ███████║╚██████╔╝███████╗
-               ╚═╝   ╚═╝  ╚═╝╚══════╝╚══════╝╚═╝  ╚═╝    ╚══════╝ ╚═════╝ ╚══════╝
+            ██╗   ██╗ █████╗ ██╗     ██╗      █████╗     ███████╗ ██████╗     ██╗     
+            ╚██╗ ██╔╝██╔══██╗██║     ██║     ██╔══██╗    ██╔════╝██╔═══██╗    ██║     
+             ╚████╔╝ ███████║██║     ██║     ███████║    ███████╗██║   ██║    ██║     
+              ╚██╔╝  ██╔══██║██║     ██║     ██╔══██║    ╚════██║██║   ██║    ██║     
+               ██║   ██║  ██║███████╗███████╗██║  ██║    ███████║╚██████╔╝██  ███████╗
+               ╚═╝   ╚═╝  ╚═╝╚══════╝╚══════╝╚═╝  ╚═╝    ╚══════╝ ╚═════╝══╝  ╚══════╝
               )";
         std::istringstream iss(title);
         std::string line;

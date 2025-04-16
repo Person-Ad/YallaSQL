@@ -7,9 +7,8 @@ include_directories(
 )
 
 set(STATES_SOURCES
-        include/cli/color.hpp
+        include/cli/ui.hpp
         include/cli/command.hpp
-        include/cli/cursor.hpp
         include/cli/shell.hpp
         src/cli/shell.cpp
 )

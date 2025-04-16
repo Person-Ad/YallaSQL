@@ -54,22 +54,6 @@ private:
     void setupReplxx();
     
     /**
-     * @brief Prints a gradient title banner.
-     */
-    void printGradientTitle();
-
-    /**
-     * @brief Displays an animated welcome message.
-     */
-    void animateWelcome();
-
-    /**
-     * @brief Generates the shell prompt string.
-     * @return The prompt string.
-     */
-    std::string getPrompt();
-
-    /**
      * @brief Provides command completions for Replxx.
      * @return A list of possible completions.
      */
