@@ -7,7 +7,9 @@
 #include <cctype>
 
 #include "cli/shell.hpp"
-#include "ui.hpp"
+#include "utils.hpp"
+
+using namespace YALLASQL::UTILS;
 
 using Replxx = replxx::Replxx;
 
@@ -151,7 +153,7 @@ void YallaSQLShell::highlightSyntax(const std::string& input, Replxx::colors_t& 
 
 void YallaSQLShell::clearScreen() {
     std::cout << "\033[2J\033[H";
-    UI::printGradientTitle();
+    printGradientTitle();
 }
 
 void YallaSQLShell::showHelp(const std::string& input) {
@@ -209,13 +211,13 @@ void YallaSQLShell::run() {
     std::cout << Cursor::BLINKING_BAR;
     
     // Print welcome banner
-    UI::printGradientTitle();
-    UI::animateWelcome();
+    printGradientTitle();
+    animateWelcome();
     
     // Main input loop
     while (running) {
         // Get input with our beautiful prompt
-        const char* input = rx.input(UI::getPrompt());
+        const char* input = rx.input(getPrompt());
         
         if (input == nullptr) {
             // Ctrl+D pressed
@@ -235,3 +237,72 @@ void YallaSQLShell::run() {
     std::cout << "\033[?1000l";
 }
 
+std::string YallaSQLShell::getPrompt() {
+    auto now = std::chrono::system_clock::now();
+    auto now_time = std::chrono::system_clock::to_time_t(now);
+    
+    std::string time_str = std::ctime(&now_time);
+    time_str = time_str.substr(11, 5); // Get HH:MM
+    
+    std::string prompt = Color::bg_rgb(60, 80, 80) + Color::rgb(200, 200, 255) + " " + time_str + "  " +
+        Color::RESET +
+        Color::bg_rgb(60, 60, 80) + Color::BOLD + Color::rgb(255, 255, 200) + " yallaSQL λ " +
+        Color::RESET + " ";
+    
+    return prompt;
+}
+
+
+void YallaSQLShell::animateWelcome() {
+    std::string message = "Welcome to YallaSQL v2.0 - The most Funny CLI database tool";
+    for (size_t i = 0; i < message.size(); ++i) {
+        std::cout << Color::rgb(100 + i*2, 150 + i, 200 - i) 
+                << message[i] << std::flush;
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    }
+    std::cout << Color::RESET << "\n\n";
+    
+    std::cout << Color::ITALIC << Color::CYAN 
+            << "Type " << Color::RESET << Color::YELLOW << ".help" 
+            << Color::RESET << Color::CYAN << " for available commands" 
+            << Color::RESET << "\n\n";
+}
+
+
+void YallaSQLShell::printGradientTitle() {
+    std::vector<std::string> gradient_colors = {
+        Color::rgb(255, 0, 102),    // Pink
+        Color::rgb(255, 51, 102),
+        Color::rgb(255, 102, 102),
+        Color::rgb(255, 153, 102),  // Orange
+        Color::rgb(255, 204, 102),   // Yellow
+        Color::rgb(204, 255, 102),   // Lime
+        Color::rgb(102, 255, 102),   // Green
+        Color::rgb(102, 255, 204),   // Teal
+        Color::rgb(102, 204, 255),   // Light Blue
+        Color::rgb(102, 102, 255),    // Blue
+        Color::rgb(153, 102, 255),    // Purple
+        Color::rgb(204, 102, 255)     // Violet
+    };
+
+
+    std::string title = R"(
+██╗   ██╗ █████╗ ██╗     ██╗      █████╗     ███████╗ ██████╗     ██╗     
+╚██╗ ██╔╝██╔══██╗██║     ██║     ██╔══██╗    ██╔════╝██╔═══██╗    ██║     
+ ╚████╔╝ ███████║██║     ██║     ███████║    ███████╗██║   ██║    ██║     
+  ╚██╔╝  ██╔══██║██║     ██║     ██╔══██║    ╚════██║██║   ██║    ██║     
+   ██║   ██║  ██║███████╗███████╗██║  ██║    ███████║╚█████████╗  ███████╗
+   ╚═╝   ╚═╝  ╚═╝╚══════╝╚══════╝╚═╝  ╚═╝    ╚══════╝ ╚════════╝  ╚══════╝
+                )";
+    std::istringstream iss(title);
+    std::string line;
+    size_t color_index = 0;
+    
+    while (std::getline(iss, line)) {
+        if (!line.empty()) {
+            std::cout << gradient_colors[color_index % gradient_colors.size()] 
+                    << line << Color::RESET << "\n";
+            color_index++;
+        }
+    }
+}

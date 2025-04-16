@@ -104,6 +104,21 @@ private:
      * @param input The input string.
      */
     void processInput(const std::string& input);
+
+    /**
+     * @brief Generates the shell prompt string.
+     */
+    std::string getPrompt();
+
+    /**
+     * @brief Displays an animated welcome message.
+     */
+    void animateWelcome();
+
+    /**
+     * @brief Prints a gradient title banner.
+     */
+    void printGradientTitle();
 };
 
 #endif // YALLASQL_INCLUDE_CLI_SHELL_HPP
