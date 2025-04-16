@@ -1,18 +1,16 @@
 cmake_minimum_required(VERSION 3.18)
 project(yallasql LANGUAGES CXX CUDA)
 
-# --- Linenoise Setup ---
+find_package(quill REQUIRED)
+
 include_directories(    
-    include/cli
-    include/db
     include
 )
 
 set(CLI_SOURCES
         include/cli/ui.hpp
-        # include/cli/command.hpp
-        # include/cli/shell.hpp
         src/cli/shell.cpp
+        src/db/db.cpp
 )
 
 # --- packages Support ---
@@ -25,4 +23,4 @@ add_executable(yallasql_cli
     ${CLI_SOURCES}
 )
 
-target_link_libraries(yallasql_cli PRIVATE CUDA::cudart replxx)  # Uncomment later
+target_link_libraries(yallasql_cli PRIVATE CUDA::cudart replxx quill::quill)  

@@ -6,8 +6,8 @@
 #include <thread>
 #include <cctype>
 
-#include "shell.hpp"
-#include "ui.hpp"
+#include "cli/shell.hpp"
+#include "cli/ui.hpp"
 
 using Replxx = replxx::Replxx;
 
@@ -199,7 +199,7 @@ void YallaSQLShell::processInput(const std::string& input) {
     } else if (input.find("_exit") == 0) {
         running = false;
     } else {
-
+        engine.execute(input);
     }
 }
 

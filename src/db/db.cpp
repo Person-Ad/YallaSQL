@@ -1,35 +1,46 @@
 #include <filesystem>
 #include <fstream>
 #include <stdexcept>
-namespace fs = std::filesystem;
+#include "logger.hpp"
+#include "db/db.hpp"
 
-#include "db.hpp"
+namespace fs = std::filesystem;
 
 DB* DB::db_ = nullptr;
 std::mutex DB::mutex_;
 
-DB *DB::getInstance(const std::string& path) {
-    // 1. check if path exists and it's directory
-    if (!fs::exists(path)) {
-        throw std::runtime_error("Database folder does not exist: " + path);
-    }
-    if (!fs::is_directory(path)) {
-        throw std::runtime_error("Database path is not a directory: " + path);
-    }
-    
-    // 2. lock database instance
+
+void DB::setPath(const std::string& path) {
+    // lock database instance
     std::lock_guard<std::mutex> lock(mutex_);
-    // 3. create new database instance if none exists || change path
+    
+    // create directory if it doesn't exist
+    if (!fs::exists(path)) {
+        if (!fs::create_directories(path)) {
+            throw std::runtime_error("Failed to create database directory: " + path);
+        }
+        // LOG_INFO(logger, "Created new database directory: {}", path);
+    }
+    // verify it's a directory (in case path exists but is a file)
+    else if (!fs::is_directory(path)) 
+        throw std::runtime_error("Database path exists but is not a directory: " + path);
+
+    // create new database instance if none exists || change path
     if(db_ == nullptr) {
         db_ = new DB(path);
     } else {
         db_->path_ = path;
         db_->refreshTables();
     }
-    
-    return db_;
 }
 
+DB *DB::getInstance() {
+    if (db_ == nullptr) {
+        // LOG_WARNING("USE DEFAULT DATABASE in ./dataset folder");
+        setPath();
+    }
+    return db_;
+}
 
 void DB::refreshTables() {
     tablesPaths_.clear();

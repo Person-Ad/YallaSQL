@@ -5,6 +5,7 @@
 #include <vector>
 #include <replxx.hxx>
 #include "command.hpp"
+#include "engine/query_engine.hpp"
 
 using Replxx = replxx::Replxx;
 
@@ -15,14 +16,17 @@ using Replxx = replxx::Replxx;
 class YallaSQLShell {
 private:
     Replxx rx;
+    QueryEngine engine;
+    bool running = true; 
     std::vector<Command> commands; 
     std::string current_db = "default"; 
-    std::string shell_history = "yallasql_history.txt";
-    bool running = true; 
+    std::string shell_history = "./logs/yallasql_history.txt";
     
     std::vector<std::string> keywords = {
-        "SELECT", "FROM", "WHERE", "AND", "OR", "INSERT", "UPDATE", "DELETE",
-        "CREATE", "DROP", "TABLE", "DATABASE", "INTO", "VALUES", "SET"
+        "SELECT", "FROM", "WHERE", "AND", "OR", 
+        "COUNT", "MIN", "MAX", "SUM", "AVG",
+        "DATABASE", "AS", "ORDER BY",
+        "JOIN", "INNER", "LEFT", "RIGHT", "OUTER", "FULL", "ASC", "DESC"
     };
 public:
     /**

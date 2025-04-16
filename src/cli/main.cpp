@@ -1,5 +1,5 @@
 #include <iostream>
-#include "shell.hpp"
+#include "cli/shell.hpp"
 
 int main() {
     YallaSQLShell app;
