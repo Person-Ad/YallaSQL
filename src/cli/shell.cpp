@@ -23,20 +23,13 @@ YallaSQLShell::~YallaSQLShell() {
 
 void YallaSQLShell::initializeCommands() {
     commands = {
-        {"set_db", "  Load DB from Folder", "set_db <dirname>", 
-        [this](const std::string& args) { handleLoad(args); }},
-        {"_exit", "Exit the program", ".exit", 
-        [this](const std::string& args) { running = false; }},
-        {"_help", "  Show help message", ".help [command]", 
-        [this](const std::string& args) { showHelp(args); }},
-        {"_clear", "  Clear the screen", ".clear", 
-        [this](const std::string& args) { clearScreen(); }},
-        {"SELECT", "  Query data from tables", "SELECT ... FROM ... [WHERE ...]", 
-        [this](const std::string& args) { executeSQL("SELECT " + args); }},
-        {"SHOW", "  List databases/tables", "SHOW [DATABASES|TABLES]", 
-        [this](const std::string& args) { executeSQL("SHOW " + args); }},
-        {"DESCRIBE", "  Show table structure", "DESCRIBE <table_name>", 
-        [this](const std::string& args) { executeSQL("DESCRIBE " + args); }}
+        {"_exit", "Exit the program", ".exit"},
+        {"_clear", "  Clear the screen", ".clear"},
+        {"_help", "  Show help message", ".help [command]"},
+        
+        {"USE", "  Load DB from Folder", "USE <dirname>"},
+        {"DESCRIBE", "  List tables with summary", "DESCRIBE"},
+        {"SELECT", "  Query data from tables", "SELECT ... FROM ... [WHERE ...]"},
     };
 }
 
@@ -161,7 +154,17 @@ void YallaSQLShell::clearScreen() {
     UI::printGradientTitle();
 }
 
-void YallaSQLShell::showHelp(const std::string& args) {
+void YallaSQLShell::showHelp(const std::string& input) {
+    // load args
+    std::string args;
+    size_t space_pos = input.find(' ');
+    
+    if (space_pos != std::string::npos) {
+        args = input.substr(space_pos + 1);
+    } else {
+        args = "";
+    }
+
     if (args.empty()) {
         std::cout << Color::CYAN << Color::BOLD << "Available commands:" << Color::RESET << "\n\n";
         
@@ -185,70 +188,19 @@ void YallaSQLShell::showHelp(const std::string& args) {
     }
 }
 
-void YallaSQLShell::handleLoad(const std::string& args) {
-    if (args.empty()) {
-        std::cout << Color::RED << "Error: " << Color::RESET << "Usage: .load <filename>\n";
-        return;
-    }
-    std::cout << "Loading SQL from file: " << args << "\n";
-    // TODO:
-}
-
-void YallaSQLShell::executeSQL(const std::string& sql) {
-    std::cout << Color::BLUE << "Executing: " << Color::RESET << sql << "\n";
-    // Implementation would go here
-    std::cout << "Query executed successfully (dummy response)\n";
-}
 
 void YallaSQLShell::processInput(const std::string& input) {
-    // if (input.empty()) return;
-        
-    // // Check for command
-    // if (input[0] == '_') {
-    //     std::string cmd, args;
-    //     size_t space_pos = input.find(' ');
-        
-    //     if (space_pos != std::string::npos) {
-    //         cmd = input.substr(0, space_pos);
-    //         args = input.substr(space_pos + 1);
-    //     } else {
-    //         cmd = input;
-    //         args = "";
-    //     }
-        
-    //     // Find and execute the command
-    //     for (const auto& command : commands) {
-    //         if (command.name == cmd) {
-    //             command.handler(args);
-    //             return;
-    //         }
-    //     }
-        
-    //     std::cout << Color::RED << "Unknown command: " << cmd << Color::RESET << "\n";
-    // } else {
-    //     // Handle as SQL
-    //     std::string upper_input = input;
-    //     std::transform(upper_input.begin(), upper_input.end(), upper_input.begin(), ::toupper);
-        
-    //     // Extract first word as command
-    //     std::istringstream iss(upper_input);
-    //     std::string first_word;
-    //     iss >> first_word;
-        
-    //     bool found = false;
-    //     for (const auto& command : commands) {
-    //         if (command.name == first_word) {
-    //             std::string args = input.substr(first_word.length());
-    //             command.handler(args);
-    //             found = true;
-    //             break;
-    //         }
-    //     }
-        
-    //     if (!found) {
-    //         std::cout << Color::RED << "Unrecognized SQL command: " << input << Color::RESET << "\n";
-    //     }
-    // }
+    if (input.empty()) return;
+
+    if(input.find("_help") == 0) {
+        showHelp(input);
+    } else if (input.find("_clear") == 0) {
+        clearScreen();
+    } else if (input.find("_exit") == 0) {
+        running = false;
+    } else {
+
+    }
 }
 
 void YallaSQLShell::run() {

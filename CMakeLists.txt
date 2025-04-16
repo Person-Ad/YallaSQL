@@ -5,6 +5,7 @@ project(yallasql LANGUAGES CXX CUDA)
 include_directories(    
     include/cli
     include/db
+    include
 )
 
 set(CLI_SOURCES

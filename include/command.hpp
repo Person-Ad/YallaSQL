@@ -6,5 +6,5 @@ struct Command {
     std::string name;
     std::string description;
     std::string syntax;
-    std::function<void(const std::string&)> handler;
+    // std::function<void(const std::string&)> handler;
 };
