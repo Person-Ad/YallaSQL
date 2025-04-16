@@ -4,15 +4,15 @@ project(yallasql LANGUAGES CXX CUDA)
 # --- Linenoise Setup ---
 include_directories(    
     include/cli
+    include/db
 )
 
-set(STATES_SOURCES
+set(CLI_SOURCES
         include/cli/ui.hpp
-        include/cli/command.hpp
-        include/cli/shell.hpp
+        # include/cli/command.hpp
+        # include/cli/shell.hpp
         src/cli/shell.cpp
 )
-
 
 # --- packages Support ---
 find_package(CUDAToolkit REQUIRED)
@@ -21,8 +21,7 @@ find_package(replxx REQUIRED)
 
 add_executable(yallasql_cli
     src/cli/main.cpp
-
-    ${STATES_SOURCES}
+    ${CLI_SOURCES}
 )
 
 target_link_libraries(yallasql_cli PRIVATE CUDA::cudart replxx)  # Uncomment later
