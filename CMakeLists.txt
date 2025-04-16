@@ -10,6 +10,7 @@ include_directories(
 set(CLI_SOURCES
         src/cli/shell.cpp
         src/db/db.cpp
+        src/engine/query_engine.cpp
 )
 
 # --- packages Support ---
