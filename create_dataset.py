@@ -42,17 +42,15 @@ def generate_random_values(column_type):
     elif column_type == 'text':
         return fake.text(max_nb_chars=50)
     elif column_type == 'datetime':
-        return fake.date_this_decade()
+        return fake.date_time_this_century()
 
 
 def generate_unique_values(datatype, n):
     """Efficiently generate n unique values based on the specified datatype."""
     if datatype == 'int':
-        print("starting int")
         return random.sample(range(1, 10 * n), n)  # sample guarantees uniqueness
 
     elif datatype == 'float':
-        print("starting float")
         values = set()
         while len(values) < n:
             samples = np.round(np.random.uniform(1.0, 1000.0 * n, n * 10), 2)
@@ -60,7 +58,6 @@ def generate_unique_values(datatype, n):
         return list(values)[:n]
 
     elif datatype == 'text':
-        print("starting text")
         values = set()
         while len(values) < n:
             values.update(fake.text(max_nb_chars=200) for _ in range(n))
@@ -78,10 +75,7 @@ def generate_random_schema(prev_primary_keys: dict):
     columns = [("int", "id (P)")]
     # choose columns randomly
     columns += random.sample(flattened, k = np.random.randint(3, 15))
-    # add primary keys
-    pk_indexs = np.random.randint(0, len(columns), size=(np.random.randint(0, 3)))
-    for pk_index in pk_indexs: 
-        columns[pk_index] = (columns[pk_index][0], columns[pk_index][1] + " (P)")
+    
     # choose forigen keys randomly
     if len(prev_primary_keys) != 0:
         num_fk      = np.random.randint(0, len(prev_primary_keys)) # num of forigen keys
@@ -114,6 +108,7 @@ def create_csv_file(file_path, num_records, schema, table_name, foreign_keys, pr
 def create_random_tables(seed, folder_path, num_tables=5):
     """Create multiple random CSV tables with random schemas and relationships."""
     random.seed(seed)
+    np.random.seed(seed)
 
     if not os.path.exists(folder_path):
         os.makedirs(folder_path)
@@ -132,5 +127,5 @@ def create_random_tables(seed, folder_path, num_tables=5):
 
 # Example usage
 seed = 42  # You can change the seed value
-folder_path = 'random_csv_tables'
+folder_path = 'dataset'
 create_random_tables(seed, folder_path)

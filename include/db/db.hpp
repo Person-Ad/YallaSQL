@@ -12,6 +12,8 @@
 #include "duckdb/main/database.hpp"
 using namespace duckdb;
 
+#include "db/table.hpp"
+
 const std::string DEFAULT_DATASET_PATH = "./dataset";
 
 class DB {
@@ -22,10 +24,11 @@ private:
     std::string path_;
     quill::Logger* logger_;
     static std::mutex mutex_;
-    std::map<std::string, std::string> tablesPaths_;
+    std::map<std::string, Table> tables_;
 
     std::unique_ptr<DuckDB> duckdb_; // In-memory DB
     std::unique_ptr<Connection> con_;
+
 
     // private singelton constructor
     DB(const std::string path): path_(path) {
@@ -37,6 +40,8 @@ private:
     }
     // reload tablesPaths_
     void refreshTables();
+
+    void setPrimaryKeys(const std::string& tableName);
 
 public:
     // db can't be cloned

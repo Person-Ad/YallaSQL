@@ -14,7 +14,7 @@ namespace YALLASQL
         quill::Backend::start();
 
         auto file_sink = quill::Frontend::create_or_get_sink<quill::FileSink>(
-            logPath,
+            "./logs/",
             [] {
                 quill::FileSinkConfig cfg;
                 cfg.set_open_mode('w');
