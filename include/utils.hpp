@@ -65,8 +65,8 @@ namespace Cursor {
     auto start = std::chrono::high_resolution_clock::now();                               \
     code_block;                                                                           \
     auto end = std::chrono::high_resolution_clock::now();                                 \
-    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);   \
-    std::cout << Color::BOLD << Color::MAGENTA << "[⏱️ " << label << "] "                \
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);   \
+    std::cout << Color::BOLD << Color::MAGENTA << "<⏱️  " << label << " > "                \
     << Color::RESET << Color::CYAN << duration.count() << " ms "                         \
     << Color::RESET << std::endl;                                                        \
 }
@@ -76,11 +76,11 @@ namespace Cursor {
     auto start = std::chrono::high_resolution_clock::now();                               \
     code_block;                                                                           \
     auto end = std::chrono::high_resolution_clock::now();                                 \
-    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);   \
-    std::cout << Color::BOLD << Color::MAGENTA << "[⏱️ " << label << "] "                  \
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);   \
+    std::cout << Color::BOLD << Color::MAGENTA << "<⏱️  " << label << " > "                  \
     << Color::RESET << Color::CYAN << duration.count() << " ms "                            \
     << Color::RESET << std::endl;                                                           \
-    LOG_INFO(logger, "{} took {} µs", std::string_view{label}, duration.count());           \
+    LOG_INFO(logger, "{} took {} ms", std::string_view{label}, duration.count());           \
 }
 
 }
