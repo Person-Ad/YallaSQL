@@ -1,3 +1,4 @@
+#include <iostream>
 #include <filesystem>
 #include <fstream>
 #include <stdexcept>
@@ -44,12 +45,27 @@ DB *DB::getInstance() {
 
 void DB::refreshTables() {
     tablesPaths_.clear();
-
+    
     // iterate through all files in the directory
     for (const auto& entry : fs::directory_iterator(path_)) {
         if (entry.is_regular_file() && entry.path().extension() == ".csv") {
             std::string tableName = entry.path().stem().string();
-            db_->tablesPaths_[tableName] = entry.path().string();
+            std::string filePath = entry.path().string();
+            
+            // Store path
+            tablesPaths_[tableName] = filePath;
+
+            try {
+                // Load CSV into DuckDB (auto-detects schema)
+                con_->Query("CREATE OR REPLACE TABLE " + tableName + 
+                          " AS SELECT * FROM read_csv_auto('" + filePath + "')");
+                
+                LOG_INFO(logger_, "Loaded CSV {} as table {}", filePath, tableName);
+                std::cout << "Loaded CSV " << filePath << " as table " << tableName << "\n";
+            } catch (std::exception& e) {
+                LOG_ERROR(logger_, "Failed to load {}: {}", filePath, e.what());
+                std::cout << "Failed to load " << filePath << ": " << e.what() << "\n";
+            }
         }
     }
 }

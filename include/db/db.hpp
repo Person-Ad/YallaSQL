@@ -8,6 +8,10 @@
 #include "logger.hpp"
 #include<map>
 
+#include "duckdb/main/connection.hpp"
+#include "duckdb/main/database.hpp"
+using namespace duckdb;
+
 const std::string DEFAULT_DATASET_PATH = "./dataset";
 
 class DB {
@@ -20,10 +24,16 @@ private:
     static std::mutex mutex_;
     std::map<std::string, std::string> tablesPaths_;
 
+    std::unique_ptr<DuckDB> duckdb_; // In-memory DB
+    std::unique_ptr<Connection> con_;
+
     // private singelton constructor
-    DB(const std::string path): path_(path) { 
-        refreshTables();
+    DB(const std::string path): path_(path) {
+        duckdb_ = std::make_unique<DuckDB>(nullptr);
+        con_ = std::make_unique<Connection>(*duckdb_);
+
         logger_ = YALLASQL::getLogger("./logs/database");
+        refreshTables();
     }
     // reload tablesPaths_
     void refreshTables();
@@ -39,6 +49,8 @@ public:
     static DB *getInstance();
     // get path of database
     std::string path() const { return path_; }
+    // get connection to duckdb
+    Connection& duckdb() const { return *con_; }
 
     ~DB();
 };
