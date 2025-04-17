@@ -201,7 +201,8 @@ void YallaSQLShell::processInput(const std::string& input) {
     } else if (input.find("_exit") == 0) {
         running = false;
     } else {
-        engine.execute(input);
+        std::string output = engine.execute(input);
+        std::cout << output << "\n";
     }
 }
 
@@ -228,7 +229,7 @@ void YallaSQLShell::run() {
         std::string line(input);
         if (!line.empty()) {
             rx.history_add(line);
-            rx.history_save("yallasql_history.txt");
+            rx.history_save(shell_history);
             processInput(line);
         }
     }
