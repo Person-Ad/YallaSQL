@@ -1,4 +1,9 @@
 #include <stdexcept>
+#include <fstream>
+#include <filesystem>
+#include <chrono>
+#include <iomanip>
+#include <sstream>
 
 #include "engine/query_engine.hpp"
 #include "utils.hpp"
@@ -6,9 +11,6 @@
 using namespace duckdb;
 using namespace YALLASQL::UTILS;
 
-QueryEngine::QueryEngine() : db_(DB::getInstance()), planner_(*db_->duckdb().context) {
-    logger_ = YALLASQL::getLogger("");
-}
 
 void QueryEngine::useDB(const std::string& input) {
     try {
@@ -31,80 +33,135 @@ void QueryEngine::useDB(const std::string& input) {
     }
 }
 
-void QueryEngine::cpuDB(const std::string& query) {
-    try {
-        unique_ptr<MaterializedQueryResult> result;
-        MEASURE_EXECUTION_TIME_LOGGER(logger_, "cpu duckdb", 
-            result = db_->duckdb().Query(query);
-        );
+QueryEngine::QueryResult QueryEngine::executeDuckDB(const std::string& query) {
+    QueryResult result {true, ""};
+    unique_ptr<MaterializedQueryResult> queryRes;
+    
+    MEASURE_EXECUTION_TIME_LOGGER(logger_, "cpu duckdb", 
+        queryRes = db_->duckdb().Query(query);
+    );
 
-        if (result->HasError()) 
-            throw std::runtime_error("Query execution failed: " + result->GetError());
-        std::cout << result->ToString() << '\n';
 
-    } catch (const duckdb::Exception& e) {
-        LOG_ERROR(logger_, "DuckDB query error: {}", e.what());
-        throw std::runtime_error("DuckDB query error: " + std::string(e.what()));
-    } catch (const std::runtime_error& e) {
-        LOG_ERROR(logger_, "Query execution error: {}", e.what());
-        throw; // Re-throw to let the caller handle
+    if (queryRes->HasError()) 
+        throw QueryEngineError("Query execution failed: " + queryRes->GetError());
+
+    // if not tabular
+    if(queryRes->RowCount() <= 1) 
+        return {false, queryRes->ToString()};
+    
+    // save query result in csv format
+    size_t nrows = queryRes->RowCount();
+    size_t ncols = queryRes->ColumnCount();
+    auto colnames = queryRes->names;
+    // save header
+    for (size_t colidx = 0; colidx < ncols; ++colidx)  {
+        result.content += colnames[colidx];
+        if(colidx < ncols - 1) result.content += ",";
     }
+    result.content += "\n";
+    // save values
+    for (size_t idx = 0; idx < nrows; ++idx) {
+        for (size_t colidx = 0; colidx < ncols; ++colidx) {
+            result.content += queryRes->GetValue(colidx, idx).ToString();
+            if(colidx < ncols - 1) result.content += ",";
+        }
+        result.content += "\n";
+    }
+    return result;
 }
 
-void QueryEngine::getLogicalPlan(const std::string& query) {
+QueryEngine::QueryResult QueryEngine::getLogicalPlan(const std::string& query) {
+    QueryResult result{false, ""};
+
+    unique_ptr<duckdb::LogicalOperator> logicalPlan;
     try {
+        Parser parser;
+        Planner planner(*db_->duckdb().context);
+
         db_->duckdb().BeginTransaction();
-
+        // start timer
         MEASURE_EXECUTION_TIME_LOGGER(logger_, "generating logical plan", 
-            parser_.ParseQuery(query);
-            auto statements = std::move(parser_.statements);
+            parser.ParseQuery(query);
+            auto statements = std::move(parser.statements);
             
-            planner_.CreatePlan(std::move(statements[0]));
-            auto logical_plan = std::move(planner_.plan);
-
-            std::cout << "Logical Plan:\n" << logical_plan->ToString() << "\n";
+            planner.CreatePlan(std::move(statements[0]));
+            logicalPlan = std::move(planner.plan);
         );
+        // save content
+        result.content = logicalPlan->ToString();
 
         db_->duckdb().Commit();
 
+        return result;
+
     } catch (const duckdb::Exception& e) {
         db_->duckdb().Rollback();
-        LOG_ERROR(logger_, "Logical plan generation failed: {}", e.what());
-        throw std::runtime_error("Logical plan generation failed: " + std::string(e.what()));
+        throw QueryEngineError("Logical plan generation failed: " + std::string(e.what()));
     } catch (const std::runtime_error& e) {
         db_->duckdb().Rollback();
-        LOG_ERROR(logger_, "Logical plan error: {}", e.what());
-        throw; // Re-throw to let the caller handle
+        throw QueryEngineError("Logical plan generation failed: " + std::string(e.what()));
     }
+}
+
+
+void QueryEngine::saveQueryResult(const QueryResult& result) {
+    // Ensure the directory exists
+    std::filesystem::create_directories(resultsDir);
+
+    // Generate timestamp
+    auto now = std::chrono::system_clock::now();
+    std::time_t timeNow = std::chrono::system_clock::to_time_t(now);
+    std::tm tm = *std::localtime(&timeNow);
+
+    std::ostringstream oss;
+    oss << std::put_time(&tm, "%Y%m%d_%H%M%S");
+    std::string timestamp = oss.str();
+
+    // Choose extension
+    std::string extension = result.isTabular ? ".csv" : ".txt";
+    std::string filePath = resultsDir + "/result_" + timestamp + extension;
+
+    // Write content
+    std::ofstream out(filePath);
+    if (!out) {
+        throw std::runtime_error("Failed to open file: " + filePath);
+    }
+    out << result.content;
+    out.close();
 }
 
 std::string QueryEngine::execute(std::string query) {
     try {
-        // Trim and validate query
+        // Trim query
         query.erase(0, query.find_first_not_of(" \t\n\r"));
         query.erase(query.find_last_not_of(" \t\n\r") + 1);
         if (query.empty()) {
-            throw std::runtime_error("Empty query provided");
+            throw QueryEngineError("Empty query provided");
         }
 
-        // Case-insensitive command checks
-        std::string query_upper = query;
-        std::transform(query_upper.begin(), query_upper.end(), query_upper.begin(), ::toupper);
-
-        if (query_upper.find("DUCKDB") != std::string::npos) 
-            cpuDB(query.substr(query_upper.find("DUCKDB") + 6));
-        else if (query_upper.find("USE") != std::string::npos) 
+        // Route query
+        QueryResult result;
+        
+        if (query.find("USE") != std::string::npos) {
             useDB(query);
+            return "Database switched successfully";
+        }
+
+        if (query.find("duckdb") != std::string::npos) 
+            result = executeDuckDB(query.substr(query.find("duckdb") + 6));
         else 
-            getLogicalPlan(query);
+            result = getLogicalPlan(query);
+        
+
+        saveQueryResult(result);
         
         return "Query executed successfully";
         
-    } catch (const std::runtime_error& e) {
+    } catch (const QueryEngineError& e) {
         LOG_ERROR(logger_, "Query execution failed: {}", e.what());
         return "Error: " + std::string(e.what());
     } catch (const std::exception& e) {
-        LOG_ERROR(logger_, "Unexpected error during query execution: {}", e.what());
+        LOG_ERROR(logger_, "Unexpected error: {}", e.what());
         return "Unexpected error: " + std::string(e.what());
     } catch (...) {
         LOG_ERROR(logger_, "Unknown error during query execution");
