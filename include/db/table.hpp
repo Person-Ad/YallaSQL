@@ -38,7 +38,7 @@ struct Column {
 class Table {
     quill::Logger* logger_;
     duckdb::Connection& con;
-    
+    std::vector<const Column*> columnsOrdered; // used for perserving order in csv file   
 public:
     std::string name;
     std::string path;
@@ -89,63 +89,31 @@ public:
         // 1. drop if exist
         auto result = con.Query("DROP TABLE IF EXISTS \"" + name + "\"");
 
-        // recreate table with all schema & 
-        std::string query = "CREATE TABLE \"" + name + "\" (\n";
-        // Columns
-        size_t idx = 0;
-        for (const auto& [colName, col] : columns) {
-            query += "  \"" + colName + "\" " + dataTypeToSQL(col.type);
-            if (idx++ < columns.size() - 1) query += ",";
-            query += "\n";
-        }
-
-        // Primary Key
-        if (!pkColumns.empty()) {
-            query += ",  PRIMARY KEY (";
-            idx = 0;
-            for (const auto& [colName, _] : pkColumns) {
-                query += "\"" + colName + "\"";
-                if (idx++ < pkColumns.size() - 1)  query += ", ";
-            }
-            query += ")\n";
-        }
-
-        // Foreign Keys
-        idx = 0;
-        for (const auto& [refTable, links] : fkColumns) {
-            query += ",  FOREIGN KEY (";
-            size_t colIdx = 0;
-            for (const auto& [_, fkCol] : links) {
-                query += "\"" + fkCol->name + "\"";
-                if (colIdx++ < links.size() - 1) query += ", ";
-            }
-
-            query += ") REFERENCES \"" + refTable->name + "\" (";
-            colIdx = 0;
-            for (const auto& [pkCol, _] : links) {
-                query += "\"" + pkCol->name + "\"";
-                if (colIdx++ < links.size() - 1) query += ", ";
-            }
-            query += ")\n";
-        }
-
-        query += ");";
-        
-        
+        //  2. created 
+        const std::string query = generateCreateTableQuery();
         result = con.Query(query);
-
+        
         if(result->HasError()) 
             LOG_ERROR(logger_, "Failed to recreate table {} query: {}: {}", name, query, result->GetError());
         else 
-            LOG_INFO(logger_, "Success in Recreate table {}", name);
+            LOG_INFO(logger_, "Recreated table {}", name);
+
+        // 3. insert values into table
+        result = con.Query("INSERT INTO \"" + name + "\" SELECT * FROM read_csv('" + path + "', header=True)");
+        
+        if (result->HasError()) 
+            LOG_ERROR(logger_, "Failed to load data into table {} from {} where schema {}: {}", name, query, path, result->GetError());
+        else 
+            LOG_INFO(logger_, "loaded data into table {} from {}", name, path);
+
     }
 
 private:
 
 
     void loadDuckDBTable() {
-        con.Query("CREATE OR REPLACE TABLE " + name + 
-                  " AS SELECT * FROM read_csv_auto('" + path + "')");
+        con.Query("CREATE OR REPLACE TABLE \"" + name + 
+                  "\" AS SELECT * FROM read_csv_auto('" + path + "')");
         LOG_INFO(logger_, "Loaded CSV {} as table {}", path, name);
     }
 
@@ -172,6 +140,8 @@ private:
             if (isPk) {
                 pkColumns.emplace(colName, &it->second);
             }
+            
+            columnsOrdered.push_back(&it->second);
         }
     }
 
@@ -222,6 +192,52 @@ private:
             case DataType::STRING: return "STRING";
             default: return "STRING";
         }
+    }
+
+    [[nodiscard]] std::string generateCreateTableQuery() const {
+        // recreate table with all schema &
+        std::string query = "CREATE TABLE \"" + name + "\" (\n";
+        // Columns
+        size_t idx = 0;
+        for (const auto& col : columnsOrdered) {
+            query += "  \"" + col->name + "\" " + dataTypeToSQL(col->type);
+            if (idx++ < columns.size() - 1) query += ",";
+            query += "\n";
+        }
+
+        // Primary Key
+        if (!pkColumns.empty()) {
+            query += ",  PRIMARY KEY (";
+            idx = 0;
+            for (const auto& [colName, _] : pkColumns) {
+                query += "\"" + colName + "\"";
+                if (idx++ < pkColumns.size() - 1)  query += ", ";
+            }
+            query += ")\n";
+        }
+
+        // Foreign Keys
+        idx = 0;
+        for (const auto& [refTable, links] : fkColumns) {
+            query += ",  FOREIGN KEY (";
+            size_t colIdx = 0;
+            for (const auto& [_, fkCol] : links) {
+                query += "\"" + fkCol->name + "\"";
+                if (colIdx++ < links.size() - 1) query += ", ";
+            }
+
+            query += ") REFERENCES \"" + refTable->name + "\" (";
+            colIdx = 0;
+            for (const auto& [pkCol, _] : links) {
+                query += "\"" + pkCol->name + "\"";
+                if (colIdx++ < links.size() - 1) query += ", ";
+            }
+            query += ")\n";
+        }
+
+        query += ");";
+
+        return query;
     }
     
 };
