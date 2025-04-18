@@ -29,6 +29,7 @@ void YallaSQLShell::initializeCommands() {
         {"_clear", "  Clear the screen", ".clear"},
         {"_help", "  Show help message", ".help [command]"},
         
+        {"duckdb", " Execute statement on DuckDB", "duckdb SELECT ...."},
         {"USE", "  Load DB from Folder", "USE <dirname>"},
         {"DESCRIBE", "  List tables with summary", "DESCRIBE"},
         {"SELECT", "  Query data from tables", "SELECT ... FROM ... [WHERE ...]"},
@@ -45,7 +46,7 @@ void YallaSQLShell::setupReplxx() {
     rx.set_hint_delay(1);
     
     // Load history from file
-    rx.history_load("YallaSQLShell_history.txt");
+    rx.history_load(shell_history);
     
     // Set up callbacks
     rx.set_completion_callback(
@@ -68,10 +69,19 @@ void YallaSQLShell::setupReplxx() {
 
 Replxx::completions_t YallaSQLShell::completeCommand(const std::string& input, int& context_len) {
     Replxx::completions_t completions;
+    auto idx = input.find_last_of(' ');
+
+    const std::string lastKeyword = idx == std::string::npos ? input : input.substr(idx + 1);
 
     for (const auto& cmd : commands) {
-        if (cmd.name.find(input) == 0) {
+        if (cmd.name.find(lastKeyword) == 0) {
             completions.emplace_back(cmd.name + " ");
+        }
+    }
+
+    for (const auto& keyword : keywords) {
+        if (keyword.find(lastKeyword) == 0) {
+            completions.emplace_back(keyword + " ");
         }
     }
 
@@ -201,11 +211,13 @@ void YallaSQLShell::processInput(const std::string& input) {
     } else if (input.find("_exit") == 0) {
         running = false;
     } else {
-        engine.execute(input);
+        std::string output = engine.execute(input);
+        std::cout << output << "\n";
     }
 }
 
 void YallaSQLShell::run() {
+    input_buffer = ""; // buffer to allow multiline
     // Setup the terminal
     std::cout << "\033[2J\033[H";  // Clear screen
     std::cout << Cursor::BLINKING_BAR;
@@ -217,24 +229,33 @@ void YallaSQLShell::run() {
     // Main input loop
     while (running) {
         // Get input with our beautiful prompt
-        const char* input = rx.input(getPrompt());
+        const char* input = rx.input(input_buffer.empty() ? getPrompt() : Color::DIM + "........................ ");
         
         if (input == nullptr) {
             // Ctrl+D pressed
             std::cout << "Goodbye!\n";
             break;
         }
-        
         std::string line(input);
-        if (!line.empty()) {
-            rx.history_add(line);
-            rx.history_save("yallasql_history.txt");
-            processInput(line);
+        input_buffer += input_buffer.empty() ? line : "\n" + line; // add space between lines
+        if(isCommandComplete(line)) {
+            rx.history_add(input_buffer);
+            rx.history_save(shell_history);
+            processInput(input_buffer);
+            input_buffer = "";
         }
     }
     
     // Clean up terminal settings
     std::cout << "\033[?1000l";
+}
+
+bool YallaSQLShell::isCommandComplete(const std::string& line) {
+    std::string trimmed = line;
+    trimmed.erase(trimmed.find_last_not_of(" \n\r\t") + 1);
+
+    // Check if the line ends with a semicolon or start with command _help, _exist, _clear
+    return (!trimmed.empty() && trimmed.back() == ';') || (trimmed[0] == '_');
 }
 
 std::string YallaSQLShell::getPrompt() {
