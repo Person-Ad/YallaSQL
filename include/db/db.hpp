@@ -5,8 +5,8 @@
 #include <mutex>
 #include<vector>
 #include <ranges>
+#include<unordered_map>
 #include "logger.hpp"
-#include<map>
 
 #include "duckdb/main/connection.hpp"
 #include "duckdb/main/database.hpp"
@@ -24,7 +24,7 @@ private:
     std::string path_;
     quill::Logger* logger_;
     static std::mutex mutex_;
-    std::map<std::string, Table> tables_;
+    std::unordered_map<std::string, Table> tables_;
 
     std::unique_ptr<DuckDB> duckdb_; // In-memory DB
     std::unique_ptr<Connection> con_;
@@ -41,7 +41,6 @@ private:
     // reload tablesPaths_
     void refreshTables();
 
-    void setPrimaryKeys(const std::string& tableName);
 
 public:
     // db can't be cloned
@@ -52,6 +51,8 @@ public:
     static void setPath(const std::string& path = DEFAULT_DATASET_PATH);
     // control access to db instance
     static DB *getInstance();
+    // do topoligical sort to recreate DuckDB
+    void reCreateLinkedDuckDB(const std::string &tableName, std::unordered_map<std::string, bool>& created);
     // get path of database
     std::string path() const { return path_; }
     // get connection to duckdb
