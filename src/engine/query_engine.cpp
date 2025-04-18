@@ -91,8 +91,8 @@ std::string QueryEngine::execute(std::string query) {
         std::string query_upper = query;
         std::transform(query_upper.begin(), query_upper.end(), query_upper.begin(), ::toupper);
 
-        if (query_upper.find("_CPU") != std::string::npos) 
-            cpuDB(query.substr(query_upper.find("_CPU") + 4));
+        if (query_upper.find("DUCKDB") != std::string::npos) 
+            cpuDB(query.substr(query_upper.find("DUCKDB") + 6));
         else if (query_upper.find("USE") != std::string::npos) 
             useDB(query);
         else 

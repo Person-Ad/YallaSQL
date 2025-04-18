@@ -21,12 +21,13 @@ private:
     std::vector<Command> commands; 
     std::string current_db = "default"; 
     std::string shell_history = "./logs/yallasql_history.txt";
-    
+    std::string input_buffer;
     std::vector<std::string> keywords = {
         "SELECT", "FROM", "WHERE", "AND", "OR", 
         "COUNT", "MIN", "MAX", "SUM", "AVG",
         "DATABASE", "AS", "ORDER BY",
-        "JOIN", "INNER", "LEFT", "RIGHT", "OUTER", "FULL", "ASC", "DESC"
+        "JOIN", "INNER", "LEFT", "RIGHT", "OUTER", "FULL", "ASC", "DESC",
+        "DESCRIBE", " PRAGMA", "table_info"
     };
 public:
     /**
@@ -88,12 +89,6 @@ private:
     void showHelp(const std::string& args);
 
     /**
-     * @brief Handles the `.load` command to load SQL from a file.
-     * @param args The filename to load.
-     */
-    void handleLoad(const std::string& args);
-
-    /**
      * @brief Executes an SQL query.
      * @param sql The SQL query to execute.
      */
@@ -119,6 +114,10 @@ private:
      * @brief Prints a gradient title banner.
      */
     void printGradientTitle();
+    /**
+     * @brief is ending with semicolumn or not
+     */
+    bool isCommandComplete(const std::string& line); 
 };
 
 #endif // YALLASQL_INCLUDE_CLI_SHELL_HPP
