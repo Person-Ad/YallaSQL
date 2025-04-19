@@ -9,6 +9,7 @@
 #include "duckdb/parser/parser.hpp"
 #include "duckdb/planner/planner.hpp"
 #include "duckdb/optimizer/optimizer.hpp"
+#include "duckdb/execution/executor.hpp"
 
 
 class QueryEngineError : public std::runtime_error {

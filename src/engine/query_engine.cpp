@@ -31,7 +31,8 @@ void QueryEngine::useDB(const std::string& input) {
             throw std::runtime_error("Invalid USE command: Directory path is empty");
         }
 
-        MEASURE_EXECUTION_TIME_LOGGER(logger_, "use db", DB::setPath(path));
+        // MEASURE_EXECUTION_TIME_LOGGER(logger_, "use db", DB::setPath(path));
+        DB::setPath(path);
     } catch (const std::runtime_error& e) {
         LOG_ERROR(logger_, "Failed to switch database: {}", e.what());
         throw; // Re-throw to let the caller handle
@@ -149,7 +150,7 @@ std::string QueryEngine::execute(std::string query) {
         QueryResult result;
         
         if (query.find("USE") != std::string::npos) {
-            useDB(query);
+            MEASURE_EXECUTION_TIME_LOGGER(logger_, "switching db", useDB(query));
             return "Database switched successfully";
         }
 

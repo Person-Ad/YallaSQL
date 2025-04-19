@@ -51,7 +51,7 @@ void DB::reCreateLinkedDuckDB(const std::string& tableName, std::unordered_map<s
     }
 
     // Recreate the table
-    tables_.find(tableName)->second.reCreateDuckDBTable();
+    MEASURE_EXECUTION_TIME_LOGGER(logger_, "reCreateDuckDBTable", tables_.find(tableName)->second.reCreateDuckDBTable());
     created[tableName] = true;
 }
 
@@ -71,11 +71,11 @@ void DB::refreshTables() {
         
         // 3. infer FKs from all tables & their primary Key
         for(auto& [tableName, table]: tables_) 
-            table.setupForeignKeys(tables_);
+            MEASURE_EXECUTION_TIME_LOGGER(logger_, "SetupFoginKey", table.setupForeignKeys(tables_));
         // 4. Recreate DuckDB tables with all constraints & schema infered using ToplogicalSort
         std::unordered_map<std::string, bool> created;
         for(auto& [tableName, table]: tables_) 
-            reCreateLinkedDuckDB(tableName, created);
+            MEASURE_EXECUTION_TIME_LOGGER(logger_, "reCreateLinkedDuckDB", reCreateLinkedDuckDB(tableName, created));
 
     } 
     catch (std::exception& e) {

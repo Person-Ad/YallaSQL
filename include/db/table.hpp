@@ -3,11 +3,13 @@
 
 #include "duckdb/main/connection.hpp"
 #include "logger.hpp"
+#include "utils.hpp"
 #include <string>
 #include <string_view>
 #include <unordered_map>
 #include <vector>
 #include <cstdint>
+using namespace YALLASQL::UTILS;
 
 enum class DataType : uint8_t {
     INT,
@@ -51,8 +53,8 @@ public:
           path(std::move(filePath)), 
           con(conn),
           logger_(YALLASQL::getLogger("")) {
-        loadDuckDBTable();
-        inferDuckDBSchema();
+        MEASURE_EXECUTION_TIME_LOGGER(logger_, "loadDuckDBTable", loadDuckDBTable());
+        MEASURE_EXECUTION_TIME_LOGGER(logger_, "inferDuckDBSchema",  inferDuckDBSchema());
     }
 
     // Delete copy constructor and assignment
