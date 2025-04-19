@@ -120,7 +120,7 @@ def create_random_tables(seed, folder_path, num_tables=5):
         schema, foreign_keys = generate_random_schema(prev_primary_keys)
         
         file_path = os.path.join(folder_path, f"{table_name}.csv")
-        num_records = np.random.randint(100_000)
+        num_records = np.random.randint(50_000, 500_000)
         create_csv_file(file_path, num_records, schema, table_name, foreign_keys, prev_primary_keys)
 
         # prev_primary_keys.extend(primary_keys)

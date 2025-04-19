@@ -9,14 +9,10 @@
 #include <unordered_map>
 #include <vector>
 #include <cstdint>
+
+#include "enums/data_type.hpp"
 using namespace YALLASQL::UTILS;
 
-enum class DataType : uint8_t {
-    INT,
-    FLOAT,
-    DATETIME,
-    STRING
-};
 
 struct Column {
     std::string name;
@@ -40,7 +36,6 @@ struct Column {
 class Table {
     quill::Logger* logger_;
     duckdb::Connection& con;
-    std::vector<const Column*> columnsOrdered; // used for perserving order in csv file   
 public:
     std::string name;
     std::string path;
@@ -53,8 +48,9 @@ public:
           path(std::move(filePath)), 
           con(conn),
           logger_(YALLASQL::getLogger("")) {
-        MEASURE_EXECUTION_TIME_LOGGER(logger_, "loadDuckDBTable", loadDuckDBTable());
-        MEASURE_EXECUTION_TIME_LOGGER(logger_, "inferDuckDBSchema",  inferDuckDBSchema());
+        // MEASURE_EXECUTION_TIME_LOGGER(logger_, "loadDuckDBTable", loadDuckDBTable());
+        // MEASURE_EXECUTION_TIME_LOGGER(logger_, "inferDuckDBSchema",  inferDuckDBSchema());
+        MEASURE_EXECUTION_TIME_LOGGER(logger_, "inferDBSchema", inferDBSchema());
     }
 
     // Delete copy constructor and assignment
@@ -101,17 +97,44 @@ public:
             LOG_INFO(logger_, "Recreated table {}", name);
 
         // 3. insert values into table
-        result = con.Query("INSERT INTO \"" + name + "\" SELECT * FROM read_csv('" + path + "', header=True)");
+        // result = con.Query("INSERT INTO \"" + name + "\" SELECT * FROM read_csv('" + path + "', header=True)");
         
-        if (result->HasError()) 
-            LOG_ERROR(logger_, "Failed to load data into table {} from {} where schema {}: {}", name, query, path, result->GetError());
-        else 
-            LOG_INFO(logger_, "loaded data into table {} from {}", name, path);
+        // if (result->HasError()) 
+        //     LOG_ERROR(logger_, "Failed to load data into table {} from {} where schema {}: {}", name, query, path, result->GetError());
+        // else 
+        //     LOG_INFO(logger_, "loaded data into table {} from {}", name, path);
 
     }
 
 private:
+    void inferDBSchema() {
+        auto result = con.Query("SELECT COLUMNS FROM sniff_csv('" + path + "', sample_size=10)");
+        if(result->HasError())  {
+            LOG_ERROR(logger_, "Can't sniff csv from path {}: {}", path, result->GetError());
+            throw std::runtime_error("Can't sniff csv from path: " + result->GetError());
+        }
 
+        auto schema = result->GetValue(0, 0); // it's only one row & col
+        auto columnsList = duckdb::ListValue::GetChildren(schema); // [{name: "", type: ""}]
+
+        columns.reserve(columnsList.size());
+        for (const auto &col_struct : columnsList) {
+            auto &struct_children = duckdb::StructValue::GetChildren(col_struct);
+            std::string name = duckdb::StringValue::Get(struct_children.at(0));
+            std::string type = duckdb::StringValue::Get(struct_children.at(1));
+    
+            bool isPk = name.ends_with("(P)");
+            
+            auto [it, inserted] = columns.emplace(
+                std::piecewise_construct,
+                std::forward_as_tuple(name),
+                std::forward_as_tuple(name, inferDataType(type), isPk)
+            );
+
+            if (isPk) pkColumns.emplace(name, &it->second);
+            
+        }
+    }
 
     void loadDuckDBTable() {
         con.Query("CREATE OR REPLACE TABLE \"" + name + 
@@ -143,7 +166,6 @@ private:
                 pkColumns.emplace(colName, &it->second);
             }
             
-            columnsOrdered.push_back(&it->second);
         }
     }
 
@@ -201,8 +223,8 @@ private:
         std::string query = "CREATE TABLE \"" + name + "\" (\n";
         // Columns
         size_t idx = 0;
-        for (const auto& col : columnsOrdered) {
-            query += "  \"" + col->name + "\" " + dataTypeToSQL(col->type);
+        for (const auto& [colName, col] : columns) {
+            query += "  \"" + colName + "\" " + dataTypeToSQL(col.type);
             if (idx++ < columns.size() - 1) query += ",";
             query += "\n";
         }
