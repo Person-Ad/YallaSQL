@@ -21,7 +21,12 @@ void QueryEngine::useDB(const std::string& input) {
             throw std::runtime_error("Invalid USE command: No directory specified");
         }
 
-        path = input.substr(space_pos + 1);
+        std::string remainder = input.substr(space_pos + 1);
+        size_t next_sep = remainder.find(' ');
+               next_sep = next_sep == std::string::npos ? remainder.find(';') : next_sep;
+
+        path = remainder.substr(0, next_sep);
+
         if (path.empty()) {
             throw std::runtime_error("Invalid USE command: Directory path is empty");
         }
@@ -77,6 +82,7 @@ QueryEngine::QueryResult QueryEngine::getLogicalPlan(const std::string& query) {
     try {
         Parser parser;
         Planner planner(*db_->duckdb().context);
+        Optimizer optimizer(*planner.binder, *db_->duckdb().context);
 
         db_->duckdb().BeginTransaction();
         // start timer
@@ -85,7 +91,7 @@ QueryEngine::QueryResult QueryEngine::getLogicalPlan(const std::string& query) {
             auto statements = std::move(parser.statements);
             
             planner.CreatePlan(std::move(statements[0]));
-            logicalPlan = std::move(planner.plan);
+            logicalPlan = std::move(optimizer.Optimize(std::move(planner.plan)));
         );
         // save content
         result.content = logicalPlan->ToString();

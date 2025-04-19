@@ -14,7 +14,7 @@ using namespace duckdb;
 
 #include "db/table.hpp"
 
-const std::string DEFAULT_DATASET_PATH = "./dataset";
+const std::string DEFAULT_DATASET_PATH = "./default_dataset";
 
 class DB {
 

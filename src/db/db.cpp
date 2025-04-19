@@ -14,12 +14,9 @@ std::mutex DB::mutex_;
 void DB::setPath(const std::string& path) {
     // lock database instance
     std::lock_guard<std::mutex> lock(mutex_);
-    
     // create directory if it doesn't exist
     if (!fs::exists(path)) {
-        if (!fs::create_directories(path)) {
-            throw std::runtime_error("Failed to create database directory: " + path);
-        }
+        throw std::runtime_error("Failed to find database directory: " + path);
     }
     // verify it's a directory (in case path exists but is a file)
     else if (!fs::is_directory(path)) 
