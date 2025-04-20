@@ -9,7 +9,7 @@
 
 #ifndef YALLASQL_UTILS_HPP
 #define YALLASQL_UTILS_HPP
-namespace YALLASQL::UTILS {
+namespace YallaSQL::UTILS {
 
 namespace Color {
     const std::string RESET = "\033[0m";

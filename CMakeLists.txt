@@ -35,6 +35,7 @@ set(CLI_SOURCES
 # Set include directories for the target
 include_directories(    
     include
+    vendor
     vendor/duckdb/src/include
 )
 

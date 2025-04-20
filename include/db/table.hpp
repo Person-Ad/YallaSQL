@@ -11,7 +11,7 @@
 #include <cstdint>
 
 #include "enums/data_type.hpp"
-using namespace YALLASQL::UTILS;
+using namespace YallaSQL::UTILS;
 
 
 struct Column {
@@ -20,9 +20,10 @@ struct Column {
     bool isPk : 1;        // 1 bit for primary key
     bool isFk : 1;        // 1 bit for foreign key
     uint8_t padding : 4;  // Explicit padding to align to byte boundary
-
+    unsigned int bytes;
+    
     Column(std::string name_, DataType t, bool pk = false, bool fk = false)
-        : name(std::move(name_)), type(t), isPk(pk), isFk(fk), padding(0) {}
+        : name(std::move(name_)), type(t), isPk(pk), isFk(fk), padding(0),  bytes(getDataTypeNumBytes(t)) {}
 
     // Move constructor
     Column(Column&&) = default;
@@ -39,15 +40,19 @@ class Table {
 public:
     std::string name;
     std::string path;
+    std::vector<DataType> columnsType;
+    std::vector<const Column*> columnsOrdered; // used for perserving order in csv file   
     std::unordered_map<std::string, Column> columns;
     std::unordered_map<std::string, const Column*> pkColumns; //
     std::unordered_map<const Table*, std::vector<std::pair<const Column*, Column*>>> fkColumns; // Table: [(reference_col, foreigen_col)]
-    
+    uint32_t rowBytes = 0;
+    uint32_t numCols = 0;
+
     Table(std::string tableName, std::string filePath, duckdb::Connection& conn)
         : name(std::move(tableName)), 
           path(std::move(filePath)), 
           con(conn),
-          logger_(YALLASQL::getLogger("")) {
+          logger_(YallaSQL::getLogger("")) {
         // MEASURE_EXECUTION_TIME_LOGGER(logger_, "loadDuckDBTable", loadDuckDBTable());
         // MEASURE_EXECUTION_TIME_LOGGER(logger_, "inferDuckDBSchema",  inferDuckDBSchema());
         MEASURE_EXECUTION_TIME_LOGGER(logger_, "inferDBSchema", inferDBSchema());
@@ -61,14 +66,14 @@ public:
     Table(Table&&) = default;
     Table& operator=(Table&&) = default;
 
-    void setupForeignKeys(const std::unordered_map<std::string, Table>& tables) {
+    void setupForeignKeys(const std::unordered_map<std::string, Table *>& tables) {
         for (const auto& [tableName, table] : tables) {
             if (tableName == name) continue;
 
             std::vector<std::pair<const Column*, Column*>> tableLinks;
-            tableLinks.reserve(table.pkColumns.size());
+            tableLinks.reserve(table->pkColumns.size());
 
-            for (const auto& [pkName, pkCol] : table.pkColumns) {
+            for (const auto& [pkName, pkCol] : table->pkColumns) {
                 std::string cleanPkName = generateFkName(tableName, pkName);
                 auto it = columns.find(cleanPkName);
                 if (it != columns.end()) {
@@ -76,8 +81,8 @@ public:
                 }
             }
 
-            if (tableLinks.size() == table.pkColumns.size()) {
-                fkColumns[&table] = std::move(tableLinks);
+            if (tableLinks.size() == table->pkColumns.size()) {
+                fkColumns[table] = std::move(tableLinks);
                 LOG_INFO(logger_, "Detected Foreign Key Relationship where {} references {}", name, tableName);
             }
         }
@@ -85,11 +90,11 @@ public:
 
     void reCreateDuckDBTable() {
         // 1. drop if exist
-        auto result = con.Query("DROP TABLE IF EXISTS \"" + name + "\"");
+        // auto result = con.Query("DROP TABLE IF EXISTS \"" + name + "\"");
 
         //  2. created 
         const std::string query = generateCreateTableQuery();
-        result = con.Query(query);
+        auto result = con.Query(query);
         
         if(result->HasError()) 
             LOG_ERROR(logger_, "Failed to recreate table {} query: {}: {}", name, query, result->GetError());
@@ -97,7 +102,7 @@ public:
             LOG_INFO(logger_, "Recreated table {}", name);
 
         // 3. insert values into table
-        // result = con.Query("INSERT INTO \"" + name + "\" SELECT * FROM read_csv('" + path + "', header=True)");
+        // result = con.Query("INSERT INTO \"" + name + "\" SELECT * FROM read_csv('" + path + "', header=True, sample_size=10)");
         
         // if (result->HasError()) 
         //     LOG_ERROR(logger_, "Failed to load data into table {} from {} where schema {}: {}", name, query, path, result->GetError());
@@ -117,31 +122,39 @@ private:
         auto schema = result->GetValue(0, 0); // it's only one row & col
         auto columnsList = duckdb::ListValue::GetChildren(schema); // [{name: "", type: ""}]
 
+        numCols = columnsList.size();
         columns.reserve(columnsList.size());
+        columnsType.reserve(columnsList.size());
+        columnsOrdered.reserve(columnsList.size());
         for (const auto &col_struct : columnsList) {
             auto &struct_children = duckdb::StructValue::GetChildren(col_struct);
             std::string name = duckdb::StringValue::Get(struct_children.at(0));
             std::string type = duckdb::StringValue::Get(struct_children.at(1));
     
+            DataType myType = inferDataType(type);
+
             bool isPk = name.ends_with("(P)");
             
             auto [it, inserted] = columns.emplace(
                 std::piecewise_construct,
                 std::forward_as_tuple(name),
-                std::forward_as_tuple(name, inferDataType(type), isPk)
+                std::forward_as_tuple(name, myType, isPk)
             );
 
             if (isPk) pkColumns.emplace(name, &it->second);
-            
+            columnsOrdered.emplace_back(&it->second);
+            columnsType.emplace_back(myType);
+            rowBytes += getDataTypeNumBytes(myType);
         }
     }
 
+    //! deprecated
     void loadDuckDBTable() {
         con.Query("CREATE OR REPLACE TABLE \"" + name + 
                   "\" AS SELECT * FROM read_csv_auto('" + path + "')");
         LOG_INFO(logger_, "Loaded CSV {} as table {}", path, name);
     }
-
+    //! deprecated
     void inferDuckDBSchema() {
         auto result = con.Query("PRAGMA table_info(" + name + ")");
         if (result->HasError()) {
@@ -223,8 +236,8 @@ private:
         std::string query = "CREATE TABLE \"" + name + "\" (\n";
         // Columns
         size_t idx = 0;
-        for (const auto& [colName, col] : columns) {
-            query += "  \"" + colName + "\" " + dataTypeToSQL(col.type);
+        for (const auto& col : columnsOrdered) {
+            query += "  \"" + col->name + "\" " + dataTypeToSQL(col->type);
             if (idx++ < columns.size() - 1) query += ",";
             query += "\n";
         }

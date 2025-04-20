@@ -44,14 +44,14 @@ void DB::reCreateLinkedDuckDB(const std::string& tableName, std::unordered_map<s
     
 
     // ensure referenced tables are created first
-    for (const auto& [refTable, _] : tables_.find(tableName)->second.fkColumns) {
+    for (const auto& [refTable, _] : tables_.find(tableName)->second->fkColumns) {
         if (created.find(refTable->name) == created.end() || !created[refTable->name]) {
             reCreateLinkedDuckDB(refTable->name, created);
         }
     }
 
     // Recreate the table
-    MEASURE_EXECUTION_TIME_LOGGER(logger_, "reCreateDuckDBTable", tables_.find(tableName)->second.reCreateDuckDBTable());
+    MEASURE_EXECUTION_TIME_LOGGER(logger_, "reCreateDuckDBTable", tables_.find(tableName)->second->reCreateDuckDBTable());
     created[tableName] = true;
 }
 
@@ -65,13 +65,13 @@ void DB::refreshTables() {
                 std::string filePath = entry.path().string();
                 // 1. read all tables --> DuckDB read csv 
                 // 2. infer Column Names & Datatypes & PKs from DuckDB (i.e Basic Schema)
-                tables_.emplace(tableName, Table(tableName, filePath, duckdb()));
+                tables_.emplace(tableName, new Table(tableName, filePath, duckdb()));
             }
         }
         
         // 3. infer FKs from all tables & their primary Key
-        for(auto& [tableName, table]: tables_) 
-            MEASURE_EXECUTION_TIME_LOGGER(logger_, "SetupFoginKey", table.setupForeignKeys(tables_));
+        for(auto [tableName, table]: tables_) 
+            MEASURE_EXECUTION_TIME_LOGGER(logger_, "SetupFoginKey", table->setupForeignKeys(tables_));
         // 4. Recreate DuckDB tables with all constraints & schema infered using ToplogicalSort
         std::unordered_map<std::string, bool> created;
         for(auto& [tableName, table]: tables_) 

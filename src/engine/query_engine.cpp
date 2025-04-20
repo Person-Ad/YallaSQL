@@ -6,10 +6,11 @@
 #include <sstream>
 
 #include "engine/query_engine.hpp"
+#include "engine/executor_engine.hpp"
 #include "utils.hpp"
 
 using namespace duckdb;
-using namespace YALLASQL::UTILS;
+using namespace YallaSQL::UTILS;
 
 
 void QueryEngine::useDB(const std::string& input) {
@@ -33,6 +34,7 @@ void QueryEngine::useDB(const std::string& input) {
 
         // MEASURE_EXECUTION_TIME_LOGGER(logger_, "use db", DB::setPath(path));
         DB::setPath(path);
+        if(db_ == nullptr) db_ = DB::getInstance();
     } catch (const std::runtime_error& e) {
         LOG_ERROR(logger_, "Failed to switch database: {}", e.what());
         throw; // Re-throw to let the caller handle
@@ -84,16 +86,18 @@ QueryEngine::QueryResult QueryEngine::getLogicalPlan(const std::string& query) {
         Parser parser;
         Planner planner(*db_->duckdb().context);
         Optimizer optimizer(*planner.binder, *db_->duckdb().context);
-
+        ExecutorEngine myExecutor;
         db_->duckdb().BeginTransaction();
         // start timer
-        MEASURE_EXECUTION_TIME_LOGGER(logger_, "generating logical plan", 
+        // MEASURE_EXECUTION_TIME_LOGGER(logger_, "generating logical plan", 
             parser.ParseQuery(query);
             auto statements = std::move(parser.statements);
             
             planner.CreatePlan(std::move(statements[0]));
             logicalPlan = std::move(optimizer.Optimize(std::move(planner.plan)));
-        );
+            myExecutor.execute(*logicalPlan, *planner.binder);
+            // logicalPlan = std::move(planner.plan);
+        // );
         // save content
         result.content = logicalPlan->ToString();
 

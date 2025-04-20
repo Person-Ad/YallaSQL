@@ -1,11 +1,12 @@
 #ifndef YALLASQL_INCLUDE_DB_HPP
 #define YALLASQL_INCLUDE_DB_HPP
 
-#include<string>
+#include <stdexcept>
+#include <string>
 #include <mutex>
-#include<vector>
+#include <vector>
 #include <ranges>
-#include<unordered_map>
+#include <unordered_map>
 #include "logger.hpp"
 
 #include "duckdb/main/connection.hpp"
@@ -14,7 +15,7 @@ using namespace duckdb;
 
 #include "db/table.hpp"
 
-const std::string DEFAULT_DATASET_PATH = "./default_dataset";
+const std::string DEFAULT_DATASET_PATH = "default_dataset";
 
 class DB {
 
@@ -24,7 +25,7 @@ private:
     std::string path_;
     quill::Logger* logger_;
     static std::mutex mutex_;
-    std::unordered_map<std::string, Table> tables_;
+    std::unordered_map<std::string, Table*> tables_;
 
     std::unique_ptr<DuckDB> duckdb_; // In-memory DB
     std::unique_ptr<Connection> con_;
@@ -34,8 +35,10 @@ private:
     DB(const std::string path): path_(path) {
         duckdb_ = std::make_unique<DuckDB>(nullptr);
         con_ = std::make_unique<Connection>(*duckdb_);
+        // to not optimize too much
+        con_->Query(" SET disabled_optimizers = 'filter_pushdown,statistics_propagation';");
 
-        logger_ = YALLASQL::getLogger("./logs/database");
+        logger_ = YallaSQL::getLogger("./logs/database");
         refreshTables();
     }
     // reload tablesPaths_
@@ -57,6 +60,13 @@ public:
     std::string path() const { return path_; }
     // get connection to duckdb
     Connection& duckdb() const { return *con_; }
+    // get table in db
+    const Table* getTable(const std::string& tableName) const { 
+        if(tables_.find(tableName) == tables_.end())
+            throw std::runtime_error("YallaSQL can't find table: " + tableName);
+
+        return tables_.find(tableName)->second; 
+    }
 
     ~DB();
 };

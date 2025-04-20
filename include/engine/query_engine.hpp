@@ -24,8 +24,8 @@ private:
         bool isTabular;
         std::string content;
     };
-    DB* db_;
-    quill::Logger* logger_;
+    DB* db_ = nullptr;
+    quill::Logger* logger_ = nullptr;
     const std::string resultsDir = "results";
 
     void useDB(const std::string& input);
@@ -35,8 +35,7 @@ private:
 
 
 public:
-    QueryEngine() : db_(DB::getInstance()), 
-                    logger_(YALLASQL::getLogger("")) {}
+    QueryEngine() :logger_(YallaSQL::getLogger("")) {}
 
     std::string execute(std::string query);
 

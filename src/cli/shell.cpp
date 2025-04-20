@@ -9,7 +9,7 @@
 #include "cli/shell.hpp"
 #include "utils.hpp"
 
-using namespace YALLASQL::UTILS;
+using namespace YallaSQL::UTILS;
 
 using Replxx = replxx::Replxx;
 
@@ -211,8 +211,12 @@ void YallaSQLShell::processInput(const std::string& input) {
     } else if (input.find("_exit") == 0) {
         running = false;
     } else {
-        std::string output = engine.execute(input);
-        std::cout << output << "\n";
+        try{
+            std::string output = engine.execute(input);
+            std::cout << output << "\n";
+        } catch(std::exception &e) {
+            std::cout << "UNDEFINE ERROR: " << e.what() << "\n";
+        }
     }
 }
 
