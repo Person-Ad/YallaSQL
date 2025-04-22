@@ -13,12 +13,24 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # Export compile commands for IDE support
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+# Set build type
+set(CMAKE_CUDA_ARCHITECTURES 86) 
+# use seperate compiler for cuda files only
+set(CMAKE_CUDA_SEPARABLE_COMPILATION ON)
+
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address")
+#set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=address")
+
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O0")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0")
+
 # Find dependencies
 find_package(CUDAToolkit REQUIRED)
 find_package(replxx REQUIRED CONFIG)
 find_package(quill REQUIRED CONFIG)
 
 # for duckdb
+#link_directories(vendor/duckdb/build/debug/src)
 link_directories(vendor/duckdb/build/release/src)
 
 
@@ -29,7 +41,14 @@ set(SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
 set(CLI_SOURCES
     "${SOURCE_DIR}/cli/shell.cpp"
     "${SOURCE_DIR}/db/db.cpp"
+    # files
+    "${SOURCE_DIR}/batch.cu"
+    # main engine 
     "${SOURCE_DIR}/engine/query_engine.cpp"
+    "${SOURCE_DIR}/engine/executor_engine.cpp"
+    # Operators
+    "${SOURCE_DIR}/engine/operators/operator.cpp"
+    "${SOURCE_DIR}/engine/operators/get_operator.cpp"
 )
 
 # Set include directories for the target
@@ -43,13 +62,15 @@ add_executable(yallasql_cli
     "${SOURCE_DIR}/cli/main.cpp"
     ${CLI_SOURCES}
 )
-
+add_compile_definitions(ASAN_OPTIONS="protect_shadow_gap=0:replace_intrin=0:detect_leaks=0")
 
 # Link libraries
 target_link_libraries(yallasql_cli
     PRIVATE
+        # asan 
         CUDA::cudart
         replxx::replxx
         quill::quill
         duckdb
 )
+

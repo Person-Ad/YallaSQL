@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 // forward declaration of data_type.hpp
 enum class DataType : __uint8_t;
 [[nodiscard]] inline unsigned int getDataTypeNumBytes(DataType type);
@@ -7,8 +8,15 @@ namespace YallaSQL
 {
     // Maximum string length in bytes
     const unsigned int MAX_STR_LEN = 250;
-    // Target maximum bytes per batch (16 KB)
-    const unsigned int MAX_BYTES_PER_BATCH = 16 * (1 << 10);
+    // Target maximum bytes per batch (8 mb)
+    const unsigned int MAX_BYTES_PER_BATCH = 8 * (1 << 20);
+    // Target maximum bytes per batch (1 gb)
+    const unsigned int MAX_LIMIT_CPU_CACHE = (1 << 30);
+    // Target maximum bytes per batch (1 gb)
+    const unsigned int MAX_LIMIT_GPU_CACHE = (1 << 30);
+
+
+    const std::string cacheDir = ".cache";
 
     // const unsigned int DEFAULE_BATCH_SIZE = 32;
     

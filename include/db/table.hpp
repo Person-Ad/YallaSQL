@@ -41,10 +41,10 @@ public:
     std::string name;
     std::string path;
     std::vector<DataType> columnsType;
-    std::vector<const Column*> columnsOrdered; // used for perserving order in csv file   
+    std::vector<std::shared_ptr<Column>> columnsOrdered; // used for perserving order in csv file   
     std::unordered_map<std::string, Column> columns;
-    std::unordered_map<std::string, const Column*> pkColumns; //
-    std::unordered_map<const Table*, std::vector<std::pair<const Column*, Column*>>> fkColumns; // Table: [(reference_col, foreigen_col)]
+    std::unordered_map<std::string, std::shared_ptr<Column>> pkColumns; //
+    std::unordered_map<const Table*, std::vector<std::pair<std::shared_ptr<Column>, std::shared_ptr<Column>>>> fkColumns; // Table: [(reference_col, foreigen_col)]
     uint32_t rowBytes = 0;
     uint32_t numCols = 0;
 
@@ -70,7 +70,7 @@ public:
         for (const auto& [tableName, table] : tables) {
             if (tableName == name) continue;
 
-            std::vector<std::pair<const Column*, Column*>> tableLinks;
+            std::vector<std::pair<std::shared_ptr<Column>, std::shared_ptr<Column>>> tableLinks;
             tableLinks.reserve(table->pkColumns.size());
 
             for (const auto& [pkName, pkCol] : table->pkColumns) {

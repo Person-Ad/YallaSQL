@@ -79,25 +79,34 @@ QueryEngine::QueryResult QueryEngine::executeDuckDB(const std::string& query) {
 }
 
 QueryEngine::QueryResult QueryEngine::getLogicalPlan(const std::string& query) {
+    if(!db_) db_ = DB::getInstance();
     QueryResult result{false, ""};
 
-    unique_ptr<duckdb::LogicalOperator> logicalPlan;
     try {
-        Parser parser;
-        Planner planner(*db_->duckdb().context);
-        Optimizer optimizer(*planner.binder, *db_->duckdb().context);
-        ExecutorEngine myExecutor;
         db_->duckdb().BeginTransaction();
+
+        unique_ptr<duckdb::LogicalOperator> logicalPlan;
+
         // start timer
-        // MEASURE_EXECUTION_TIME_LOGGER(logger_, "generating logical plan", 
+        MEASURE_EXECUTION_TIME_LOGGER(logger_, "generating logical plan",
+            Parser parser;
             parser.ParseQuery(query);
             auto statements = std::move(parser.statements);
-            
+
+            Planner planner(*db_->duckdb().context);
             planner.CreatePlan(std::move(statements[0]));
+
+
+            Optimizer optimizer(*planner.binder, *db_->duckdb().context);
             logicalPlan = std::move(optimizer.Optimize(std::move(planner.plan)));
-            myExecutor.execute(*logicalPlan, *planner.binder);
+
+
+            ExecutorEngine myExecutor;
+            MEASURE_EXECUTION_TIME_LOGGER(logger_, "my execute time",
+                myExecutor.execute(*logicalPlan, planner);
+            )
             // logicalPlan = std::move(planner.plan);
-        // );
+        );
         // save content
         result.content = logicalPlan->ToString();
 

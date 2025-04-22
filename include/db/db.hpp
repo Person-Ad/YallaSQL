@@ -37,7 +37,7 @@ private:
         con_ = std::make_unique<Connection>(*duckdb_);
         // to not optimize too much
         con_->Query(" SET disabled_optimizers = 'filter_pushdown,statistics_propagation';");
-
+        con_->context->EnableProfiling();
         logger_ = YallaSQL::getLogger("./logs/database");
         refreshTables();
     }
