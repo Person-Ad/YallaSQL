@@ -27,8 +27,8 @@ private:
     static std::mutex mutex_;
     std::unordered_map<std::string, Table*> tables_;
 
-    std::unique_ptr<DuckDB> duckdb_; // In-memory DB
     std::unique_ptr<Connection> con_;
+    std::unique_ptr<DuckDB> duckdb_; // In-memory DB
 
 
     // private singelton constructor
@@ -37,25 +37,24 @@ private:
         con_ = std::make_unique<Connection>(*duckdb_);
         // to not optimize too much
         con_->Query(" SET disabled_optimizers = 'filter_pushdown,statistics_propagation';");
-        con_->context->EnableProfiling();
+        // con_->context->EnableProfiling();
         logger_ = YallaSQL::getLogger("./logs/database");
         refreshTables();
     }
     // reload tablesPaths_
-    void refreshTables();
+    void refreshTables(bool insertInDuck = false);
 
-
+    // do topoligical sort to recreate DuckDB links
+    void reCreateLinkedDuckDB(const std::string &tableName, std::unordered_map<std::string, bool>& created, bool insertInDuck = false);
 public:
     // db can't be cloned
     DB(const DB &) = delete;
     // db can't be assigned
     void operator=(const DB &) = delete;
     // set database path
-    static void setPath(const std::string& path = DEFAULT_DATASET_PATH);
+    static void setPath(const std::string& path = DEFAULT_DATASET_PATH, bool insertInDuck = false);
     // control access to db instance
     static DB *getInstance();
-    // do topoligical sort to recreate DuckDB
-    void reCreateLinkedDuckDB(const std::string &tableName, std::unordered_map<std::string, bool>& created);
     // get path of database
     std::string path() const { return path_; }
     // get connection to duckdb

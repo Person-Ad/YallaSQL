@@ -22,9 +22,9 @@ public:
     // void* data = nullptr;
     // batch metadata
     Device location;
-    uint_32 batchSize;
     uint_32 numCols;
-    uint_32 totalBytes;
+    size_t batchSize;
+    size_t totalBytes;
     time_t lastAccessed;
     std::string filePath;
     // columns returned
@@ -83,17 +83,17 @@ public:
     // Batch& operator=(const Batch&) = delete;
 
     // Getters
-    void* getColumn(uint_32 colIndex) {
+    void* getColumn(uint_32 colIndex) const {
         std::unique_lock<std::mutex> lock(dataMutex);
         
-        lastAccessed = time(nullptr);
+        // lastAccessed = time(nullptr);
         return columnData[colIndex];
     }
     template <typename T = std::string>
-    T* getItem(uint_32 colIndex, uint_32 rowIndex) {
+    T* getItem(uint_32 colIndex, uint_32 rowIndex) const {
         std::unique_lock<std::mutex> lock(dataMutex);
 
-        lastAccessed = time(nullptr);
+        // lastAccessed = time(nullptr);
         char* colPtr = static_cast<char*>(columnData[colIndex]);
         uint32_t typeSize = columns[colIndex]->bytes;
         return reinterpret_cast<T*>(colPtr + rowIndex * typeSize);

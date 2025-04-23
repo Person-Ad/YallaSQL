@@ -27,6 +27,7 @@ private:
     DB* db_ = nullptr;
     quill::Logger* logger_ = nullptr;
     const std::string resultsDir = "results";
+    std::string dbPath = "";
 
     void useDB(const std::string& input);
     QueryResult executeDuckDB(const std::string& query);

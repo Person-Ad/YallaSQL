@@ -12,7 +12,7 @@
 
 #include "enums/data_type.hpp"
 using namespace YallaSQL::UTILS;
-
+class OurDuck;
 
 struct Column {
     std::string name;
@@ -35,6 +35,7 @@ struct Column {
 };
 
 class Table {
+    friend class OurDuck;
     quill::Logger* logger_;
     duckdb::Connection& con;
 public:
@@ -45,7 +46,7 @@ public:
     std::unordered_map<std::string, Column> columns;
     std::unordered_map<std::string, std::shared_ptr<Column>> pkColumns; //
     std::unordered_map<const Table*, std::vector<std::pair<std::shared_ptr<Column>, std::shared_ptr<Column>>>> fkColumns; // Table: [(reference_col, foreigen_col)]
-    uint32_t rowBytes = 0;
+    size_t rowBytes = 0;
     uint32_t numCols = 0;
 
     Table(std::string tableName, std::string filePath, duckdb::Connection& conn)
@@ -53,9 +54,7 @@ public:
           path(std::move(filePath)), 
           con(conn),
           logger_(YallaSQL::getLogger("")) {
-        // MEASURE_EXECUTION_TIME_LOGGER(logger_, "loadDuckDBTable", loadDuckDBTable());
-        // MEASURE_EXECUTION_TIME_LOGGER(logger_, "inferDuckDBSchema",  inferDuckDBSchema());
-        MEASURE_EXECUTION_TIME_LOGGER(logger_, "inferDBSchema", inferDBSchema());
+        inferDBSchema();
     }
 
     // Delete copy constructor and assignment
@@ -88,32 +87,39 @@ public:
         }
     }
 
-    void reCreateDuckDBTable() {
+    void reCreateDuckDBTable(bool insertInDuck = false) {
         // 1. drop if exist
-        // auto result = con.Query("DROP TABLE IF EXISTS \"" + name + "\"");
-
+        auto result = con.Query("DROP TABLE IF EXISTS \"" + name + "\"");
+        if(result->HasError())
+            LOG_ERROR(logger_, "Failed to drop table {} why: {}", name, result->GetError());
         //  2. created 
         const std::string query = generateCreateTableQuery();
-        auto result = con.Query(query);
+        result = con.Query(query);
         
-        if(result->HasError()) 
+        if(result->HasError()) {
             LOG_ERROR(logger_, "Failed to recreate table {} query: {}: {}", name, query, result->GetError());
+            result = con.Query("DELETE FROM " + name);
+            if(result->HasError())
+                LOG_ERROR(logger_, "Failed to delete table {} why: {}", name, result->GetError());
+        }
         else 
             LOG_INFO(logger_, "Recreated table {}", name);
 
         // 3. insert values into table
-        // result = con.Query("INSERT INTO \"" + name + "\" SELECT * FROM read_csv('" + path + "', header=True, sample_size=10)");
-        
-        // if (result->HasError()) 
-        //     LOG_ERROR(logger_, "Failed to load data into table {} from {} where schema {}: {}", name, query, path, result->GetError());
-        // else 
-        //     LOG_INFO(logger_, "loaded data into table {} from {}", name, path);
+        if(insertInDuck) {
+            result = con.Query("INSERT INTO \"" + name + "\" SELECT * FROM read_csv('" + path + "', header=True, sample_size=10)");
+
+            if (result->HasError())
+                LOG_ERROR(logger_, "Failed to load data into table {} from {} where schema {}: {}", name, query, path, result->GetError());
+            else
+                LOG_INFO(logger_, "loaded data into table {} from {}", name, path);
+        }
 
     }
 
 private:
     void inferDBSchema() {
-        auto result = con.Query("SELECT COLUMNS FROM sniff_csv('" + path + "', sample_size=10)");
+        auto result = con.Query("SELECT COLUMNS FROM sniff_csv('" + path + "')");
         if(result->HasError())  {
             LOG_ERROR(logger_, "Can't sniff csv from path {}: {}", path, result->GetError());
             throw std::runtime_error("Can't sniff csv from path: " + result->GetError());
@@ -148,39 +154,6 @@ private:
         }
     }
 
-    //! deprecated
-    void loadDuckDBTable() {
-        con.Query("CREATE OR REPLACE TABLE \"" + name + 
-                  "\" AS SELECT * FROM read_csv_auto('" + path + "')");
-        LOG_INFO(logger_, "Loaded CSV {} as table {}", path, name);
-    }
-    //! deprecated
-    void inferDuckDBSchema() {
-        auto result = con.Query("PRAGMA table_info(" + name + ")");
-        if (result->HasError()) {
-            LOG_ERROR(logger_, "Failed to infer schema for table {}: {}", name, result->GetError());
-            return;
-        }
-
-        columns.reserve(result->RowCount());
-        for (size_t idx = 0; idx < result->RowCount(); ++idx) {
-            std::string colName = result->GetValue(1, idx).ToString();
-            std::string colType = result->GetValue(2, idx).ToString();
-            
-            bool isPk = colName.ends_with("(P)");
-            
-            auto [it, inserted] = columns.emplace(
-                std::piecewise_construct,
-                std::forward_as_tuple(colName),
-                std::forward_as_tuple(colName, inferDataType(colType), isPk)
-            );
-
-            if (isPk) {
-                pkColumns.emplace(colName, &it->second);
-            }
-            
-        }
-    }
 
     [[nodiscard]] DataType inferDataType(std::string_view colType) const noexcept {
         if (colType.find("INT") != std::string_view::npos ||
@@ -269,7 +242,7 @@ private:
                 query += "\"" + pkCol->name + "\"";
                 if (colIdx++ < links.size() - 1) query += ", ";
             }
-            query += ")\n";
+            query += ") \n";
         }
 
         query += ");";

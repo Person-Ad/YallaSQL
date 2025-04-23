@@ -118,6 +118,8 @@ void Batch::removeColumn(uint_32 colIndex) {
     else {
         cudaFree(columnData[colIndex]);
     }
+    numCols--;
+    totalBytes -= columns[colIndex]->bytes * batchSize;
     columnData.erase(columnData.begin() + colIndex);
     columns.erase(columns.begin() + colIndex);
 }

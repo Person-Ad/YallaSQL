@@ -13,7 +13,7 @@ private:
     // instance of db
     DB* db = nullptr;
     // table I work on
-    const Table* table = nullptr;
+   const Table* table = nullptr;
     // represent state of operator    
     csv::CSVReader *reader = nullptr;
     uint32_t currRow = 0;
@@ -34,6 +34,6 @@ public:
 private:
     // store buffer into new pointer to pass it
     std::unique_ptr<Batch> storeBuffer(uint32_t batchSize);
-
+    void readBatchFaster() ;
 };
 } // YallaSQL

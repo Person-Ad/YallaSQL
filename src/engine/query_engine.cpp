@@ -14,40 +14,30 @@ using namespace YallaSQL::UTILS;
 
 
 void QueryEngine::useDB(const std::string& input) {
-    try {
-        std::string path;
+    // try {
         size_t space_pos = input.find(' ');
-
-        if (space_pos == std::string::npos || space_pos + 1 >= input.length()) {
-            throw std::runtime_error("Invalid USE command: No directory specified");
-        }
 
         std::string remainder = input.substr(space_pos + 1);
         size_t next_sep = remainder.find(' ');
                next_sep = next_sep == std::string::npos ? remainder.find(';') : next_sep;
 
-        path = remainder.substr(0, next_sep);
+        dbPath = remainder.substr(0, next_sep);
 
-        if (path.empty()) {
-            throw std::runtime_error("Invalid USE command: Directory path is empty");
-        }
 
         // MEASURE_EXECUTION_TIME_LOGGER(logger_, "use db", DB::setPath(path));
-        DB::setPath(path);
-        if(db_ == nullptr) db_ = DB::getInstance();
-    } catch (const std::runtime_error& e) {
-        LOG_ERROR(logger_, "Failed to switch database: {}", e.what());
-        throw; // Re-throw to let the caller handle
-    }
+        // DB::setPath(path);
+        // if(db_ == nullptr) db_ = DB::getInstance();
+    // } catch (const std::runtime_error& e) {
+    //     LOG_ERROR(logger_, "Failed to switch database: {}", e.what());
+    //     throw; // Re-throw to let the caller handle
+    // }
 }
 
 QueryEngine::QueryResult QueryEngine::executeDuckDB(const std::string& query) {
     QueryResult result {true, ""};
     unique_ptr<MaterializedQueryResult> queryRes;
     
-    MEASURE_EXECUTION_TIME_LOGGER(logger_, "cpu duckdb", 
-        queryRes = db_->duckdb().Query(query);
-    );
+    queryRes = db_->duckdb().Query(query);
 
 
     if (queryRes->HasError()) 
@@ -80,33 +70,27 @@ QueryEngine::QueryResult QueryEngine::executeDuckDB(const std::string& query) {
 
 QueryEngine::QueryResult QueryEngine::getLogicalPlan(const std::string& query) {
     if(!db_) db_ = DB::getInstance();
-    QueryResult result{false, ""};
 
     try {
+        QueryResult result{false, ""};
         db_->duckdb().BeginTransaction();
 
-        unique_ptr<duckdb::LogicalOperator> logicalPlan;
-
         // start timer
-        MEASURE_EXECUTION_TIME_LOGGER(logger_, "generating logical plan",
-            Parser parser;
-            parser.ParseQuery(query);
-            auto statements = std::move(parser.statements);
+        Parser parser;
+        parser.ParseQuery(query);
+        auto statements = std::move(parser.statements);
 
-            Planner planner(*db_->duckdb().context);
-            planner.CreatePlan(std::move(statements[0]));
-
-
-            Optimizer optimizer(*planner.binder, *db_->duckdb().context);
-            logicalPlan = std::move(optimizer.Optimize(std::move(planner.plan)));
+        Planner planner(*db_->duckdb().context);
+        planner.CreatePlan(std::move(statements[0]));
 
 
-            ExecutorEngine myExecutor;
-            MEASURE_EXECUTION_TIME_LOGGER(logger_, "my execute time",
-                myExecutor.execute(*logicalPlan, planner);
-            )
-            // logicalPlan = std::move(planner.plan);
-        );
+        Optimizer optimizer(*planner.binder, *db_->duckdb().context);
+        unique_ptr<duckdb::LogicalOperator>  logicalPlan = std::move(optimizer.Optimize(std::move(planner.plan)));
+
+
+        ExecutorEngine myExecutor;
+        myExecutor.execute(*logicalPlan, planner);
+        // logicalPlan = std::move(planner.plan);
         // save content
         result.content = logicalPlan->ToString();
 
@@ -155,6 +139,8 @@ std::string QueryEngine::execute(std::string query) {
         // Trim query
         query.erase(0, query.find_first_not_of(" \t\n\r"));
         query.erase(query.find_last_not_of(" \t\n\r") + 1);
+        std::string lowerQuery = query;
+        std::transform(lowerQuery.begin(), lowerQuery.end(), lowerQuery.begin(), ::tolower);
         if (query.empty()) {
             throw QueryEngineError("Empty query provided");
         }
@@ -162,16 +148,20 @@ std::string QueryEngine::execute(std::string query) {
         // Route query
         QueryResult result;
         
-        if (query.find("USE") != std::string::npos) {
-            MEASURE_EXECUTION_TIME_LOGGER(logger_, "switching db", useDB(query));
+        if (lowerQuery.find("use") != std::string::npos) {
+            useDB(query);
             return "Database switched successfully";
         }
 
-        if (query.find("duckdb") != std::string::npos) 
+        if(db_ == nullptr) db_ = DB::getInstance();
+        if (lowerQuery.find("duckdb") != std::string::npos) {
+            DB::setPath(dbPath, true);
             result = executeDuckDB(query.substr(query.find("duckdb") + 6));
-        else 
+        }
+        else {
+            DB::setPath(dbPath, false);
             result = getLogicalPlan(query);
-        
+        }
 
         saveQueryResult(result);
         

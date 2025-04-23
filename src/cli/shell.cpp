@@ -212,7 +212,10 @@ void YallaSQLShell::processInput(const std::string& input) {
         running = false;
     } else {
         try{
-            std::string output = engine.execute(input);
+            std::string output;
+            MEASURE_EXECUTION_TIME("execute time",
+                output = engine.execute(input);
+            )
             std::cout << output << "\n";
         } catch(std::exception &e) {
             std::cout << "UNDEFINE ERROR: " << e.what() << "\n";

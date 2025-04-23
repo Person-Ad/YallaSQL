@@ -5,6 +5,7 @@
 
 #include <duckdb/planner/operator/logical_projection.hpp>
 #include <duckdb/parser/expression/list.hpp>
+#include <duckdb/planner/expression/list.hpp>
 #include <memory>
 
 namespace YallaSQL {
@@ -12,7 +13,7 @@ namespace YallaSQL {
 class ProjectionOperator final: public Operator {
 
 private:
-    std::unordered_map<uint32_t, std::string> projections; // column index & alias
+    std::unordered_map<uint32_t, std::pair<uint32_t, std::string>> projections; // old index: alias, curr indexs
 public:
     // inherit from operator
     using Operator::Operator; 
@@ -35,9 +36,8 @@ public:
         auto batch = cacheManager.getBatch(batchId);
         // 1. get new data order
         std::vector<void*> columnData (columns.size());
-        uint32_t currIndex = 0;
-        for (const auto& [oldIdx, newName]: projections) {
-            columnData[currIndex++] = batch->getColumn(oldIdx);
+        for (const auto& [oldIdx, metadata]: projections) {
+            columnData[metadata.first] = batch->getColumn(oldIdx); // get old index
         }
         // 2. remove columns
         uint32_t numRemovedCols = 0;
@@ -73,15 +73,17 @@ private:
         child->init();
         const auto& childColumns = child->columns;
         // loop on expression getting indexes & aliases
+        uint32_t index = 0;
         for (const auto& expr : castOp.expressions) {
-            if(expr->type == ExpressionType::BOUND_COLUMN_REF) {
-                auto& boundRef = expr->Cast<BoundColumnRefExpression>();
-                auto& index = boundRef.binding.column_index;
+            if(expr->type == ExpressionType::BOUND_REF) {
+//                auto& boundRef = expr->Cast<BoundColumnRefExpression>();
+                auto& boundRef = expr->Cast<BoundReferenceExpression>();
+                auto& oldIndex = boundRef.index;
                 auto& alias = boundRef.alias;
                 // store projection & column
-                projections[index] = alias;
+                projections[oldIndex] = {index++, alias};
                 columns.push_back(std::shared_ptr<Column> (
-                    new Column(alias, childColumns[index]->type, childColumns[index]->isPk, childColumns[index]->isFk)
+                    new Column(alias, childColumns[oldIndex]->type, childColumns[oldIndex]->isPk, childColumns[oldIndex]->isFk)
                 ));
             } else {
                 LOG_ERROR(logger, "Projection Operator Found new Expression : {} -> {}", static_cast<int>(expr->type), expr->ToString());
