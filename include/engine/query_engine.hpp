@@ -32,6 +32,7 @@ private:
     void useDB(const std::string& input);
     void executeDuckDB(std::string& query);
     QueryResult getLogicalPlan(const std::string& query);
+    void executeLogicalPlan(const std::string& query);
     void saveQueryResult(const QueryResult& result);
 
 

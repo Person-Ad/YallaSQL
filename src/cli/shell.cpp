@@ -33,6 +33,7 @@ void YallaSQLShell::initializeCommands() {
         {"USE", "  Load DB from Folder", "USE <dirname>"},
         {"DESCRIBE", "  List tables with summary", "DESCRIBE"},
         {"SELECT", "  Query data from tables", "SELECT ... FROM ... [WHERE ...]"},
+        {"EXPLAIN", " Explain Query in file", "EXPLAIN...."}
     };
 }
 
