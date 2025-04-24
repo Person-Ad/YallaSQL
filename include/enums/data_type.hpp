@@ -1,6 +1,6 @@
 #pragma once
 #include "config.hpp"
-
+#include "duckdb/common/types.hpp"
 enum class DataType : __uint8_t {
     INT,
     FLOAT,
@@ -15,6 +15,15 @@ enum class DataType : __uint8_t {
     if (type == DataType::STRING) return YallaSQL::MAX_STR_LEN; // 1 char = 1 byte
     return 0; // Fallback for unhandled cases
 }
+
+[[nodiscard]] inline DataType getDataTypeFromDuck(duckdb::LogicalType duckType) {
+    if(duckType.IsIntegral()) return DataType::INT;
+    if(duckType.IsFloating()) return DataType::FLOAT;
+    if(duckType.IsTemporal()) return DataType::DATETIME;
+    return DataType::STRING;
+
+}
+
 [[nodiscard]] inline int64_t getDateTime(const std::string& valueStr) {
     std::tm valueTm = {};
     // Initialize all fields to avoid garbage values

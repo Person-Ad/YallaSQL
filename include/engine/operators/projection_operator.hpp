@@ -6,6 +6,7 @@
 #include <duckdb/planner/operator/logical_projection.hpp>
 #include <duckdb/parser/expression/list.hpp>
 #include <duckdb/planner/expression/list.hpp>
+#include "engine/operators/expressions/bound_ref.hpp"
 #include <memory>
 
 namespace YallaSQL {
@@ -14,6 +15,7 @@ class ProjectionOperator final: public Operator {
 
 private:
     std::unordered_map<uint32_t, std::pair<uint32_t, std::string>> projections; // old index: alias, curr indexs
+    std::vector<std::unique_ptr<our::Expression>> expressions;
 public:
     // inherit from operator
     using Operator::Operator; 
@@ -29,27 +31,28 @@ public:
     BatchID next(CacheManager& cacheManager) override {
         if(!isInitalized) init();
         if(isFinished && children.empty()) {isFinished = true; return 0;}
+        
         // get batchId from children
-        const auto batchId = children[0]->next(cacheManager);
-        if(batchId == 0) {isFinished = true; return 0;}
-        // get ownership of batch
-        auto batch = cacheManager.getBatch(batchId);
-        // 1. get new data order
-        std::vector<void*> columnData (columns.size());
-        for (const auto& [oldIdx, metadata]: projections) {
-            columnData[metadata.first] = batch->getColumn(oldIdx); // get old index
+        const auto childBatchId = children[0]->next(cacheManager);
+        if(childBatchId == 0) {isFinished = true; return 0;}
+        // get ownership of child
+        auto childBatch = cacheManager.getBatch(childBatchId);
+        size_t batchSize = childBatch->batchSize;
+        // pass batch to references & store them
+        std::vector<void*> resultData(columns.size());
+        // pass to expression
+        our::ExpressionArg arg {};
+        arg.batchs.push_back(childBatch.get());
+        // evaluate expression
+        uint expIdx = 0;
+        for(auto& expr: expressions) {
+            our::ExpressionResult res = expr->evaluate(arg);
+            resultData[expIdx++] = res.result;
         }
-        // 2. remove columns
-        uint32_t numRemovedCols = 0;
-        for (uint32_t i = 0; i < batch->columns.size(); ++i) {
-            if (!projections.contains(i))
-                batch->removeColumn(i - numRemovedCols++);
 
-        }
-        // 3. update batch
-        batch->updateColumns(columnData, columns);
-        // return ownership to manager
+        auto batch = std::unique_ptr<Batch>(new Batch( resultData, Device::GPU,  batchSize, columns));
 
+        // return new batch
         return cacheManager.putBatch(std::move(batch));
     }
     // delete data
@@ -68,23 +71,16 @@ private:
         }
         // get logical operator
         const auto& castOp = logicalOp.Cast<LogicalProjection>();
-        // get children schema
-        const auto& child = children[0];
-        child->init();
-        const auto& childColumns = child->columns;
-        // loop on expression getting indexes & aliases
+        
         uint32_t index = 0;
-        for (const auto& expr : castOp.expressions) {
+        for (auto& expr : castOp.expressions) {
             if(expr->type == ExpressionType::BOUND_REF) {
-//                auto& boundRef = expr->Cast<BoundColumnRefExpression>();
-                auto& boundRef = expr->Cast<BoundReferenceExpression>();
-                auto& oldIndex = boundRef.index;
-                auto& alias = boundRef.alias;
-                // store projection & column
-                projections[oldIndex] = {index++, alias};
-                columns.push_back(std::shared_ptr<Column> (
-                    new Column(alias, childColumns[oldIndex]->type, childColumns[oldIndex]->isPk, childColumns[oldIndex]->isFk)
-                ));
+                auto our_expr = std::unique_ptr<our::Expression>(
+                    new our::BoundRefExpression(*expr)
+                );
+                columns.push_back(our_expr->column);
+                expressions.push_back(std::move(our_expr));
+
             } else {
                 LOG_ERROR(logger, "Projection Operator Found new Expression : {} -> {}", static_cast<int>(expr->type), expr->ToString());
                 std::cout << "Projection Operator Found new Expression : " << static_cast<int>(expr->type)  << "\n" << expr->ToString() << "\n";

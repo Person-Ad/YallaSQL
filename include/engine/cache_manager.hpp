@@ -20,6 +20,10 @@ public:
         cache.erase(batchId);
         return std::move(batch);
     }
+    Batch& refBatch (BatchID batchId) {
+        return *cache[batchId];
+    }
+
     // put batch of data in the cache
     BatchID putBatch(std::unique_ptr<Batch> batch) {
         // TODO: if we added pipeline we need to add mutex lock
@@ -39,6 +43,7 @@ public:
 
         return incrementId++;
     }
+
     // clean data after finishing 
     // since it's unique_ptr there's no need to delete it
     ~CacheManager() {
