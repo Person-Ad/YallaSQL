@@ -18,7 +18,7 @@ private:
     csv::CSVReader *reader = nullptr;
     uint32_t currRow = 0;
     char** buffer = nullptr; // reserve bytes by columnIdx
-
+    std::vector<std::string> csvNames; 
 
 public:
     // inherit from operator

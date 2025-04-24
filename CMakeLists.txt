@@ -41,6 +41,7 @@ set(SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
 set(CLI_SOURCES
     "${SOURCE_DIR}/cli/shell.cpp"
     "${SOURCE_DIR}/db/db.cpp"
+    "${SOURCE_DIR}/db/table.cpp"
     # files
     "${SOURCE_DIR}/batch.cu"
     # main engine 

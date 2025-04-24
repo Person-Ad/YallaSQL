@@ -60,6 +60,7 @@ void DB::reCreateLinkedDuckDB(const std::string& tableName, std::unordered_map<s
 
 void DB::refreshTables(bool insertInDuck) {
     tables_.clear();
+    dropAllDuckTables();
     
     try {
         for (const auto& entry : fs::directory_iterator(path_)) {

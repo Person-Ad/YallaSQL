@@ -1,43 +1,19 @@
+## Projection & Scan Operator
+### 📋 Execution Time Profiling Table
+#### 📁 **Table Size: 16MB**
 
- 21:44   yallaSQL λ  use dataset;
-<⏱️  execute time > 0 ms
-Database switched successfully
- 21:44   yallaSQL λ  duckdb select description, data, rate from (select created_at as data, conversion_rate as rate, description from table_1);
-<⏱️  execute time > 1361 ms
-Query executed successfully
- 21:44   yallaSQL λ  use dataset;
-<⏱️  execute time > 0 ms
-Database switched successfully
- 21:44   yallaSQL λ  duckdb select description, data, rate from (select created_at as data, conversion_rate as rate, description from table_1);
-<⏱️  execute time > 1181 ms
-Query executed successfully
- 21:44   yallaSQL λ  select description, data, rate from (select created_at as data, conversion_rate as rate, description from table_1);
-<⏱️  execute time > 1437 ms
-Query executed successfully
- 21:44   yallaSQL λ  select description, data, rate from (select created_at as data, conversion_rate as rate, description from table_1);
-<⏱️  execute time > 1217 ms
-Query executed successfully
- 21:44   yallaSQL λ  select description, data, rate from (select created_at as data, conversion_rate as rate, description from table_1);
-<⏱️  execute time > 1221 ms
-Query executed successfully
- 21:44   yallaSQL λ  duckdb select description, data, rate from (select created_at as data, conversion_rate as rate, description from table_1);
-<⏱️  execute time > 1170 ms
-Query executed successfully
- 21:44   yallaSQL λ  duckdb select description, data, rate from (select created_at as data, conversion_rate as rate, description from table_1);
-<⏱️  execute time > 1185 ms
-Query executed successfully
- 21:44   yallaSQL λ  duckdb select description, data, rate from (select created_at as data, conversion_rate as rate, description from table_1);
-<⏱️  execute time > 1199 ms
-Query executed successfully
- 21:44   yallaSQL λ  duckdb select description, data, rate from (select created_at as data, conversion_rate as rate, description from table_1);
-<⏱️  execute time > 1146 ms
-Query executed successfully
- 21:44   yallaSQL λ  duckdb select description, data, rate from (select created_at as data, conversion_rate as rate, description from table_1);
-<⏱️  execute time > 1210 ms
-Query executed successfully
- 21:44   yallaSQL λ  duckdb select description, data, rate from (select created_at as data, conversion_rate as rate, description from table_1);
-<⏱️  execute time > 1254 ms
-Query executed successfully
- 21:44   yallaSQL λ  duckdb select description, data, rate from (select created_at as data, conversion_rate as rate, description from table_1);
-<⏱️  execute time > 1191 ms
-Query executed successfully
+| **Query Type** | **Columns Selected** | **yallaSQL Time (ms)** | **DuckDB Time (ms)** | **Notes** |
+|----------------|----------------------|-------------------------|-----------------------|-----------|
+| First Execution | `D, C, B, A`        | 1114                    | 4079                  | DuckDB cold start |
+| Repeated Exec. | `D, C, B, A`         | 652–797                 | 1539–1560             | yallaSQL consistently faster |
+| Single Column   | `A`                 | 535                     | 1403–1559             | yallaSQL outperforms DuckDB |
+
+#### 📁 **Table Size: 750MB**
+
+| **Query Type** | **Columns Selected** | **yallaSQL Time (ms)** | **DuckDB Time (ms)** | **Notes** |
+|----------------|----------------------|-------------------------|-----------------------|-----------|
+| First Execution | `A`                 | 10496                   | 22799                 | yallaSQL over 2x faster |
+| Repeated Exec. | `A`                 | –                       | –                     | No further warm-up runs shown |
+| Full Projection | `D, C, B, A`         | 8790                    | 28765                 | yallaSQL ~3x faster |
+
+---

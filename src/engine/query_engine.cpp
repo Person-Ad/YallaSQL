@@ -4,7 +4,6 @@
 #include <chrono>
 #include <iomanip>
 #include <sstream>
-
 #include "engine/query_engine.hpp"
 #include "engine/executor_engine.hpp"
 #include "utils.hpp"
@@ -33,39 +32,40 @@ void QueryEngine::useDB(const std::string& input) {
     // }
 }
 
-QueryEngine::QueryResult QueryEngine::executeDuckDB(const std::string& query) {
-    QueryResult result {true, ""};
-    unique_ptr<MaterializedQueryResult> queryRes;
-    
-    queryRes = db_->duckdb().Query(query);
-
+void QueryEngine::executeDuckDB(std::string& query) {
+    // Ensure the directory exists
+    auto now = std::chrono::system_clock::now();
+    auto millis = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count();
+    std::string csvPath = YallaSQL::resultDir + "/duck_output_" + std::to_string(millis) + ".csv";
+    // execute the query
+    query.erase(query.find(';'), 1);
+    auto queryRes = db_->duckdb().Query("COPY (" + query + ") TO '"+ csvPath  +"';");
 
     if (queryRes->HasError()) 
         throw QueryEngineError("Query execution failed: " + queryRes->GetError());
 
     // if not tabular
-    if(queryRes->RowCount() <= 1) 
-        return {false, queryRes->ToString()};
+    // if(queryRes->RowCount() <= 1) 
+    //     return {false, queryRes->ToString()};
     
-    // save query result in csv format
-    size_t nrows = queryRes->RowCount();
-    size_t ncols = queryRes->ColumnCount();
-    auto colnames = queryRes->names;
-    // save header
-    for (size_t colidx = 0; colidx < ncols; ++colidx)  {
-        result.content += colnames[colidx];
-        if(colidx < ncols - 1) result.content += ",";
-    }
-    result.content += "\n";
-    // save values
-    for (size_t idx = 0; idx < nrows; ++idx) {
-        for (size_t colidx = 0; colidx < ncols; ++colidx) {
-            result.content += queryRes->GetValue(colidx, idx).ToString();
-            if(colidx < ncols - 1) result.content += ",";
-        }
-        result.content += "\n";
-    }
-    return result;
+    // // save query result in csv format
+    // size_t nrows = queryRes->RowCount();
+    // size_t ncols = queryRes->ColumnCount();
+    // auto colnames = queryRes->names;
+    // // save header
+    // for (size_t colidx = 0; colidx < ncols; ++colidx)  {
+    //     result.content += colnames[colidx];
+    //     if(colidx < ncols - 1) result.content += ",";
+    // }
+    // result.content += "\n";
+    // // save values
+    // for (size_t idx = 0; idx < nrows; ++idx) {
+    //     for (size_t colidx = 0; colidx < ncols; ++colidx) {
+    //         result.content += queryRes->GetValue(colidx, idx).ToString();
+    //         if(colidx < ncols - 1) result.content += ",";
+    //     }
+    //     result.content += "\n";
+    // }
 }
 
 QueryEngine::QueryResult QueryEngine::getLogicalPlan(const std::string& query) {
@@ -92,7 +92,7 @@ QueryEngine::QueryResult QueryEngine::getLogicalPlan(const std::string& query) {
         myExecutor.execute(*logicalPlan, planner);
         // logicalPlan = std::move(planner.plan);
         // save content
-        result.content = logicalPlan->ToString();
+        // result.content = logicalPlan->ToString();
 
         db_->duckdb().Commit();
 
@@ -156,14 +156,15 @@ std::string QueryEngine::execute(std::string query) {
         if(db_ == nullptr) db_ = DB::getInstance();
         if (lowerQuery.find("duckdb") != std::string::npos) {
             DB::setPath(dbPath, true);
-            result = executeDuckDB(query.substr(query.find("duckdb") + 6));
+            query = query.substr(query.find("duckdb") + 6);
+            executeDuckDB(query);
         }
         else {
             DB::setPath(dbPath, false);
             result = getLogicalPlan(query);
+            // saveQueryResult(result);
         }
 
-        saveQueryResult(result);
         
         return "Query executed successfully";
         

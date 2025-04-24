@@ -5,14 +5,30 @@ from faker import Faker
 from datetime import datetime, timedelta
 import numpy as np
 import pandas as pd 
-# config
+
+# =========== config ===========
+# Large Config
 min_num_records = 200_000
 max_num_record = 900_000
 min_columns = 30
 max_columns = 50
-num_tables=  5
-seed = 42
+min_pk_columns = 1
+max_pk_columns = 1
 folder_path = 'large_dataset'
+num_tables =  3
+
+# normal Config
+# min_num_records = 20_000
+# max_num_record = 100_000
+# min_columns = 3
+# max_columns = 30
+# min_pk_columns = 1
+# max_pk_columns = 1
+# folder_path = 'dataset'
+# num_tables=  5
+
+max_fk_columns = 5
+seed = 42
 # Initialize Faker instance
 fake = Faker()
 
@@ -28,7 +44,7 @@ map_column_types = {
 
 column_name_dict = {
     'int': [
-        'age', 'quantity', 'count', 'score', 'rating', 'id', 'height', 'weight',
+        'age', 'quantity', 'count', 'score', 'rating', 'height', 'weight',
         'population', 'level', 'position', 'rank', 'attendance', 'total_items',
         'visits', 'attempts', 'year', 'zipcode', 'page_views', 'duration_minutes',
         'employee_id', 'order_id', 'step_number', 'category_id', 'likes',
@@ -61,8 +77,8 @@ column_name_dict = {
     ]
 }
 
-# flattened = [(column_type, column_name + f" {map_column_types[column_type]} ") for column_type in column_types for column_name in column_name_dict[column_type]]
-flattened = [(column_type, column_name) for column_type in column_types for column_name in column_name_dict[column_type]]
+flattened = [(column_type, column_name + f" {map_column_types[column_type]} ") for column_type in column_types for column_name in column_name_dict[column_type]]
+# flattened = [(column_type, column_name) for column_type in column_types for column_name in column_name_dict[column_type]]
 
 
 def generate_random_values(column_type):
@@ -105,14 +121,20 @@ def generate_unique_values(datatype, n):
         return [start_date + timedelta(days=day) for day in unique_days]
 
 def generate_random_schema(prev_primary_keys: dict):
-    columns = [("int", "id (N) (P)")]
     # choose columns randomly
-    columns += random.sample(flattened, k = np.random.randint(min_columns, max_columns))
-    
+    columns = random.sample(flattened, k = np.random.randint(min_columns, max_columns))
+    # choose randomly primary keys
+    num_pk  = np.random.randint(min_pk_columns - 1, max_pk_columns)
+    pk_col_idx = np.random.choice(len(columns), size=(num_pk), replace=False)
+    for i in pk_col_idx:
+        columns[i] = (columns[i][0], columns[i][1] + " (P)")
+    # add default primary key
+    columns = [("int", "id (N) (P)")] + columns
+
     # choose forigen keys randomly
     if len(prev_primary_keys) != 0:
-        num_fk      = np.random.randint(0, len(prev_primary_keys)) # num of forigen keys
-        cols_fk     = np.random.choice(list(prev_primary_keys.keys()), size=(num_fk))
+        num_fk      = np.random.randint(0, min(max_fk_columns, len(prev_primary_keys))) # num of forigen keys
+        cols_fk     = np.random.choice(list(prev_primary_keys.keys()), size=(num_fk), replace=False)
     else:
         cols_fk = []
     # shuffle all columns to not have specific order

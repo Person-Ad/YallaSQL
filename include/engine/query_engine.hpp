@@ -30,7 +30,7 @@ private:
     std::string dbPath = "";
 
     void useDB(const std::string& input);
-    QueryResult executeDuckDB(const std::string& query);
+    void executeDuckDB(std::string& query);
     QueryResult getLogicalPlan(const std::string& query);
     void saveQueryResult(const QueryResult& result);
 
