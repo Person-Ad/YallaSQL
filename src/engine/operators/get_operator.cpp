@@ -37,9 +37,11 @@ void GetOperator::init() {
     //! Shuffle As Physical Duckdb Expect :<
     auto &columnIndexs = logicalCastOp.GetColumnIds();
     columns.reserve(columnIndexs.size());
+    csvNames.reserve(columnIndexs.size());
     for(auto& columnIndex : columnIndexs) {
         auto idxInTable = columnIndex.GetPrimaryIndex();
         columns.push_back(table->columnsOrdered[idxInTable]);
+        csvNames.push_back(table->csvNameColumn[idxInTable]);
     }
     // === set metadata ===
     batchSize = calculateOptimalBatchSize(table->columnsType);
@@ -69,24 +71,24 @@ BatchID GetOperator::next(CacheManager& cacheManager) {
         // Copy row fields to avoid use-after-free
         colIndex = 0;
         for (const auto& column : columns) {
-            row_data[colIndex] = row[column->name].get<std::string>();
+            row_data[colIndex] = row[csvNames[colIndex]].get<std::string>();
             colIndex++;
         }
         // store in buffer
         colIndex = 0;
         for(std::shared_ptr<Column> column: columns) {
             if(column->type == DataType::INT) {
-                int value = row[column->name].get<int>();
+                int value = row[csvNames[colIndex]].get<int>();
                 std::memcpy(buffer[colIndex] + rowIndex * column->bytes, &value, column->bytes);
             } else if(column->type == DataType::FLOAT) {
-                float value = row[column->name].get<float>();
+                float value = row[csvNames[colIndex]].get<float>();
                 std::memcpy(buffer[colIndex] + rowIndex * column->bytes, &value, column->bytes);
             } else if(column->type == DataType::DATETIME) {
-                std::string valueStr = row[column->name].get<>();
+                std::string valueStr = row[csvNames[colIndex]].get<>();
                 int64_t value = getDateTime(valueStr);
                 std::memcpy(buffer[colIndex] + rowIndex * column->bytes, &value, column->bytes);
             } else { //string
-                std::string value = row[column->name].get<std::string>();
+                std::string value = row[csvNames[colIndex]].get<std::string>();
                             value = value.substr(0, column->bytes - 1);
                 std::memcpy(buffer[colIndex] + rowIndex * column->bytes, value.c_str(), value.size() + 1); // 1 for \0
             }
