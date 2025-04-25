@@ -45,6 +45,7 @@ set(CLI_SOURCES
     # files
     "${SOURCE_DIR}/batch.cu"
     "${SOURCE_DIR}/kernels/binary_operators_kernel.cu"
+    "${SOURCE_DIR}/kernels/cast_operators_kernel.cu"
     # main engine 
     "${SOURCE_DIR}/engine/query_engine.cpp"
     "${SOURCE_DIR}/engine/executor_engine.cpp"

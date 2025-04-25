@@ -1,5 +1,5 @@
 #include "kernels/binary_operators_kernel.hpp"
-//* I reversed rhs by lhs but tooo late to fix it
+
 namespace YallaSQL::Kernel
 {
     // batch * batch || scalar * scalar
@@ -81,6 +81,12 @@ namespace YallaSQL::Kernel
     template void launch_binary_operators<int, MulOperator<int>>(int*, int*, OperandType, OperandType, int*, unsigned int);
     template void launch_binary_operators<int, DivOperator<int>>(int*, int*, OperandType, OperandType, int*, unsigned int);
     template void launch_binary_operators<int, RemOperator<int>>(int*, int*, OperandType, OperandType, int*, unsigned int);
+
+    template void launch_binary_operators<int64_t, AddOperator<int64_t>>(int64_t*, int64_t*, OperandType, OperandType, int64_t*, unsigned int);
+    template void launch_binary_operators<int64_t, MinusOperator<int64_t>>(int64_t*, int64_t*, OperandType, OperandType, int64_t*, unsigned int);
+    template void launch_binary_operators<int64_t, MulOperator<int64_t>>(int64_t*, int64_t*, OperandType, OperandType, int64_t*, unsigned int);
+    template void launch_binary_operators<int64_t, DivOperator<int64_t>>(int64_t*, int64_t*, OperandType, OperandType, int64_t*, unsigned int);
+    template void launch_binary_operators<int64_t, RemOperator<int64_t>>(int64_t*, int64_t*, OperandType, OperandType, int64_t*, unsigned int);
 
 
     template void launch_binary_operators<float, AddOperator<float>>(float*, float*, OperandType, OperandType, float*, unsigned int);

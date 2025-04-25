@@ -39,6 +39,7 @@ public:
         for(auto& child: castExpr.children) {
             children.push_back( Expression::createExpression(*child) );
         }
+        //TODO: recheck is_scalar or not
 
     } 
 
@@ -73,6 +74,10 @@ public:
                         YallaSQL::Kernel::launch_binary_operators<float, YallaSQL::Kernel::AddOperator<float>>(
                                 static_cast<float*>(rhs), static_cast<float*>(lhs), t_rhs, t_lhs, static_cast<float*>(res), batchSize);
                         break;
+                    case DataType::DATETIME:
+                        YallaSQL::Kernel::launch_binary_operators<int64_t, YallaSQL::Kernel::AddOperator<int64_t>>(
+                                static_cast<int64_t*>(rhs), static_cast<int64_t*>(lhs), t_rhs, t_lhs, static_cast<int64_t*>(res), batchSize);
+                        break;
                     default:
                         throw std::runtime_error("Unsupported data type");
                 }
@@ -86,6 +91,10 @@ public:
                     case DataType::FLOAT:
                         YallaSQL::Kernel::launch_binary_operators<float, YallaSQL::Kernel::MinusOperator<float>>(
                                 static_cast<float*>(rhs), static_cast<float*>(lhs), t_rhs, t_lhs, static_cast<float*>(res), batchSize);
+                        break;
+                    case DataType::DATETIME:
+                        YallaSQL::Kernel::launch_binary_operators<int64_t, YallaSQL::Kernel::MinusOperator<int64_t>>(
+                                static_cast<int64_t*>(rhs), static_cast<int64_t*>(lhs), t_rhs, t_lhs, static_cast<int64_t*>(res), batchSize);
                         break;
                     default:
                         throw std::runtime_error("Unsupported data type");
@@ -101,6 +110,10 @@ public:
                         YallaSQL::Kernel::launch_binary_operators<float, YallaSQL::Kernel::MulOperator<float>>(
                                 static_cast<float*>(rhs), static_cast<float*>(lhs), t_rhs, t_lhs, static_cast<float*>(res), batchSize);
                         break;
+                    case DataType::DATETIME:
+                        YallaSQL::Kernel::launch_binary_operators<int64_t, YallaSQL::Kernel::MulOperator<int64_t>>(
+                                static_cast<int64_t*>(rhs), static_cast<int64_t*>(lhs), t_rhs, t_lhs, static_cast<int64_t*>(res), batchSize);
+                        break;
                     default:
                         throw std::runtime_error("Unsupported data type");
                 }
@@ -115,6 +128,10 @@ public:
                         YallaSQL::Kernel::launch_binary_operators<float, YallaSQL::Kernel::DivOperator<float>>(
                                 static_cast<float*>(rhs), static_cast<float*>(lhs), t_rhs, t_lhs, static_cast<float*>(res), batchSize);
                         break;
+                    case DataType::DATETIME:
+                        YallaSQL::Kernel::launch_binary_operators<int64_t, YallaSQL::Kernel::DivOperator<int64_t>>(
+                                static_cast<int64_t*>(rhs), static_cast<int64_t*>(lhs), t_rhs, t_lhs, static_cast<int64_t*>(res), batchSize);
+                        break;
                     default:
                         throw std::runtime_error("Unsupported data type");
                 }
@@ -124,6 +141,10 @@ public:
                     case DataType::INT:
                         YallaSQL::Kernel::launch_binary_operators<int, YallaSQL::Kernel::RemOperator<int>>(
                                 static_cast<int*>(rhs), static_cast<int*>(lhs), t_rhs, t_lhs, static_cast<int*>(res), batchSize);
+                        break;
+                    case DataType::DATETIME:
+                        YallaSQL::Kernel::launch_binary_operators<int64_t, YallaSQL::Kernel::RemOperator<int64_t>>(
+                                static_cast<int64_t*>(rhs), static_cast<int64_t*>(lhs), t_rhs, t_lhs, static_cast<int64_t*>(res), batchSize);
                         break;
                     default:
                         throw std::runtime_error("Unsupported data type");

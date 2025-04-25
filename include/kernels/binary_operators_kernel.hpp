@@ -1,12 +1,11 @@
 #pragma once
 
 #include "utils/macros.hpp"
+#include "kernels/constants.hpp"
 #include <cuda_runtime.h>
 
 namespace YallaSQL::Kernel {
 
-    #define COARSENING_FACTOR 2
-    #define BLOCK_DIM 256
 
     enum class OperandType  : __uint8_t {
         SCALAR = 0,

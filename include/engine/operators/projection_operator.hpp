@@ -80,30 +80,7 @@ private:
             auto our_expr = our::Expression::createExpression(*expr);
             columns.push_back(our_expr->column);
             expressions.push_back(std::move(our_expr));
-/*            if(expr->type == ExpressionType::BOUND_REF) {
-                auto our_expr = std::unique_ptr<our::Expression>(
-                    new our::BoundRefExpression(*expr)
-                );
-                columns.push_back(our_expr->column);
-                expressions.push_back(std::move(our_expr));
 
-            }
-            else if(expr->type == ExpressionType::BOUND_FUNCTION) {
-                auto& castExpr = expr->Cast<BoundFunctionExpression>();
-                for(auto& exprCC: castExpr.children) {
-                    if(exprCC->type == ExpressionType::VALUE_CONSTANT) {
-                        auto& castExprCC = expr->Cast<BoundConstantExpression>();
-                        auto value = castExprCC.value;
-
-                    }
-                }
-                std::cout << castExpr.function.name << " " << castExpr.is_operator << "\n";
-                std::cout << castExpr.ToString() << "\n";
-            }
-            else {
-                LOG_ERROR(logger, "Projection Operator Found new Expression : {} -> {}", static_cast<int>(expr->type), expr->ToString());
-                std::cout << "Projection Operator Found new Expression : " << static_cast<int>(expr->type)  << "\n" << expr->ToString() << "\n";
-            }*/
         }
     }
 };

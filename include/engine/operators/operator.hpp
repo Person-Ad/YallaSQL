@@ -29,6 +29,10 @@ protected:
     quill::Logger* logger = YallaSQL::getLogger("");
     // initalized flag
     bool isInitalized = false;
+    // not like constant value etc..
+    bool is_scalar = true;
+    bool is_sync = false; // require all children to start
+
 public:
     static std::unique_ptr<Operator> CreateOperator(const duckdb::LogicalOperator& op, const duckdb::Planner &planner);
     

@@ -12,6 +12,7 @@ namespace our {
             case duckdb::ExpressionType::BOUND_FUNCTION:
                 return std::unique_ptr<Expression>(new BoundFuncExpression(expr));
             case duckdb::ExpressionType::CAST:
+            case duckdb::ExpressionType::OPERATOR_CAST:
                 return std::unique_ptr<Expression>(new CastExpression(expr));
             default:
                 throw std::runtime_error("Expression Type Not Supported: " + expr.ToString());

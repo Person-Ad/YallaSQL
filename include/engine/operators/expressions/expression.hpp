@@ -16,6 +16,7 @@ namespace our {
         BOUND_VALUE,// bound constant value (2, 4, 100)
 
         CAST,
+        OP_CAST, //cast left as right
     };
 
 
@@ -41,7 +42,10 @@ namespace our {
         std::shared_ptr<Column> column;
         bool is_sync  = false; // if need all children to output Like Max, Min, ....
         bool is_group = false; // have group
+        bool required_op_child = true; // not like constant value etc..
+        bool is_scalar = false;
         ExpressionType exprType;
+
 
         Expression(duckdb::Expression &expr) {
             alias = expr.alias;

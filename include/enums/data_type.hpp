@@ -17,9 +17,10 @@ enum class DataType : __uint8_t {
 }
 
 [[nodiscard]] inline DataType getDataTypeFromDuck(duckdb::LogicalType duckType) {
+    // handle intervals as
     if(duckType.IsIntegral()) return DataType::INT;
-    if(duckType.IsFloating()) return DataType::FLOAT;
-    if(duckType.IsTemporal()) return DataType::DATETIME;
+    if(duckType.IsNumeric()) return DataType::FLOAT;
+    if(duckType.IsTemporal() || duckType == duckdb::LogicalType::INTERVAL) return DataType::DATETIME;
     return DataType::STRING;
 
 }
