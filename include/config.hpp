@@ -1,5 +1,7 @@
 #pragma once
 #include <string>
+#include <vector> // For std::vector
+#include <cstddef> // For std::size_t
 // forward declaration of data_type.hpp
 enum class DataType : __uint8_t;
 [[nodiscard]] inline unsigned int getDataTypeNumBytes(DataType type);

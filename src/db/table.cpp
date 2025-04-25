@@ -147,39 +147,7 @@ void Table::inferDBSchema() {
 
         idx++;
     }
-    // auto result = con.Query("SELECT COLUMNS FROM sniff_csv('" + path + "')");
-    // if(result->HasError())  {
-    //     LOG_ERROR(logger_, "Can't sniff csv from path {}: {}", path, result->GetError());
-    //     throw std::runtime_error("Can't sniff csv from path: " + result->GetError());
-    // }
 
-    // auto schema = result->GetValue(0, 0); // it's only one row & col
-    // auto columnsList = duckdb::ListValue::GetChildren(schema); // [{name: "", type: ""}]
-
-    // numCols = columnsList.size();
-    // columns.reserve(columnsList.size());
-    // columnsType.reserve(columnsList.size());
-    // columnsOrdered.reserve(columnsList.size());
-    // for (const auto &col_struct : columnsList) {
-    //     auto &struct_children = duckdb::StructValue::GetChildren(col_struct);
-    //     std::string name = duckdb::StringValue::Get(struct_children.at(0));
-    //     std::string type = duckdb::StringValue::Get(struct_children.at(1));
-
-    //     DataType myType = inferDataType(type);
-
-    //     bool isPk = name.ends_with("(P)");
-        
-    //     auto [it, inserted] = columns.emplace(
-    //         std::piecewise_construct,
-    //         std::forward_as_tuple(name),
-    //         std::forward_as_tuple(name, myType, isPk)
-    //     );
-
-    //     if (isPk) pkColumns.emplace(name, &it->second);
-    //     columnsOrdered.emplace_back(&it->second);
-    //     columnsType.emplace_back(myType);
-    //     rowBytes += getDataTypeNumBytes(myType);
-    // }
 }
 
 

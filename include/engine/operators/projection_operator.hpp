@@ -38,6 +38,7 @@ public:
         // get ownership of child
         auto childBatch = cacheManager.getBatch(childBatchId);
         size_t batchSize = childBatch->batchSize;
+        childBatch->moveTo(Device::GPU);
         // pass batch to references & store them
         std::vector<void*> resultData(columns.size());
         // pass to expression
@@ -51,10 +52,12 @@ public:
         }
 
         auto batch = std::unique_ptr<Batch>(new Batch( resultData, Device::GPU,  batchSize, columns));
-
+        //! testing
+        batch->moveTo(Device::CPU);
         // return new batch
         return cacheManager.putBatch(std::move(batch));
     }
+    
     // delete data
     ~ProjectionOperator() override  {
         
@@ -74,17 +77,33 @@ private:
         
         uint32_t index = 0;
         for (auto& expr : castOp.expressions) {
-            if(expr->type == ExpressionType::BOUND_REF) {
+            auto our_expr = our::Expression::createExpression(*expr);
+            columns.push_back(our_expr->column);
+            expressions.push_back(std::move(our_expr));
+/*            if(expr->type == ExpressionType::BOUND_REF) {
                 auto our_expr = std::unique_ptr<our::Expression>(
                     new our::BoundRefExpression(*expr)
                 );
                 columns.push_back(our_expr->column);
                 expressions.push_back(std::move(our_expr));
 
-            } else {
+            }
+            else if(expr->type == ExpressionType::BOUND_FUNCTION) {
+                auto& castExpr = expr->Cast<BoundFunctionExpression>();
+                for(auto& exprCC: castExpr.children) {
+                    if(exprCC->type == ExpressionType::VALUE_CONSTANT) {
+                        auto& castExprCC = expr->Cast<BoundConstantExpression>();
+                        auto value = castExprCC.value;
+
+                    }
+                }
+                std::cout << castExpr.function.name << " " << castExpr.is_operator << "\n";
+                std::cout << castExpr.ToString() << "\n";
+            }
+            else {
                 LOG_ERROR(logger, "Projection Operator Found new Expression : {} -> {}", static_cast<int>(expr->type), expr->ToString());
                 std::cout << "Projection Operator Found new Expression : " << static_cast<int>(expr->type)  << "\n" << expr->ToString() << "\n";
-            }
+            }*/
         }
     }
 };

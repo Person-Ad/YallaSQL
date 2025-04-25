@@ -77,19 +77,18 @@ BatchID GetOperator::next(CacheManager& cacheManager) {
         // store in buffer
         colIndex = 0;
         for(std::shared_ptr<Column> column: columns) {
+            const std::string& valueStr = row_data[colIndex];
             if(column->type == DataType::INT) {
-                int value = row[csvNames[colIndex]].get<int>();
+                int value = std::stoi(valueStr);
                 std::memcpy(buffer[colIndex] + rowIndex * column->bytes, &value, column->bytes);
             } else if(column->type == DataType::FLOAT) {
-                float value = row[csvNames[colIndex]].get<float>();
+                float value = std::stof(valueStr);
                 std::memcpy(buffer[colIndex] + rowIndex * column->bytes, &value, column->bytes);
             } else if(column->type == DataType::DATETIME) {
-                std::string valueStr = row[csvNames[colIndex]].get<>();
                 int64_t value = getDateTime(valueStr);
                 std::memcpy(buffer[colIndex] + rowIndex * column->bytes, &value, column->bytes);
             } else { //string
-                std::string value = row[csvNames[colIndex]].get<std::string>();
-                            value = value.substr(0, column->bytes - 1);
+                std::string value = valueStr.substr(0, column->bytes - 1);
                 std::memcpy(buffer[colIndex] + rowIndex * column->bytes, value.c_str(), value.size() + 1); // 1 for \0
             }
             colIndex++;

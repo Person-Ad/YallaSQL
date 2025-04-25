@@ -18,8 +18,8 @@ set(CMAKE_CUDA_ARCHITECTURES 86)
 # use seperate compiler for cuda files only
 set(CMAKE_CUDA_SEPARABLE_COMPILATION ON)
 
-# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -g")
-# set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=address -g")
+ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -g")
+ set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=address -g")
 
 #set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O0")
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0")
@@ -30,8 +30,8 @@ find_package(replxx REQUIRED CONFIG)
 find_package(quill REQUIRED CONFIG)
 
 # for duckdb
-# link_directories(vendor/duckdb/build/debug/src)
-link_directories(vendor/duckdb/build/release/src)
+ link_directories(vendor/duckdb/build/debug/src)
+#link_directories(vendor/duckdb/build/release/src)
 
 
 # Define source directories
@@ -44,13 +44,14 @@ set(CLI_SOURCES
     "${SOURCE_DIR}/db/table.cpp"
     # files
     "${SOURCE_DIR}/batch.cu"
+    "${SOURCE_DIR}/kernels/binary_operators_kernel.cu"
     # main engine 
     "${SOURCE_DIR}/engine/query_engine.cpp"
     "${SOURCE_DIR}/engine/executor_engine.cpp"
     # Operators
     "${SOURCE_DIR}/engine/operators/operator.cpp"
     "${SOURCE_DIR}/engine/operators/get_operator.cpp"
-        include/engine/operators/csv_writer.hpp
+    "${SOURCE_DIR}/engine/operators/expressions/expression.cpp"
 )
 
 # Set include directories for the target
