@@ -18,8 +18,8 @@ set(CMAKE_CUDA_ARCHITECTURES 86)
 # use seperate compiler for cuda files only
 set(CMAKE_CUDA_SEPARABLE_COMPILATION ON)
 
- set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -g")
- set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=address -g")
+#  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -g")
+#  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=address -g")
 
 #set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O0")
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0")
@@ -30,8 +30,8 @@ find_package(replxx REQUIRED CONFIG)
 find_package(quill REQUIRED CONFIG)
 
 # for duckdb
- link_directories(vendor/duckdb/build/debug/src)
-#link_directories(vendor/duckdb/build/release/src)
+#  link_directories(vendor/duckdb/build/debug/src)
+link_directories(vendor/duckdb/build/release/src)
 
 
 # Define source directories
