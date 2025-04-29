@@ -1,6 +1,9 @@
 #include "engine/operators/operator.hpp"
 #include "engine/operators/get_operator.hpp"
 #include "engine/operators/projection_operator.hpp"
+#include <duckdb/planner/expression/list.hpp>
+#include <duckdb/planner/operator/list.hpp>
+
 using namespace YallaSQL;
 
 Operator::~Operator() {
@@ -16,6 +19,15 @@ std::unique_ptr<Operator> Operator::CreateOperator(const duckdb::LogicalOperator
     } 
     else if(op.type == duckdb::LogicalOperatorType::LOGICAL_PROJECTION) {
         return std::unique_ptr<Operator>(new ProjectionOperator(op, planner) );
+    }
+    else if(op.type == duckdb::LogicalOperatorType::LOGICAL_AGGREGATE_AND_GROUP_BY) {
+        auto &castOp = op.Cast<duckdb::LogicalAggregate>();
+        auto &expressions = castOp.expressions;
+        std::cout << "expression size: " << expressions.size() << "\n";
+        auto &groups = castOp.groups;
+        auto &groupsInd = castOp.groupings_index;
+
+        std::cout << "a\n";
     }
     return nullptr;
     // else if(op.type == duckdb::LogicalOperatorType::LOGICAL_LIMIT) {

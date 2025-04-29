@@ -23,3 +23,14 @@ mkdir build   && cd build
 cmake ..  
 ./yallasql_cli  
 ```
+
+## SSB-Benchmark
+```bash
+cd benchmark/ssb-dbgen
+make
+./dbgen -s 1 -T c
+./dbgen -s 1 -T p
+./dbgen -s 1 -T s
+./dbgen -s 1 -T d
+./dbgen -s 1 -T l
+./python benchmark/script/ssb_to_ta_format.py
