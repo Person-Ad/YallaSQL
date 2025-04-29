@@ -10,6 +10,7 @@
 #include "db/table.hpp"
 #include "enums/data_type.hpp"
 #include "enums/device.hpp"
+#include "utils/macros.hpp"
 
 #define uint_32 unsigned int
 
@@ -23,17 +24,18 @@ public:
     // batch metadata
     Device location;
     uint_32 numCols;
-    size_t batchSize;
+    size_t batchSize; // rows
     size_t totalBytes;
     time_t lastAccessed;
     std::string filePath;
+    cudaStream_t stream;
     // columns returned
     std::vector<std::shared_ptr<Column>> columns;
     // Protects access to `data` to not access it while movingp
     mutable std::mutex dataMutex;  
 
 public:
-    Batch(const std::vector<void*>& columnData, Device location, uint_32 batchSize, std::vector<std::shared_ptr<Column>> columns)
+    Batch(const std::vector<void*>& columnData, Device location, uint_32 batchSize, std::vector<std::shared_ptr<Column>> columns, cudaStream_t st = nullptr)
         : columnData(columnData), location(location), batchSize(batchSize), columns(columns) {
         // num of cols = types.size()
         totalBytes = 0;
@@ -43,7 +45,14 @@ public:
 
         lastAccessed = time(nullptr); // update last accessed time
         numCols = columnData.size();
+        if(st) {
+            stream = st;
+        } else {
+            CUDA_CHECK(cudaStreamCreate(&stream));
+        }
     }
+
+  
     // will be used for projections
     void updateColumns(const std::vector<void*>& columnData, std::vector<std::shared_ptr<Column>> columns) {
         this->columnData = columnData;
@@ -66,12 +75,15 @@ public:
 
         for (void* ptr : columnData) {
             if (ptr) {
-                if (location == Device::CPU)
-                    cudaFreeHost(ptr);
-                else
-                    cudaFree(ptr);
+                if (location == Device::CPU) {
+                    CUDA_CHECK( cudaFreeHost(ptr) );
+                } else {
+                    CUDA_CHECK( cudaFreeAsync(ptr, stream) );
+                }
             }
         }
+
+        // cudaStreamDestroy(stream);
         
     }
     // Move constructor

@@ -38,6 +38,7 @@ public:
         // get ownership of child
         auto childBatch = cacheManager.getBatch(childBatchId);
         size_t batchSize = childBatch->batchSize;
+        cudaStream_t stream = childBatch->stream;
         childBatch->moveTo(Device::GPU);
         // pass batch to references & store them
         std::vector<void*> resultData(columns.size());
@@ -51,9 +52,9 @@ public:
             resultData[expIdx++] = res.result;
         }
 
-        auto batch = std::unique_ptr<Batch>(new Batch( resultData, Device::GPU,  batchSize, columns));
+        auto batch = std::unique_ptr<Batch>(new Batch( resultData, Device::GPU,  batchSize, columns, stream));
         //! testing
-        batch->moveTo(Device::CPU);
+        // batch->moveTo(Device::CPU);
         // return new batch
         return cacheManager.putBatch(std::move(batch));
     }
@@ -73,7 +74,7 @@ private:
             return;
         }
         // get logical operator
-        const auto& castOp = logicalOp.Cast<LogicalProjection>();
+        const auto& castOp = logicalOp.Cast<duckdb::LogicalProjection>();
         
         uint32_t index = 0;
         for (auto& expr : castOp.expressions) {

@@ -37,9 +37,9 @@ void Batch::moveGpuToCpu() {
         CUDA_CHECK( cudaMallocHost((void**)&buffer, colBytes) );
 
         // copy data from GPU to CPU
-        cudaMemcpy(buffer, columnData[i], colBytes, cudaMemcpyDeviceToHost);
+        CUDA_CHECK( cudaMemcpyAsync(buffer, columnData[i], colBytes, cudaMemcpyDeviceToHost, stream));
         // free old gpu memory
-        cudaFree(columnData[i]);
+        CUDA_CHECK( cudaFreeAsync(columnData[i], stream) );
         // store pointer
         cpuData[i] = buffer;
     }
@@ -57,11 +57,11 @@ void Batch::moveCpuToGpu() {
         uint32_t colBytes = columns[i]->bytes * batchSize;
         void* buffer = nullptr;
         // allocate GPU memory
-        CUDA_CHECK( cudaMalloc((void**)&buffer, colBytes) );
+        CUDA_CHECK( cudaMallocAsync((void**)&buffer, colBytes, stream) );
         // copy data from CPU to GPU
-        cudaMemcpy(buffer, columnData[i], colBytes, cudaMemcpyHostToDevice);
+        CUDA_CHECK( cudaMemcpyAsync(buffer, columnData[i], colBytes, cudaMemcpyHostToDevice, stream) );
         // free old CPU memory
-        cudaFreeHost(columnData[i]); 
+        CUDA_CHECK( cudaFreeHost(columnData[i]) ); 
         // store the GPU pointer
         gpuData[i] = buffer;
     }
@@ -76,7 +76,7 @@ void Batch::moveCpuToFs() {
     std::string path = YallaSQL::cacheDir + "/" + "batch_" + std::to_string(millis) + ".bin";
 
     dataMutex.lock(); // will be released inside callback
-
+    CUDA_CHECK( cudaStreamSynchronize(stream) );
     serializeBatchAsync(*this, path, [this, path](bool success) {
         std::unique_lock<std::mutex> lock(this->dataMutex, std::adopt_lock);
 
@@ -113,10 +113,10 @@ void Batch::removeColumn(uint_32 colIndex) {
     // can't remove columns if batch in FS //TODO: could be optimized by store each column in file
     if(location == Device::FS) moveFsToCpu();
     if(location == Device::CPU) {
-        cudaFreeHost(columnData[colIndex]);
+        CUDA_CHECK( cudaFreeHost(columnData[colIndex]) );
     } 
     else {
-        cudaFree(columnData[colIndex]);
+        CUDA_CHECK( cudaFreeAsync(columnData[colIndex], stream) );
     }
     numCols--;
     totalBytes -= columns[colIndex]->bytes * batchSize;

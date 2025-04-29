@@ -13,7 +13,7 @@ namespace YallaSQL::Kernel {
     };
 
     template <typename T, typename Op>
-    void launch_binary_operators(T* d_rhs, T* d_lhs, OperandType t_rhs, OperandType t_lhs, T* d_res, unsigned int sz) ;
+    void launch_binary_operators(T* d_rhs, T* d_lhs, OperandType t_rhs, OperandType t_lhs, T* d_res, unsigned int sz, cudaStream_t& stream) ;
 
     template <typename T, typename Op>
     __global__ void apply_batches(T* rhs, T* lhs, T* res, const unsigned int sz);

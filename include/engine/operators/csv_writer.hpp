@@ -75,7 +75,7 @@ private:
                     csvData.append(numBuffer, ptr - numBuffer);
                 } else if (column->type == DataType::FLOAT) {
                     float value = *batch.getItem<float>(col, row);
-                    auto [ptr, ec] = std::to_chars(numBuffer, numBuffer + sizeof(numBuffer), value, std::chars_format::fixed, 6);
+                    auto [ptr, ec] = std::to_chars(numBuffer, numBuffer + sizeof(numBuffer), value, std::chars_format::fixed, 4);
                     csvData.append(numBuffer, ptr - numBuffer);
                 } else if (column->type == DataType::DATETIME) {
                     int64_t value = *batch.getItem<int64_t>(col, row);

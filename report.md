@@ -1,3 +1,12 @@
+# TODOs
+- [ ] make expression take & return batches
+- [ ] streams
+- [ ] ```SQL GROUP BY```
+- [ ] constant memory in `BoundValue`
+
+
+- [ ] add CPU_PAGEABLE in `DeviceType` and `CacheManager` -> low priority
+
 ## Tabkes
 
 #### 📁 **Table Size: 16MB**
@@ -48,4 +57,34 @@ SELECT I, v, (I/2) as half, (I%2) as rem, 2.5*I+v+3 from (SELECT id as I, views 
 | BLOCK_DIM 256, Coarsing Factor = 5             | Large          | 7913           | 7233           | 7950           | **7698.67**          |
 | BLOCK_DIM 256, Coarsing Factor = 10            | Large          | 7976           | 8003           | 8038           | 8005.67          |
 
-
+# After Streaming & Optimization
+ 02:38   yallaSQL λ  ```SELECT I, v, (I/2) as half, (I%2) as rem, 2.5 + v from (SELECT id as I, views as v from table_1);```
+ COARSENING_FACTOR 5 | BLOCK_DIM 256
+small table
+Mean: 476ms, Median: 480 ms, Min: 455 ms, Max: 491 ms, StdDev: 11.2428 ms
+large table
+Mean: 9110.2ms, Median: 9144 ms, Min: 8979 ms, Max: 9213 ms, StdDev: 72.7733 ms
+---
+ COARSENING_FACTOR 2 | BLOCK_DIM 256
+small table
+Mean: 462.1ms, Median: 461 ms, Min: 450 ms, Max: 477 ms, StdDev: 8.89326 ms
+large table
+Mean: 8701.1ms, Median: 8710 ms, Min: 8543 ms, Max: 8863 ms, StdDev: 104.172 ms
+---
+ COARSENING_FACTOR 2 | BLOCK_DIM 512
+small table
+Mean: 471.4ms, Median: 472 ms, Min: 456 ms, Max: 484 ms, StdDev: 8.87919 ms
+large table
+Mean: 8835.2ms, Median: 8830 ms, Min: 8769 ms, Max: 8931 ms, StdDev: 48.2634 ms
+---
+ COARSENING_FACTOR 5 | BLOCK_DIM 256
+small table
+Mean: 490.4ms, Median: 490 ms, Min: 479 ms, Max: 508 ms, StdDev: 7.91454 ms
+---
+ COARSENING_FACTOR 1 | BLOCK_DIM 256
+small table
+Mean: 459.7ms, Median: 462 ms, Min: 442 ms, Max: 473 ms, StdDev: 9.089 ms
+---
+ COARSENING_FACTOR 1 | BLOCK_DIM 128
+small table
+Mean: 479.8ms, Median: 482 ms, Min: 458 ms, Max: 490 ms, StdDev: 8.29216 ms

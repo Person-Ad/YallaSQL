@@ -6,9 +6,11 @@
 #include <duckdb/planner/expression_iterator.hpp>
 #include <duckdb/planner/operator/logical_get.hpp>
 #include <duckdb/catalog/catalog_entry/table_catalog_entry.hpp>
-// time to include our operators :
+#include <duckdb/planner/column_binding_map.hpp>
+#include <duckdb/execution/column_binding_resolver.hpp>
 
-#include "engine/operators/get_operator.hpp"
+// time to include our operators :
+#include "engine/operators/list.hpp"
 #include "engine/cache_manager.hpp"
 
 class ExecutorEngine {
@@ -18,5 +20,5 @@ public:
 
 private:
     // void getPhysicalPlan(const duckdb::LogicalOperator& op, CacheManager &cacheManager);
-
+    void saveBufferedBatchs(std::vector<BatchID>&, CacheManager &cacheManager, CsvWriter & csvWriter) ;
 };

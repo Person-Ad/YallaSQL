@@ -2,15 +2,18 @@
 #include <stddef.h>
 #include <unordered_map>
 #include "batch.hpp"
+#include "logger.hpp"
 
 #define u_int32 unsigned int
 #define NodeID unsigned int
 #define BatchID unsigned int
 
 class CacheManager {
+    quill::Logger* logger_ = YallaSQL::getLogger("");
 public:
     // get batch of data
     std::unique_ptr<Batch> getBatch(BatchID batchId) {
+        LOG_INFO(logger_, "cache manger: get batch {}", batchId);
         std::unique_ptr<Batch> batch = std::move(cache[batchId]);
         if (batch->location == Device::GPU) {
             gpuBytes -= batch->totalBytes;
@@ -26,6 +29,7 @@ public:
 
     // put batch of data in the cache
     BatchID putBatch(std::unique_ptr<Batch> batch) {
+        LOG_INFO(logger_, "cache manger: put batch {}", incrementId);
         // TODO: if we added pipeline we need to add mutex lock
         if (!batch)
             throw std::invalid_argument("Invalid batch provided.");
@@ -73,6 +77,7 @@ private:
 
         // Sort by last accessed time (oldest first)
         if (device == Device::GPU) {
+            LOG_INFO(logger_, "cache manger: move {} to cpu", id);
             batch->moveTo(Device::CPU);
             gpuBytes -= batch->totalBytes;
             cpuBytes += batch->totalBytes;

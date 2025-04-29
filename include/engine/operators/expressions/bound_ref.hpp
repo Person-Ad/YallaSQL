@@ -27,13 +27,13 @@ public:
         //TODO: handle expression output on different devices rather than GPU
         //* current will do gpu only
         void* data;
-        CUDA_CHECK( cudaMalloc(&data, totalBytes) );
+        CUDA_CHECK( cudaMallocAsync(&data, totalBytes, child->stream ) );
 
 
         if(child->location == Device::CPU)  {
-            CUDA_CHECK( cudaMemcpy(data, child->getColumn(idx), totalBytes, cudaMemcpyHostToDevice) );
+            CUDA_CHECK( cudaMemcpyAsync(data, child->getColumn(idx), totalBytes, cudaMemcpyHostToDevice, child->stream) );
         } else {
-            CUDA_CHECK( cudaMemcpy(data, child->getColumn(idx), totalBytes, cudaMemcpyDeviceToDevice) );
+            CUDA_CHECK( cudaMemcpyAsync(data, child->getColumn(idx), totalBytes, cudaMemcpyDeviceToDevice, child->stream) );
         }
 
         result.batchSize = child->batchSize;

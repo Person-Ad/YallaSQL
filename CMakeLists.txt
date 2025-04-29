@@ -17,6 +17,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CUDA_ARCHITECTURES 86) 
 # use seperate compiler for cuda files only
 set(CMAKE_CUDA_SEPARABLE_COMPILATION ON)
+set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} -lineinfo") # Ensure lineinfo for all builds
 
 #  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -g")
 #  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=address -g")
@@ -37,9 +38,7 @@ link_directories(vendor/duckdb/build/release/src)
 # Define source directories
 set(SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
 
-# Gather source files
-set(CLI_SOURCES
-    "${SOURCE_DIR}/cli/shell.cpp"
+set(ALL_SOURCES
     "${SOURCE_DIR}/db/db.cpp"
     "${SOURCE_DIR}/db/table.cpp"
     # files
@@ -54,6 +53,10 @@ set(CLI_SOURCES
     "${SOURCE_DIR}/engine/operators/get_operator.cpp"
     "${SOURCE_DIR}/engine/operators/expressions/expression.cpp"
 )
+# Gather source files
+set(CLI_SOURCES
+    "${SOURCE_DIR}/cli/shell.cpp"
+)
 
 # Set include directories for the target
 include_directories(    
@@ -65,6 +68,12 @@ include_directories(
 add_executable(yallasql_cli
     "${SOURCE_DIR}/cli/main.cpp"
     ${CLI_SOURCES}
+    ${ALL_SOURCES}
+)
+
+add_executable(yallasql
+    "main.cpp"
+    ${ALL_SOURCES}
 )
 #add_compile_definitions(ASAN_OPTIONS="protect_shadow_gap=0:replace_intrin=0:detect_leaks=0")
 
@@ -78,3 +87,10 @@ target_link_libraries(yallasql_cli
         duckdb
 )
 
+
+target_link_libraries(yallasql
+    PRIVATE
+        quill::quill
+        CUDA::cudart
+        duckdb
+)

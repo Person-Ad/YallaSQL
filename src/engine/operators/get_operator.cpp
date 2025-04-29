@@ -144,48 +144,4 @@ std::unique_ptr<Batch> GetOperator::storeBuffer(uint32_t batchSize) {
 
     return std::unique_ptr<Batch>(new Batch(data, Device::CPU, batchSize, columns));
 }
-
-void GetOperator::readBatchFaster() {
-    // auto& context = db->duckdb().context;
-    // // set options
-    // duckdb::DialectOptions dialect_options;    // Assuming CSV has header
-    // dialect_options.header = true;
-    // dialect_options.num_cols = table->numCols;
-    // dialect_options.skip_rows = 1;
-    //
-    // duckdb::CSVReaderOptions options;
-    // options.dialect_options = dialect_options;
-    // options.file_path = table->path;
-    // options.auto_detect = false;  // We know our schema
-    // // Set up column mapping based on our table schema
-    // for (auto& column : table->columnsOrdered) {
-    //     LogicalType col_type;
-    //     switch (column->type) {
-    //         case DataType::INT:
-    //             col_type = duckdb::LogicalType::INTEGER;
-    //             break;
-    //         case DataType::FLOAT:
-    //             col_type = duckdb::LogicalType::FLOAT;
-    //             break;
-    //         case DataType::DATETIME:
-    //             col_type = duckdb::LogicalType::TIMESTAMP;
-    //             break;
-    //         default: // STRING
-    //             col_type = duckdb::LogicalType::VARCHAR;
-    //             break;
-    //     }
-    //
-    //     options.sql_type_list.push_back(col_type);
-    //
-    // }
-    //
-    // // Create CSV reader and scanner
-    // auto &fs = duckdb::FileSystem::GetFileSystem(*context);
-    // auto csv_reader = duckdb::ReadCSV::OpenCSV(context, options, fs);
-
-
-
-}
-
-
 }

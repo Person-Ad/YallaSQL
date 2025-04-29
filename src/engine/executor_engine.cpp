@@ -1,7 +1,4 @@
 #include "engine/executor_engine.hpp"
-#include "engine/operators/list.hpp"
-#include "duckdb/planner/column_binding_map.hpp"
-#include "duckdb/execution/column_binding_resolver.hpp"
 #include <chrono>
 
 void ExecutorEngine::execute(duckdb::LogicalOperator& op, const duckdb::Planner& planner) {
@@ -22,16 +19,36 @@ void ExecutorEngine::execute(duckdb::LogicalOperator& op, const duckdb::Planner&
     }
     rootOperator->init();
 
+    std::vector<BatchID> buffer_ids;
+
     BatchID batchId = rootOperator->next(cacheManager);
     while (batchId != 0) {
-        std::unique_ptr<Batch> batch = cacheManager.getBatch(batchId);
-        if (!batch) {
-            std::cerr << "Failed to get batch\n";
-            return;
-        }
-        batch->moveTo(Device::CPU); // Ensure batch is on CPU for CSV writing
-        csvWriter.addBatch(*batch);
-//        std::cout << "Processed batch ID: " << batchId << "\n";
+        buffer_ids.push_back(batchId);
+        if(buffer_ids.size() > 50) 
+            saveBufferedBatchs(buffer_ids, cacheManager, csvWriter);
+
         batchId = rootOperator->next(cacheManager);
     }
+    saveBufferedBatchs(buffer_ids, cacheManager, csvWriter);
+}
+
+void ExecutorEngine::saveBufferedBatchs(std::vector<BatchID>& buffer_ids, CacheManager &cacheManager, CsvWriter &csvWriter) {
+    std::vector<std::unique_ptr<Batch>> buffer;
+    buffer.reserve(buffer_ids.size());
+    for(auto id: buffer_ids) {
+        buffer.push_back( cacheManager.getBatch(id)  );
+    }
+    // Ensure batch is on CPU for CSV writing 
+    // send multiple request Async
+    for(auto& batch: buffer) {
+        batch->moveTo(Device::CPU);
+    }
+    // write and ensure to sync
+    for(auto& batch: buffer) {
+        CUDA_CHECK(cudaStreamSynchronize(batch->stream));
+        CUDA_CHECK(cudaStreamDestroy(batch->stream));
+        csvWriter.addBatch(*batch);
+    }
+
+    buffer_ids.clear();
 }

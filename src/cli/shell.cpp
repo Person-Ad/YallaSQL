@@ -218,7 +218,7 @@ void YallaSQLShell::processInput(const std::string& input) {
             // MEASURE_EXECUTION_TIME("execute time",
             //     output = engine.execute(input);
             // )
-            PROFILING("execute time", 2, 3,
+            PROFILING_GPU("execute time", 5, 10,
                 output = engine.execute(input);
             );
             std::cout << output << "\n";

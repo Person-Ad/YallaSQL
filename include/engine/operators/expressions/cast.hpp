@@ -23,6 +23,7 @@ public:
     ExpressionResult evaluate(ExpressionArg& arg) {
         ExpressionResult result;
 
+        cudaStream_t& stream = arg.batchs[0]->stream;
         auto childRes = child->evaluate(arg);
         auto data = childRes.result;;
         // 
@@ -31,7 +32,7 @@ public:
             throw std::runtime_error("Not Implemented Yet: to cast non numericals");
         // 1. allocate memory        
         void* res;
-        CUDA_CHECK( cudaMalloc(&res, childRes.batchSize * getDataTypeNumBytes(returnType)) );
+        CUDA_CHECK( cudaMallocAsync(&res, childRes.batchSize * getDataTypeNumBytes(returnType), stream) );
         // 2. cast & cpy
         switch (childType)
         {
@@ -39,10 +40,10 @@ public:
             switch (returnType) 
             {
             case DataType::FLOAT:
-                YallaSQL::Kernel::launch_numerical_cast(static_cast<int*>(data), static_cast<float*>(res), childRes.batchSize);
+                YallaSQL::Kernel::launch_numerical_cast(static_cast<int*>(data), static_cast<float*>(res), childRes.batchSize, stream);
             break;
             case DataType::DATETIME:
-                YallaSQL::Kernel::launch_numerical_cast(static_cast<int*>(data), static_cast<int64_t*>(res), childRes.batchSize);
+                YallaSQL::Kernel::launch_numerical_cast(static_cast<int*>(data), static_cast<int64_t*>(res), childRes.batchSize, stream);
             break;
             default:
                 break;
@@ -52,10 +53,10 @@ public:
             switch (returnType)
             {
             case DataType::INT:
-                YallaSQL::Kernel::launch_numerical_cast(static_cast<float*>(data), static_cast<int*>(res), childRes.batchSize);
+                YallaSQL::Kernel::launch_numerical_cast(static_cast<float*>(data), static_cast<int*>(res), childRes.batchSize, stream);
             break;
             case DataType::DATETIME:
-                YallaSQL::Kernel::launch_numerical_cast(static_cast<float*>(data), static_cast<int64_t*>(res), childRes.batchSize);
+                YallaSQL::Kernel::launch_numerical_cast(static_cast<float*>(data), static_cast<int64_t*>(res), childRes.batchSize, stream);
             break;
             default:
                 break;
@@ -65,10 +66,10 @@ public:
         switch (returnType)
             {
             case DataType::INT:
-                YallaSQL::Kernel::launch_numerical_cast(static_cast<int64_t*>(data), static_cast<int*>(res), childRes.batchSize);
+                YallaSQL::Kernel::launch_numerical_cast(static_cast<int64_t*>(data), static_cast<int*>(res), childRes.batchSize, stream);
             break;
             case DataType::FLOAT:
-                YallaSQL::Kernel::launch_numerical_cast(static_cast<int64_t*>(data), static_cast<float*>(res), childRes.batchSize);
+                YallaSQL::Kernel::launch_numerical_cast(static_cast<int64_t*>(data), static_cast<float*>(res), childRes.batchSize, stream);
             break;
             default:
                 break;

@@ -49,7 +49,9 @@ public:
             throw std::runtime_error("Binary operator requires exactly 2 children");
         }
 
+        cudaStream_t& stream = arg.batchs[0]->stream;   // 
         size_t batchSize = arg.batchs[0]->batchSize; // Assume ExpressionArg provides batchSize
+
         ExpressionResult res_lhs = children[0]->evaluate(arg);
         ExpressionResult res_rhs = children[1]->evaluate(arg);
 
@@ -60,7 +62,7 @@ public:
         YallaSQL::Kernel::OperandType t_rhs = res_rhs.batchSize == 1 ? YallaSQL::Kernel::OperandType::SCALAR : YallaSQL::Kernel::OperandType::VECTOR;
         // Allocate result memory
         void* res;
-        CUDA_CHECK(cudaMalloc(&res, getDataTypeNumBytes(returnType) * batchSize));
+        CUDA_CHECK(cudaMallocAsync(&res, getDataTypeNumBytes(returnType) * batchSize, stream));
 
 
         switch (function_type) {
@@ -68,15 +70,15 @@ public:
                 switch (returnType) {
                     case DataType::INT:
                         YallaSQL::Kernel::launch_binary_operators<int, YallaSQL::Kernel::AddOperator<int>>(
-                                static_cast<int*>(rhs), static_cast<int*>(lhs), t_rhs, t_lhs, static_cast<int*>(res), batchSize);
+                                static_cast<int*>(rhs), static_cast<int*>(lhs), t_rhs, t_lhs, static_cast<int*>(res), batchSize, stream);
                         break;
                     case DataType::FLOAT:
                         YallaSQL::Kernel::launch_binary_operators<float, YallaSQL::Kernel::AddOperator<float>>(
-                                static_cast<float*>(rhs), static_cast<float*>(lhs), t_rhs, t_lhs, static_cast<float*>(res), batchSize);
+                                static_cast<float*>(rhs), static_cast<float*>(lhs), t_rhs, t_lhs, static_cast<float*>(res), batchSize, stream);
                         break;
                     case DataType::DATETIME:
                         YallaSQL::Kernel::launch_binary_operators<int64_t, YallaSQL::Kernel::AddOperator<int64_t>>(
-                                static_cast<int64_t*>(rhs), static_cast<int64_t*>(lhs), t_rhs, t_lhs, static_cast<int64_t*>(res), batchSize);
+                                static_cast<int64_t*>(rhs), static_cast<int64_t*>(lhs), t_rhs, t_lhs, static_cast<int64_t*>(res), batchSize, stream);
                         break;
                     default:
                         throw std::runtime_error("Unsupported data type");
@@ -86,15 +88,15 @@ public:
                 switch (returnType) {
                     case DataType::INT:
                         YallaSQL::Kernel::launch_binary_operators<int, YallaSQL::Kernel::MinusOperator<int>>(
-                                static_cast<int*>(rhs), static_cast<int*>(lhs), t_rhs, t_lhs, static_cast<int*>(res), batchSize);
+                                static_cast<int*>(rhs), static_cast<int*>(lhs), t_rhs, t_lhs, static_cast<int*>(res), batchSize, stream);
                         break;
                     case DataType::FLOAT:
                         YallaSQL::Kernel::launch_binary_operators<float, YallaSQL::Kernel::MinusOperator<float>>(
-                                static_cast<float*>(rhs), static_cast<float*>(lhs), t_rhs, t_lhs, static_cast<float*>(res), batchSize);
+                                static_cast<float*>(rhs), static_cast<float*>(lhs), t_rhs, t_lhs, static_cast<float*>(res), batchSize, stream);
                         break;
                     case DataType::DATETIME:
                         YallaSQL::Kernel::launch_binary_operators<int64_t, YallaSQL::Kernel::MinusOperator<int64_t>>(
-                                static_cast<int64_t*>(rhs), static_cast<int64_t*>(lhs), t_rhs, t_lhs, static_cast<int64_t*>(res), batchSize);
+                                static_cast<int64_t*>(rhs), static_cast<int64_t*>(lhs), t_rhs, t_lhs, static_cast<int64_t*>(res), batchSize, stream);
                         break;
                     default:
                         throw std::runtime_error("Unsupported data type");
@@ -104,15 +106,15 @@ public:
                 switch (returnType) {
                     case DataType::INT:
                         YallaSQL::Kernel::launch_binary_operators<int, YallaSQL::Kernel::MulOperator<int>>(
-                                static_cast<int*>(rhs), static_cast<int*>(lhs), t_rhs, t_lhs, static_cast<int*>(res), batchSize);
+                                static_cast<int*>(rhs), static_cast<int*>(lhs), t_rhs, t_lhs, static_cast<int*>(res), batchSize, stream);
                         break;
                     case DataType::FLOAT:
                         YallaSQL::Kernel::launch_binary_operators<float, YallaSQL::Kernel::MulOperator<float>>(
-                                static_cast<float*>(rhs), static_cast<float*>(lhs), t_rhs, t_lhs, static_cast<float*>(res), batchSize);
+                                static_cast<float*>(rhs), static_cast<float*>(lhs), t_rhs, t_lhs, static_cast<float*>(res), batchSize, stream);
                         break;
                     case DataType::DATETIME:
                         YallaSQL::Kernel::launch_binary_operators<int64_t, YallaSQL::Kernel::MulOperator<int64_t>>(
-                                static_cast<int64_t*>(rhs), static_cast<int64_t*>(lhs), t_rhs, t_lhs, static_cast<int64_t*>(res), batchSize);
+                                static_cast<int64_t*>(rhs), static_cast<int64_t*>(lhs), t_rhs, t_lhs, static_cast<int64_t*>(res), batchSize, stream);
                         break;
                     default:
                         throw std::runtime_error("Unsupported data type");
@@ -122,15 +124,15 @@ public:
                 switch (returnType) {
                     case DataType::INT:
                         YallaSQL::Kernel::launch_binary_operators<int, YallaSQL::Kernel::DivOperator<int>>(
-                                static_cast<int*>(rhs), static_cast<int*>(lhs), t_rhs, t_lhs, static_cast<int*>(res), batchSize);
+                                static_cast<int*>(rhs), static_cast<int*>(lhs), t_rhs, t_lhs, static_cast<int*>(res), batchSize, stream);
                         break;
                     case DataType::FLOAT:
                         YallaSQL::Kernel::launch_binary_operators<float, YallaSQL::Kernel::DivOperator<float>>(
-                                static_cast<float*>(rhs), static_cast<float*>(lhs), t_rhs, t_lhs, static_cast<float*>(res), batchSize);
+                                static_cast<float*>(rhs), static_cast<float*>(lhs), t_rhs, t_lhs, static_cast<float*>(res), batchSize, stream);
                         break;
                     case DataType::DATETIME:
                         YallaSQL::Kernel::launch_binary_operators<int64_t, YallaSQL::Kernel::DivOperator<int64_t>>(
-                                static_cast<int64_t*>(rhs), static_cast<int64_t*>(lhs), t_rhs, t_lhs, static_cast<int64_t*>(res), batchSize);
+                                static_cast<int64_t*>(rhs), static_cast<int64_t*>(lhs), t_rhs, t_lhs, static_cast<int64_t*>(res), batchSize, stream);
                         break;
                     default:
                         throw std::runtime_error("Unsupported data type");
@@ -140,11 +142,11 @@ public:
                 switch (returnType) {
                     case DataType::INT:
                         YallaSQL::Kernel::launch_binary_operators<int, YallaSQL::Kernel::RemOperator<int>>(
-                                static_cast<int*>(rhs), static_cast<int*>(lhs), t_rhs, t_lhs, static_cast<int*>(res), batchSize);
+                                static_cast<int*>(rhs), static_cast<int*>(lhs), t_rhs, t_lhs, static_cast<int*>(res), batchSize, stream);
                         break;
                     case DataType::DATETIME:
                         YallaSQL::Kernel::launch_binary_operators<int64_t, YallaSQL::Kernel::RemOperator<int64_t>>(
-                                static_cast<int64_t*>(rhs), static_cast<int64_t*>(lhs), t_rhs, t_lhs, static_cast<int64_t*>(res), batchSize);
+                                static_cast<int64_t*>(rhs), static_cast<int64_t*>(lhs), t_rhs, t_lhs, static_cast<int64_t*>(res), batchSize, stream);
                         break;
                     default:
                         throw std::runtime_error("Unsupported data type");
