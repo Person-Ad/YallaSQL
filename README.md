@@ -11,16 +11,21 @@ GPU-powered SQL processor for CSV files
 1. 📦 Download and Install [CMake](https://cmake.org/download/)
 2. 🎮 Install CUDA Toolkit
 3. install duckdb
-```
+```bash
 cd vendor/duckdb
-make debug
+make # or  "make debug"
+```
+4. install tools
+```bash
+conda install -c conda-forge quill
+# todo add replexx
 ```
 
 ## 🏗️ How to Run ?
 ```bash
 mkdir logs
 mkdir build   && cd build  
-cmake ..  
+cmake ..  -G Ninga  && ninja
 ./yallasql_cli  
 ```
 
@@ -34,3 +39,4 @@ make
 ./dbgen -s 1 -T d
 ./dbgen -s 1 -T l
 ./python benchmark/script/ssb_to_ta_format.py
+```

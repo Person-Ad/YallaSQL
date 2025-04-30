@@ -16,11 +16,11 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # Set build type
 set(CMAKE_CUDA_ARCHITECTURES 86) 
 # use seperate compiler for cuda files only
-set(CMAKE_CUDA_SEPARABLE_COMPILATION ON)
-set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} -lineinfo") # Ensure lineinfo for all builds
+# set(CMAKE_CUDA_SEPARABLE_COMPILATION ON)
+# set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} -lineinfo") # Ensure lineinfo for all builds
 
- set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -g")
- set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=address -g")
+#  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -g")
+#  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=address -g")
 
 #set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O0")
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0")
@@ -31,8 +31,8 @@ find_package(replxx REQUIRED CONFIG)
 find_package(quill REQUIRED CONFIG)
 
 # for duckdb
- link_directories(vendor/duckdb/build/debug/src)
-# link_directories(vendor/duckdb/build/release/src)
+#  link_directories(vendor/duckdb/build/debug/src)
+link_directories(vendor/duckdb/build/release/src)
 
 
 # Define source directories
@@ -71,16 +71,14 @@ add_executable(yallasql_cli
     ${ALL_SOURCES}
 )
 
-add_executable(yallasql
-    "main.cpp"
-    ${ALL_SOURCES}
-)
-#add_compile_definitions(ASAN_OPTIONS="protect_shadow_gap=0:replace_intrin=0:detect_leaks=0")
+# add_executable(yallasql
+#     "main.cpp"
+#     ${ALL_SOURCES}
+# )
 
 # Link libraries
 target_link_libraries(yallasql_cli
-    PRIVATE
-        asan 
+    PUBLIC
         CUDA::cudart
         replxx::replxx
         quill::quill

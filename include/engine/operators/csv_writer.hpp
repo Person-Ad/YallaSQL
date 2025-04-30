@@ -19,43 +19,24 @@ private:
     std::future<void> writerFuture;
     bool running;
     bool headerWritten;
-    std::string writeBuffer;
-    size_t writeBufferUsed;
 
-    // Append to write buffer, flushing to disk if full
-    void appendToBuffer(std::string_view data) {
-        if (writeBufferUsed + data.size() > BUFFER_SIZE) {
-            flushBuffer();
-        }
-        writeBuffer.append(data.data(), data.size());
-        writeBufferUsed += data.size();
-    }
-
-    // Flush write buffer to disk
-    void flushBuffer() {
-        if (writeBufferUsed > 0) {
-            ofs.write(writeBuffer.data(), writeBufferUsed);
-            writeBuffer.clear();
-            writeBufferUsed = 0;
-        }
-    }
-
-    // Convert a batch to CSV and append to buffer
-    void batchToCsv(const Batch& batch) {
-        // Preallocate buffer for this batch (rough estimate)
+    // Convert a batch to CSV string
+    std::string batchToCsv(const Batch& batch) {
         std::string csvData;
-        // approaximate preallocation of buffer
-        csvData.reserve(batch.totalBytes);
+        csvData.reserve(batch.totalBytes); // Approximate preallocation
 
         // Write header if not yet written
-        if (!headerWritten) {
-            for (size_t i = 0; i < batch.columns.size(); ++i) {
-                std::string_view name = batch.columns[i]->name;
-                csvData.append(name.data(), name.size());
-                if (i < batch.columns.size() - 1) csvData += ',';
+        {
+            std::lock_guard<std::mutex> lock(queueMutex); // Protect headerWritten
+            if (!headerWritten) {
+                for (size_t i = 0; i < batch.columns.size(); ++i) {
+                    std::string_view name = batch.columns[i]->name;
+                    csvData.append(name.data(), name.size());
+                    if (i < batch.columns.size() - 1) csvData += ',';
+                }
+                csvData += '\n';
+                headerWritten = true;
             }
-            csvData += '\n';
-            headerWritten = true;
         }
 
         // Write rows
@@ -90,12 +71,11 @@ private:
             csvData += '\n';
         }
 
-        appendToBuffer(csvData);
+        return csvData;
     }
 
     // Async writer loop
     void writeLoop() {
-        writeBuffer.reserve(BUFFER_SIZE);
         while (running) {
             std::vector<std::string> batches;
             {
@@ -113,9 +93,11 @@ private:
                 }
             }
 
+            // Write batches to file
             for (const auto& csvData : batches) {
-                appendToBuffer(csvData);
+                ofs.write(csvData.data(), csvData.size());
             }
+            ofs.flush(); // Ensure data is written to disk
         }
 
         // Write any remaining data
@@ -125,14 +107,14 @@ private:
             std::string csvData = std::move(batchQueue.front());
             batchQueue.pop_front();
             lock.unlock();
-            appendToBuffer(csvData);
+            ofs.write(csvData.data(), csvData.size());
         }
 
-        flushBuffer();
+        ofs.flush(); // Final flush
     }
 
 public:
-    CsvWriter(const std::string& path) : filePath(path), running(true), headerWritten(false), writeBufferUsed(0) {
+    CsvWriter(const std::string& path) : filePath(path), running(true), headerWritten(false) {
         ofs.open(filePath, std::ios::out | std::ios::binary);
         if (!ofs.is_open()) {
             throw std::runtime_error("Failed to open CSV file: " + filePath);
@@ -146,7 +128,6 @@ public:
             running = false;
         }
         writerFuture.wait();
-        flushBuffer();
         ofs.close();
     }
 
@@ -156,14 +137,10 @@ public:
             throw std::runtime_error("Batch must be on CPU for CSV writing");
         }
 
-        std::string csvData;
+        std::string csvData = batchToCsv(batch);
         {
-            // Lock to ensure headerWritten is consistent
             std::unique_lock<std::mutex> lock(queueMutex);
-            batchToCsv(batch);
-            batchQueue.push_back(std::move(writeBuffer));
-            writeBuffer.clear();
-            writeBufferUsed = 0;
+            batchQueue.push_back(std::move(csvData));
         }
     }
 };

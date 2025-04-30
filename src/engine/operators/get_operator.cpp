@@ -2,6 +2,7 @@
 #include "engine/operators/operator.hpp"
 #include "utils/macros.hpp"
 #include "db/table.hpp"
+#include "logger.hpp"
 #include "config.hpp"
 #include "db/db.hpp"
 
@@ -16,9 +17,6 @@
 #include <duckdb/common/types/batched_data_collection.hpp>
 #include <duckdb/common/file_system.hpp>
 // #include <duckdb/function/t>
-
-
-#include "csv-parser/csv.hpp"
 
 namespace YallaSQL {
 
@@ -35,6 +33,7 @@ void GetOperator::init() {
     reader = new csv::CSVReader(table->path);
     // ==== set columns ====
     //! Shuffle As Physical Duckdb Expect :<
+    std::vector<DataType> columnsType; // for calculating optimal batch size
     auto &columnIndexs = logicalCastOp.GetColumnIds();
     columns.reserve(columnIndexs.size());
     csvNames.reserve(columnIndexs.size());
@@ -42,9 +41,13 @@ void GetOperator::init() {
         auto idxInTable = columnIndex.GetPrimaryIndex();
         columns.push_back(table->columnsOrdered[idxInTable]);
         csvNames.push_back(table->csvNameColumn[idxInTable]);
+        columnsType.push_back(table->columnsType[idxInTable]);
     }
     // === set metadata ===
-    batchSize = calculateOptimalBatchSize(table->columnsType);
+    batchSize = calculateOptimalBatchSize(columnsType);
+    // batchSize = calculateOptimalBatchSize(table->columnsType);
+    LOG_INFO(getLogger(""), "Base Batch Size {}", batchSize);
+
     // ==== reserve buffer memory ==== 
     buffer = new char*[columns.size()]; // reserve buffer foreach column
     for(uint i = 0; i < columns.size(); i++) {
@@ -62,17 +65,14 @@ BatchID GetOperator::next(CacheManager& cacheManager) {
     // -- temp parameters to not miss with curr state if error happen --
     uint32_t colIndex = 0;
     uint32_t rowIndex = 0; // equivalent to current batch size
-    uint32_t iteratorRow = currRow;
     // -- iterator loop --
     csv::CSVRow row;
     std::vector<std::string> row_data(table->columns.size());
-    // YallaSQL::UTILS::MEAS
+
     while(rowIndex < batchSize && reader->read_row(row)) {
-        // Copy row fields to avoid use-after-free
-        colIndex = 0;
-        for (const auto& column : columns) {
-            row_data[colIndex] = row[csvNames[colIndex]].get<std::string>();
-            colIndex++;
+       // Immediately copy ALL row data to local storage
+        for (size_t i = 0; i < csvNames.size(); i++) {
+            row_data[i] = row[csvNames[i]].get<std::string>();
         }
         // store in buffer
         colIndex = 0;
@@ -94,7 +94,6 @@ BatchID GetOperator::next(CacheManager& cacheManager) {
             colIndex++;
         }
 
-        iteratorRow++;
         rowIndex++;
     }
     if (rowIndex == 0) {

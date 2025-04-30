@@ -27,4 +27,6 @@ namespace YallaSQL
         auto* logger = quill::Frontend::create_or_get_logger("root", std::move(file_sink));
         return logger;
     }
+    // quill::Logger* yalla_logger = getLogger("");
+
 }
