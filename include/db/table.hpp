@@ -11,7 +11,7 @@
 // my includes
 #include "logger.hpp"
 #include "utils.hpp"
-#include "enums/data_type.hpp"
+#include "enums/data_type_utils.hpp"
 #include "db/column.hpp"
 
 using namespace YallaSQL::UTILS;
