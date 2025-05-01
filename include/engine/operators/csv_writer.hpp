@@ -7,7 +7,7 @@
 #include <string_view>
 #include <charconv>
 #include "batch.hpp"
-#include "enums/data_type.hpp"
+#include "enums/data_type_utils.hpp"
 
 class CsvWriter {
 private:

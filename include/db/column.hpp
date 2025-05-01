@@ -2,7 +2,7 @@
 #include <string>
 #include <cstdint>
 
-#include "enums/data_type.hpp"
+#include "enums/data_type_utils.hpp"
 
 struct Column {
     std::string name;

@@ -2,7 +2,7 @@
 #include <memory>
 #include "utils/macros.hpp"
 #include "duckdb/planner/expression/list.hpp"
-#include "enums/data_type.hpp"
+#include "enums/data_type_utils.hpp"
 #include "enums/device.hpp"
 #include "batch.hpp"
 #include "batch.hpp"

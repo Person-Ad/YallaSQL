@@ -8,7 +8,7 @@
 #include <cstdio>
 #include "config.hpp"
 #include "db/table.hpp"
-#include "enums/data_type.hpp"
+#include "enums/data_type_utils.hpp"
 #include "enums/device.hpp"
 #include "utils/macros.hpp"
 
