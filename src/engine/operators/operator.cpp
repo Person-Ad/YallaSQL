@@ -1,6 +1,4 @@
-#include "engine/operators/operator.hpp"
-#include "engine/operators/get_operator.hpp"
-#include "engine/operators/projection_operator.hpp"
+#include "engine/operators/list.hpp"
 #include <duckdb/planner/expression/list.hpp>
 #include <duckdb/planner/operator/list.hpp>
 
@@ -15,10 +13,17 @@ Operator::~Operator() {
 
 std::unique_ptr<Operator> Operator::CreateOperator(const duckdb::LogicalOperator& op, const duckdb::Planner &planner) {
     if(op.type == duckdb::LogicalOperatorType::LOGICAL_GET) {
+        auto &castOp = op.Cast<duckdb::LogicalGet>();
+        // TODO:
+        auto &filters = castOp.table_filters.filters;
+
         return std::unique_ptr<Operator>(new GetOperator(op, planner) );
     } 
     else if(op.type == duckdb::LogicalOperatorType::LOGICAL_PROJECTION) {
         return std::unique_ptr<Operator>(new ProjectionOperator(op, planner) );
+    }
+    else if(op.type == duckdb::LogicalOperatorType::LOGICAL_FILTER) {
+        return std::unique_ptr<Operator>(new FilterOperator(op, planner) );
     }
     else if(op.type == duckdb::LogicalOperatorType::LOGICAL_AGGREGATE_AND_GROUP_BY) {
         auto &castOp = op.Cast<duckdb::LogicalAggregate>();

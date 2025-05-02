@@ -54,7 +54,6 @@ namespace YallaSQL::Kernel
         }
     }
     
-    // TODO: add streaming
     template <typename T, typename Op>
     void launch_binary_operators(T* d_rhs, T* d_lhs, OperandType t_rhs, OperandType t_lhs, T* d_res, unsigned int sz, cudaStream_t& stream) {
         if(t_rhs == OperandType::SCALAR && t_lhs == OperandType::SCALAR) {

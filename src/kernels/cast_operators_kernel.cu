@@ -1,4 +1,3 @@
-#include <bits/stdint-intn.h>
 #include "kernels/cast_operators_kernel.hpp"
 
 namespace YallaSQL::Kernel {
@@ -31,6 +30,9 @@ void launch_numerical_cast(T_src* src, T_dist* dist, const unsigned int sz, cuda
 }
 
     // Explicit template instantiations
+    // for converting mask to 
+    template void launch_numerical_cast<bool, unsigned int>(bool*, unsigned int*, unsigned int, cudaStream_t&);
+
     template void launch_numerical_cast<int, float>(int*, float*, unsigned int, cudaStream_t&);
     template void launch_numerical_cast<int, int64_t>(int*, int64_t*, unsigned int, cudaStream_t&);
     

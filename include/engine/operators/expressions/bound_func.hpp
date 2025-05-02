@@ -156,6 +156,10 @@ public:
                 throw std::runtime_error("Unsupported function type");
         }
 
+
+        CUDA_CHECK(cudaFreeAsync(lhs, stream));
+        CUDA_CHECK(cudaFreeAsync(rhs, stream));
+
         result.batchSize = std::max(res_lhs.batchSize, res_rhs.batchSize);
         result.result = res;
         return result;

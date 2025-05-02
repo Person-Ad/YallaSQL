@@ -16,17 +16,17 @@ namespace our {
         BOUND_VALUE,// bound constant value (2, 4, 100)
 
         CAST,
-        OP_CAST, //cast left as right
+       
+        COMPARISON,
+        CONJUNCTION,
+        NOT
+        
     };
 
 
     struct ExpressionResult {
         // for async values +, - ....
         void* result;
-        // for groups
-        std::vector<void*> groups;
-        // for aggregates with 1 val
-        void* scalarValue;
         // num of return values
         size_t batchSize;
     };
@@ -41,7 +41,6 @@ namespace our {
         DataType returnType;
         std::shared_ptr<Column> column;
         bool is_sync  = false; // if need all children to output Like Max, Min, ....
-        bool is_group = false; // have group
         bool required_op_child = true; // not like constant value etc..
         bool is_scalar = false;
         ExpressionType exprType;
@@ -55,6 +54,7 @@ namespace our {
             column = std::shared_ptr<Column>(new Column(alias, returnType));
 
         }
+        Expression() {}
         // evaluate expression
         virtual ExpressionResult evaluate(ExpressionArg& arg) = 0;
 
