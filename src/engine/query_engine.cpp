@@ -4,96 +4,60 @@
 #include <chrono>
 #include <iomanip>
 #include <sstream>
-
 #include "engine/query_engine.hpp"
+#include "engine/executor_engine.hpp"
 #include "utils.hpp"
 
 using namespace duckdb;
-using namespace YALLASQL::UTILS;
+using namespace YallaSQL::UTILS;
 
 
 void QueryEngine::useDB(const std::string& input) {
-    try {
-        std::string path;
+    // try {
         size_t space_pos = input.find(' ');
-
-        if (space_pos == std::string::npos || space_pos + 1 >= input.length()) {
-            throw std::runtime_error("Invalid USE command: No directory specified");
-        }
 
         std::string remainder = input.substr(space_pos + 1);
         size_t next_sep = remainder.find(' ');
                next_sep = next_sep == std::string::npos ? remainder.find(';') : next_sep;
 
-        path = remainder.substr(0, next_sep);
+        dbPath = remainder.substr(0, next_sep);
 
-        if (path.empty()) {
-            throw std::runtime_error("Invalid USE command: Directory path is empty");
-        }
 
-        // MEASURE_EXECUTION_TIME_LOGGER(logger_, "use db", DB::setPath(path));
-        DB::setPath(path);
-    } catch (const std::runtime_error& e) {
-        LOG_ERROR(logger_, "Failed to switch database: {}", e.what());
-        throw; // Re-throw to let the caller handle
-    }
 }
 
-QueryEngine::QueryResult QueryEngine::executeDuckDB(const std::string& query) {
-    QueryResult result {true, ""};
-    unique_ptr<MaterializedQueryResult> queryRes;
-    
-    MEASURE_EXECUTION_TIME_LOGGER(logger_, "cpu duckdb", 
-        queryRes = db_->duckdb().Query(query);
-    );
-
+void QueryEngine::executeDuckDB(std::string& query) {
+    // Ensure the directory exists
+    auto now = std::chrono::system_clock::now();
+    auto millis = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count();
+    std::string csvPath = YallaSQL::resultDir + "/duck_output_" + std::to_string(millis) + ".csv";
+    // execute the query
+    query.erase(query.find(';'), 1);
+    auto queryRes = db_->duckdb().Query("COPY (" + query + ") TO '"+ csvPath  +"';");
 
     if (queryRes->HasError()) 
         throw QueryEngineError("Query execution failed: " + queryRes->GetError());
 
-    // if not tabular
-    if(queryRes->RowCount() <= 1) 
-        return {false, queryRes->ToString()};
-    
-    // save query result in csv format
-    size_t nrows = queryRes->RowCount();
-    size_t ncols = queryRes->ColumnCount();
-    auto colnames = queryRes->names;
-    // save header
-    for (size_t colidx = 0; colidx < ncols; ++colidx)  {
-        result.content += colnames[colidx];
-        if(colidx < ncols - 1) result.content += ",";
-    }
-    result.content += "\n";
-    // save values
-    for (size_t idx = 0; idx < nrows; ++idx) {
-        for (size_t colidx = 0; colidx < ncols; ++colidx) {
-            result.content += queryRes->GetValue(colidx, idx).ToString();
-            if(colidx < ncols - 1) result.content += ",";
-        }
-        result.content += "\n";
-    }
-    return result;
 }
 
 QueryEngine::QueryResult QueryEngine::getLogicalPlan(const std::string& query) {
-    QueryResult result{false, ""};
+    if(!db_) db_ = DB::getInstance();
 
-    unique_ptr<duckdb::LogicalOperator> logicalPlan;
     try {
-        Parser parser;
-        Planner planner(*db_->duckdb().context);
-        Optimizer optimizer(*planner.binder, *db_->duckdb().context);
-
+        QueryResult result{false, ""};
         db_->duckdb().BeginTransaction();
+
         // start timer
-        MEASURE_EXECUTION_TIME_LOGGER(logger_, "generating logical plan", 
-            parser.ParseQuery(query);
-            auto statements = std::move(parser.statements);
-            
-            planner.CreatePlan(std::move(statements[0]));
-            logicalPlan = std::move(optimizer.Optimize(std::move(planner.plan)));
-        );
+        Parser parser;
+        parser.ParseQuery(query);
+        auto statements = std::move(parser.statements);
+
+        Planner planner(*db_->duckdb().context);
+        planner.CreatePlan(std::move(statements[0]));
+
+
+        Optimizer optimizer(*planner.binder, *db_->duckdb().context);
+        unique_ptr<duckdb::LogicalOperator>  logicalPlan = std::move(optimizer.Optimize(std::move(planner.plan)));
+
         // save content
         result.content = logicalPlan->ToString();
 
@@ -110,6 +74,40 @@ QueryEngine::QueryResult QueryEngine::getLogicalPlan(const std::string& query) {
     }
 }
 
+
+void QueryEngine::executeLogicalPlan(const std::string& query) {
+    if(!db_) db_ = DB::getInstance();
+
+    try {
+        db_->duckdb().BeginTransaction();
+
+        // start timer
+        Parser parser;
+        parser.ParseQuery(query);
+        auto statements = std::move(parser.statements);
+
+        Planner planner(*db_->duckdb().context);
+        planner.CreatePlan(std::move(statements[0]));
+
+
+        Optimizer optimizer(*planner.binder, *db_->duckdb().context);
+        unique_ptr<duckdb::LogicalOperator>  logicalPlan = std::move(optimizer.Optimize(std::move(planner.plan)));
+
+
+        ExecutorEngine myExecutor;
+        myExecutor.execute(*logicalPlan, planner);
+
+        db_->duckdb().Commit();
+
+
+    } catch (const duckdb::Exception& e) {
+        db_->duckdb().Rollback();
+        throw QueryEngineError("Logical plan generation failed: " + std::string(e.what()));
+    } catch (const std::runtime_error& e) {
+        db_->duckdb().Rollback();
+        throw QueryEngineError("Logical plan generation failed: " + std::string(e.what()));
+    }
+}
 
 void QueryEngine::saveQueryResult(const QueryResult& result) {
     // Ensure the directory exists
@@ -142,6 +140,8 @@ std::string QueryEngine::execute(std::string query) {
         // Trim query
         query.erase(0, query.find_first_not_of(" \t\n\r"));
         query.erase(query.find_last_not_of(" \t\n\r") + 1);
+        std::string lowerQuery = query;
+        std::transform(lowerQuery.begin(), lowerQuery.end(), lowerQuery.begin(), ::tolower);
         if (query.empty()) {
             throw QueryEngineError("Empty query provided");
         }
@@ -149,18 +149,30 @@ std::string QueryEngine::execute(std::string query) {
         // Route query
         QueryResult result;
         
-        if (query.find("USE") != std::string::npos) {
-            MEASURE_EXECUTION_TIME_LOGGER(logger_, "switching db", useDB(query));
+        if (lowerQuery.find("use") == 0) {
+            useDB(query);
             return "Database switched successfully";
         }
 
-        if (query.find("duckdb") != std::string::npos) 
-            result = executeDuckDB(query.substr(query.find("duckdb") + 6));
-        else 
-            result = getLogicalPlan(query);
-        
+        if(db_ == nullptr) 
+            db_ = DB::getInstance();
 
-        saveQueryResult(result);
+        if (lowerQuery.find("duckdb") == 0) {
+            DB::setPath(dbPath, true);
+            query = query.substr(6); // length of "duckdb"
+            executeDuckDB(query);
+        }
+        else if (lowerQuery.find("explain") == 0) {
+            DB::setPath(dbPath, false);
+            query = query.substr(7); // length of "explain"
+            result = getLogicalPlan(query);
+            saveQueryResult(result);
+            
+        }
+        else {
+            DB::setPath(dbPath, false);
+            executeLogicalPlan(query);
+        }
         
         return "Query executed successfully";
         

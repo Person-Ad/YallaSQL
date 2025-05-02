@@ -24,19 +24,20 @@ private:
         bool isTabular;
         std::string content;
     };
-    DB* db_;
-    quill::Logger* logger_;
+    DB* db_ = nullptr;
+    quill::Logger* logger_ = nullptr;
     const std::string resultsDir = "results";
+    std::string dbPath = "";
 
     void useDB(const std::string& input);
-    QueryResult executeDuckDB(const std::string& query);
+    void executeDuckDB(std::string& query);
     QueryResult getLogicalPlan(const std::string& query);
+    void executeLogicalPlan(const std::string& query);
     void saveQueryResult(const QueryResult& result);
 
 
 public:
-    QueryEngine() : db_(DB::getInstance()), 
-                    logger_(YALLASQL::getLogger("")) {}
+    QueryEngine() :logger_(YallaSQL::getLogger("")) {}
 
     std::string execute(std::string query);
 

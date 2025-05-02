@@ -1,2 +1,8 @@
 select count(*) as total_count from table_1 A, table_2 B where B.table_1_id = A."id (P)"
 select B.score as total_count from table_1 A, table_2 B where B.table_1_id = A."id (P)" LIMIT 2
+
+
+SELECT total_count, quantity from (select quantity, count(*) total_count from table_1 GROUP BY quantity);
+
+
+SELECT title, A from (select "id (P)" as A, title from table_1);

@@ -8,7 +8,7 @@
 #include <string>
 #include <utility>
 
-namespace YALLASQL
+namespace YallaSQL
 {
     inline quill::Logger* getLogger(const std::string& logPath) {
         quill::Backend::start();
@@ -27,4 +27,6 @@ namespace YALLASQL
         auto* logger = quill::Frontend::create_or_get_logger("root", std::move(file_sink));
         return logger;
     }
+    // quill::Logger* yalla_logger = getLogger("");
+
 }

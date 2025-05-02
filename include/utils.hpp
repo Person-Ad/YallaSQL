@@ -9,7 +9,7 @@
 
 #ifndef YALLASQL_UTILS_HPP
 #define YALLASQL_UTILS_HPP
-namespace YALLASQL::UTILS {
+namespace YallaSQL::UTILS {
 
 namespace Color {
     const std::string RESET = "\033[0m";
@@ -81,6 +81,18 @@ namespace Cursor {
     << Color::RESET << Color::CYAN << duration.count() << " ms "                            \
     << Color::RESET << std::endl;                                                           \
     LOG_INFO(logger, "{} took {} ms", std::string_view{label}, duration.count());           \
+}
+
+#define MEASURE_EXECUTION_TIME_MICRO_LOGGER(logger, label, code_block)                          \
+{                                                                                         \
+    auto start = std::chrono::high_resolution_clock::now();                               \
+    code_block;                                                                           \
+    auto end = std::chrono::high_resolution_clock::now();                                 \
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);   \
+    std::cout << Color::BOLD << Color::MAGENTA << "<⏱️  " << label << "> "                  \
+    << Color::RESET << Color::CYAN << duration.count() << " μs "                            \
+    << Color::RESET << std::endl;                                                           \
+    LOG_INFO(logger, "{} took {} μs", std::string_view{label}, duration.count());           \
 }
 
 }

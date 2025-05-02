@@ -27,7 +27,7 @@ private:
         "COUNT", "MIN", "MAX", "SUM", "AVG",
         "DATABASE", "AS", "ORDER BY",
         "JOIN", "INNER", "LEFT", "RIGHT", "OUTER", "FULL", "ASC", "DESC",
-        "DESCRIBE", " PRAGMA", "table_info"
+        "DESCRIBE", " PRAGMA", "table_info", "EXPLAIN"
     };
 public:
     /**
