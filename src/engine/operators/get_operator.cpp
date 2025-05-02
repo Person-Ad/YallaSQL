@@ -1,5 +1,6 @@
 #include "engine/operators/get_operator.hpp"
 #include "engine/operators/operator.hpp"
+#include "kernels/string_kernel.hpp"
 #include "utils/macros.hpp"
 #include "db/table.hpp"
 #include "logger.hpp"
@@ -8,15 +9,6 @@
 
 #include <duckdb/catalog/catalog_entry/table_catalog_entry.hpp>
 #include <duckdb/planner/operator/logical_get.hpp>
-#include <duckdb/catalog/catalog_entry/table_catalog_entry.hpp>
-#include <duckdb/planner/operator/logical_get.hpp>
-#include <duckdb/execution/operator/scan/physical_table_scan.hpp>
-#include <duckdb/execution/operator/scan/physical_column_data_scan.hpp>
-#include <duckdb/function/table/read_csv.hpp>
-#include <duckdb/main/client_context.hpp>
-#include <duckdb/common/types/batched_data_collection.hpp>
-#include <duckdb/common/file_system.hpp>
-// #include <duckdb/function/t>
 
 namespace YallaSQL {
 
@@ -45,13 +37,13 @@ void GetOperator::init() {
     }
     // === set metadata ===
     batchSize = calculateOptimalBatchSize(columnsType);
-    // batchSize = calculateOptimalBatchSize(table->columnsType);
     LOG_INFO(getLogger(""), "Base Batch Size {}", batchSize);
 
     // ==== reserve buffer memory ==== 
-    buffer = new char*[columns.size()]; // reserve buffer foreach column
+    buffer.resize(columns.size()); // reserve buffer foreach column
     for(uint i = 0; i < columns.size(); i++) {
-        buffer[i] = new char[ columns[i]->bytes *batchSize ];  // num of bytes need of field with data type of column * num of fields i have
+        // buffer[i] =  new char[ columns[i]->bytes * batchSize ];  // num of bytes need of field with data type of column * num of fields i have
+        CUDA_CHECK(cudaMallocHost((void**)&buffer[i], columns[i]->bytes * batchSize));
     }
     // ==== change state ====
     isInitalized = true;
@@ -88,8 +80,10 @@ BatchID GetOperator::next(CacheManager& cacheManager) {
                 int64_t value = getDateTime(valueStr);
                 std::memcpy(buffer[colIndex] + rowIndex * column->bytes, &value, column->bytes);
             } else { //string
-                std::string value = valueStr.substr(0, column->bytes - 1);
-                std::memcpy(buffer[colIndex] + rowIndex * column->bytes, value.c_str(), value.size() + 1); // 1 for \0
+                YallaSQL::Kernel::String value;
+                value.set(valueStr.c_str());
+
+                std::memcpy(buffer[colIndex] + rowIndex * column->bytes, &value, column->bytes); // 1 for \0
             }
             colIndex++;
         }
@@ -111,14 +105,15 @@ BatchID GetOperator::next(CacheManager& cacheManager) {
 // delete buffer & reader
 GetOperator::~GetOperator() {
     if(reader) delete reader;
-    if(buffer) {
+    // if(buffer) {
         // First free each array element
         for(uint i = 0; i < columns.size(); i++) {
-            delete[] buffer[i];
+            // delete[] buffer[i];
+            CUDA_CHECK(cudaFreeHost(buffer[i]));
         }
         // Then free the array of pointers
-        delete[] buffer;
-    }
+        // delete[] buffer;
+    // }
 }
 
 
@@ -132,8 +127,11 @@ std::unique_ptr<Batch> GetOperator::storeBuffer(uint32_t batchSize) {
     for(std::shared_ptr<Column> column: columns) {
         unsigned int colSize = column->bytes * batchSize;
         // allocate memory for column
-        CUDA_CHECK( cudaMallocHost(&data[colIndex], colSize) );
-        std::memcpy(data[colIndex], buffer[colIndex], colSize);
+        // CUDA_CHECK( cudaMallocHost(&data[colIndex], colSize) );
+        CUDA_CHECK( cudaMalloc(&data[colIndex], colSize) );
+        CUDA_CHECK( cudaMemcpy(data[colIndex], buffer[colIndex], colSize, cudaMemcpyHostToDevice) );
+
+        // std::memcpy(data[colIndex], buffer[colIndex], colSize);
         // update 
         stride += colSize;
         ++colIndex;
@@ -141,6 +139,6 @@ std::unique_ptr<Batch> GetOperator::storeBuffer(uint32_t batchSize) {
 
 
 
-    return std::unique_ptr<Batch>(new Batch(data, Device::CPU, batchSize, columns));
+    return std::unique_ptr<Batch>(new Batch(data, Device::GPU, batchSize, columns));
 }
 }

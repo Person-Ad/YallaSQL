@@ -14,7 +14,6 @@ namespace YallaSQL {
 class ProjectionOperator final: public Operator {
 
 private:
-    std::unordered_map<uint32_t, std::pair<uint32_t, std::string>> projections; // old index: alias, curr indexs
     std::vector<std::unique_ptr<our::Expression>> expressions;
 public:
     // inherit from operator
@@ -30,7 +29,7 @@ public:
     // get children batch & remove unnecessary columns
     BatchID next(CacheManager& cacheManager) override {
         if(!isInitalized) init();
-        if(isFinished && children.empty()) {isFinished = true; return 0;}
+        if(isFinished || children.empty()) {isFinished = true; return 0;}
         
         // get batchId from children
         const auto childBatchId = children[0]->next(cacheManager);
@@ -38,6 +37,10 @@ public:
         // get ownership of child
         auto childBatch = cacheManager.getBatch(childBatchId);
         size_t batchSize = childBatch->batchSize;
+        if(batchSize == 0) { // don't don anything
+            return cacheManager.putBatch(std::move(childBatch));
+        }
+
         cudaStream_t stream = childBatch->stream;
         childBatch->moveTo(Device::GPU);
         // pass batch to references & store them

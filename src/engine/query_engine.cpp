@@ -23,13 +23,6 @@ void QueryEngine::useDB(const std::string& input) {
         dbPath = remainder.substr(0, next_sep);
 
 
-        // MEASURE_EXECUTION_TIME_LOGGER(logger_, "use db", DB::setPath(path));
-        // DB::setPath(path);
-        // if(db_ == nullptr) db_ = DB::getInstance();
-    // } catch (const std::runtime_error& e) {
-    //     LOG_ERROR(logger_, "Failed to switch database: {}", e.what());
-    //     throw; // Re-throw to let the caller handle
-    // }
 }
 
 void QueryEngine::executeDuckDB(std::string& query) {
@@ -44,28 +37,6 @@ void QueryEngine::executeDuckDB(std::string& query) {
     if (queryRes->HasError()) 
         throw QueryEngineError("Query execution failed: " + queryRes->GetError());
 
-    // if not tabular
-    // if(queryRes->RowCount() <= 1) 
-    //     return {false, queryRes->ToString()};
-    
-    // // save query result in csv format
-    // size_t nrows = queryRes->RowCount();
-    // size_t ncols = queryRes->ColumnCount();
-    // auto colnames = queryRes->names;
-    // // save header
-    // for (size_t colidx = 0; colidx < ncols; ++colidx)  {
-    //     result.content += colnames[colidx];
-    //     if(colidx < ncols - 1) result.content += ",";
-    // }
-    // result.content += "\n";
-    // // save values
-    // for (size_t idx = 0; idx < nrows; ++idx) {
-    //     for (size_t colidx = 0; colidx < ncols; ++colidx) {
-    //         result.content += queryRes->GetValue(colidx, idx).ToString();
-    //         if(colidx < ncols - 1) result.content += ",";
-    //     }
-    //     result.content += "\n";
-    // }
 }
 
 QueryEngine::QueryResult QueryEngine::getLogicalPlan(const std::string& query) {

@@ -1,5 +1,6 @@
 #pragma once
 #include "engine/operators/expressions/expression.hpp"
+#include "config.hpp"
 #include <duckdb/planner/expression/list.hpp>
 
 namespace our {
@@ -34,13 +35,22 @@ public:
             break;
         }
         case DataType::DATETIME: {
-            float v = valueExp.GetValue<float>();
+            std::string valueStr= valueExp.GetValue<std::string>();
+            int64_t v = getDateTime(valueStr);
             CUDA_CHECK(cudaMemcpyAsync(value, &v, sizeof(int64_t), cudaMemcpyHostToDevice, stream));
-
             // CUDA_CHECK(cudaMemcpyToSymbol(value, &v, sizeof(int64_t), 0, cudaMemcpyHostToDevice));
             break;
         }
+        case DataType::STRING: {
+            std::string v = valueExp.GetValue<std::string>();
+            size_t str_size = v.size() + 1; // +1 for null terminator
+            CUDA_CHECK(cudaMallocAsync(&value, YallaSQL::MAX_STR_LEN, stream));
+            CUDA_CHECK(cudaMemcpyAsync(value, v.c_str(), str_size, cudaMemcpyHostToDevice, stream));
+            break;
         }
+        }
+        CUDA_CHECK_LAST();
+
     } 
 
     ExpressionResult evaluate(ExpressionArg& arg) {
@@ -52,7 +62,7 @@ public:
     }
 
     ~BoundValueExpression() {
-        CUDA_CHECK( cudaFreeAsync(value, stream) );
+        // CUDA_CHECK( cudaFreeAsync(value, stream) );
         CUDA_CHECK( cudaStreamDestroy(stream) );
     }
 

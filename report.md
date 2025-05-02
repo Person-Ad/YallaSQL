@@ -1,11 +1,12 @@
 # TODOs
 - [x] streams
+- [ ] add strings
+- [ ] ```SQL WHERE```
+    - [ ] compare for strings -> I think it can be done by filling zeros
 - [ ] ```SQL SORT BY```
-- [ ] ```SQL GROUP BY```
 - [ ] ```SQL Inner join```
+
 - [ ] constant memory in `BoundValue`
-
-
 - [ ] add CPU_PAGEABLE in `DeviceType` and `CacheManager` -> low priority
 
 ## Tabkes
@@ -58,7 +59,10 @@ SELECT I, v, (I/2) as half, (I%2) as rem, 2.5*I+v+3 from (SELECT id as I, views 
 | BLOCK_DIM 256, Coarsing Factor = 5             | Large          | 7913           | 7233           | 7950           | **7698.67**          |
 | BLOCK_DIM 256, Coarsing Factor = 10            | Large          | 7976           | 8003           | 8038           | 8005.67          |
 
-# After Streaming & Optimization
+# My Logs
+## Binary Operators
+after streaming & optimizations
+```
  02:38   yallaSQL λ  ```SELECT I, v, (I/2) as half, (I%2) as rem, 2.5 + v from (SELECT id as I, views as v from table_1);```
  COARSENING_FACTOR 5 | BLOCK_DIM 256
 small table
@@ -136,3 +140,77 @@ for large table
 1. Mean: 434.7ms, Median: 426 ms, Min: 414 ms, Max: 474 ms, StdDev: 19.4373 ms
 2. Mean: 418.9ms, Median: 419 ms, Min: 406 ms, Max: 430 ms, StdDev: 7.06329 ms
 3. Mean: 412.7ms, Median: 414 ms, Min: 404 ms, Max: 421 ms, StdDev: 5.55068 ms
+
+---
+> after pin buffer or reading & -O3 in building
+small table
+1. Mean: 87.9ms, Median: 85 ms, Min: 74 ms, Max: 109 ms, StdDev: 8.9493 ms
+2. Mean: 76.9ms, Median: 80 ms, Min: 71 ms, Max: 83 ms, StdDev: 4.50444 ms
+large table
+1. Mean: 702.8ms, Median: 699 ms, Min: 689 ms, Max: 732 ms, StdDev: 13.0445 ms
+2. Mean: 723.3ms, Median: 701 ms, Min: 691 ms, Max: 836 ms, StdDev: 44.8733 ms
+3. Mean: 719.2ms, Median: 723 ms, Min: 701 ms, Max: 751 ms, StdDev: 16.6721 ms
+```
+
+> after free intermidate results :xd
+
+```
+small table
+1.  Mean: 112.9ms, Median: 110 ms, Min: 93 ms, Max: 132 ms, StdDev: 11.4756 ms
+2.  Mean: 124.7ms, Median: 124 ms, Min: 111 ms, Max: 149 ms, StdDev: 13.2216 ms
+3.  Mean: 111.7ms, Median: 113 ms, Min: 101 ms, Max: 125 ms, StdDev: 7.65572 ms
+4.  Mean: 105.8ms, Median: 107 ms, Min: 96 ms, Max: 111 ms, StdDev: 4.70744 ms
+
+large table
+1.  Mean: 870ms, Median: 867 ms, Min: 834 ms, Max: 917 ms, StdDev: 27.0629 ms
+2.  Mean: 857.6ms, Median: 848 ms, Min: 818 ms, Max: 954 ms, StdDev: 38.103 ms
+```
+
+> may be add Garbage Collector to free without making writing wait
+
+
+## Filters
+```SQL
+SELECT weight from table_1 WHERE views<id;
+```
+Mean: 88.4ms, Median: 85 ms, Min: 83 ms, Max: 97 ms, StdDev: 5.27636 ms
+
+```SQL
+SELECT views, 2*views as double, id from table_1 WHERE 2*views<id;
+```
+Mean: 84.3ms, Median: 83 ms, Min: 73 ms, Max: 103 ms, StdDev: 7.00071 ms
+
+ssb-benchmark
+SELECT suppkey, name, region FROM supplier WHERE region='AMERICA';
+Mean: 43.4ms, Median: 43 ms, Min: 42 ms, Max: 45 ms, StdDev: 0.916515 ms
+Mean: 42.4ms, Median: 44 ms, Min: 33 ms, Max: 44 ms, StdDev: 3.2 ms
+
+```SQL 
+SELECT views, 2*views as double_views, id, weight from table_1 WHERE address='Long career air now success.\\nGas author any claim on even buy of. Particularly move nothing movement build. Drop oil lose let sit be.\\nRepublican trouble firm adult black pressure music. Project talk official difference old answer.' and id<3000
+```
+
+small table
+1. Mean: 100.1ms, Median: 104 ms, Min: 93 ms, Max: 107 ms, StdDev: 5.68243 ms
+2. Mean: 99ms, Median: 98 ms, Min: 93 ms, Max: 107 ms, StdDev: 5.56776 ms
+3. Mean: 98.9ms, Median: 96 ms, Min: 93 ms, Max: 107 ms, StdDev: 5.14684 ms
+
+large_table (since no writing or anything except checking)
+Mean: 795.9ms, Median: 799 ms, Min: 752 ms, Max: 832 ms, StdDev: 27.6892 ms
+
+```SQL 
+SELECT id, updated_at FROM table_1 WHERE updated_at<'2009-01-02 12:01:17';
+```
+small table
+1. Mean: 86.9ms, Median: 84 ms, Min: 81 ms, Max: 105 ms, StdDev: 7.07743 ms
+
+large table
+1.  Mean: 753.5ms, Median: 740 ms, Min: 720 ms, Max: 817 ms, StdDev: 33.3504 ms
+
+
+```SQL
+SELECT id, updated_at FROM table_1 WHERE updated_at<'2009-01-02 12:01:17' and id < 3000 or profit_margin*views < 500.23;
+```
+small table
+1. Mean: 98.7ms, Median: 98 ms, Min: 82 ms, Max: 110 ms, StdDev: 7.96304 ms
+large table
+1. Mean: 759.7ms, Median: 748 ms, Min: 722 ms, Max: 856 ms, StdDev: 40.7874 ms

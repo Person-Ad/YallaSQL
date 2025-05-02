@@ -25,7 +25,7 @@ public:
 
         cudaStream_t& stream = arg.batchs[0]->stream;
         auto childRes = child->evaluate(arg);
-        auto data = childRes.result;;
+        auto data = childRes.result;
         // 
         if(returnType == childType) return childRes;
         if(returnType == DataType::STRING || childType == DataType::STRING)
@@ -80,7 +80,7 @@ public:
             break;
         }
 
-
+        CUDA_CHECK(cudaFreeAsync(data, stream));
         result.result = res;
         result.batchSize = childRes.batchSize;
         return result;
