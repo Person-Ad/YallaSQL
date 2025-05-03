@@ -54,6 +54,7 @@ public:
         CUDA_CHECK( cudaMemcpyAsync(&newBatchSize, &map[oldBatchSize - 1], sizeof(uint32_t), cudaMemcpyDeviceToHost, stream) );
 
         std::vector<void*> newColumnData(columns.size()); 
+        std::vector<std::shared_ptr<NullBitSet>> nullset(columns.size()); 
         uint32_t currIdx = 0;
         // move col by col
         for(auto& oldCol: childBatch->columnData) {
@@ -74,6 +75,9 @@ public:
             default:
                 break;
             }
+            // null set
+            nullset[currIdx] = std::shared_ptr<NullBitSet>(new NullBitSet(newBatchSize, stream));
+            YallaSQL::Kernel::launch_move_rows_filter_kernel(childBatch->nullset[currIdx]->bitset, nullset[currIdx]->bitset, map, mask, oldBatchSize, stream);
 
             currIdx++;
         }
@@ -81,7 +85,7 @@ public:
         CUDA_CHECK(cudaFreeAsync(mask, stream));
         CUDA_CHECK(cudaFreeAsync(map, stream));
         LOG_TRACE_L2(logger, "Filtered from {} to {}", oldBatchSize, newBatchSize);
-        auto batch = std::unique_ptr<Batch>(new Batch( newColumnData, Device::GPU,  newBatchSize, columns, stream));
+        auto batch = std::unique_ptr<Batch>(new Batch( newColumnData, Device::GPU,  newBatchSize, columns, nullset, stream));
 
         return cacheManager.putBatch(std::move(batch));
     }

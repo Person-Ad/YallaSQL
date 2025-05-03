@@ -38,8 +38,10 @@ max_val = 100
 max_str_len = 25
 min_pk_columns = 1
 max_pk_columns = 1
-folder_path = 'stable_dataset'
 num_tables=  5
+null_flag = True  # Set to True to enable null values, False to disable
+null_probability = 0.1  # 10% chance of null for non-primary key columns
+folder_path = 'nullable_dataset'
 
 max_fk_columns = 5
 seed = 42
@@ -97,6 +99,9 @@ flattened = [(column_type, column_name + f" {map_column_types[column_type]} ") f
 
 def generate_random_values(column_type):
     """Generate random data based on the column schema and any foreign key relationships."""
+    if null_flag and random.random() < null_probability:
+        return None
+    
     if column_type == 'int':
         return random.randint(1, max_val)
     elif column_type == 'float':

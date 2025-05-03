@@ -23,6 +23,7 @@ class AggregateExpression: public Expression {
     double initial_value_double; // for float to not overflow in memset since it take int val
     float *tempAcc = nullptr;
     std::vector<int> batchSizes;
+    void* accumlator;
 public:
 
     std::vector<std::unique_ptr<Expression>> children;
@@ -155,6 +156,12 @@ public:
 
         return accumlator;
     }
+    
+    ~AggregateExpression() {
+        if(tempAcc) { // keep only one value
+            CUDA_CHECK( cudaFree(accumlator) );
+        }
+    }
 
 private:
     void initalizeAccumlator() {
@@ -230,11 +237,6 @@ private:
             
     }
 
-    ~AggregateExpression() {
-        if(tempAcc) { // keep only one value
-            CUDA_CHECK( cudaFree(accumlator) );
-        }
-    }
 
 };
 }

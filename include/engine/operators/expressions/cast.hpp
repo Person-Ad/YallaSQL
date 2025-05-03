@@ -83,6 +83,7 @@ public:
             CUDA_CHECK(cudaFreeAsync(data, stream));
         result.result = res;
         result.batchSize = childRes.batchSize;
+        result.nullset = childRes.nullset;
         return result;
     }
 

@@ -44,8 +44,10 @@ private:
         for (uint32_t row = 0; row < batch.batchSize; ++row) {
             for (size_t col = 0; col < batch.columns.size(); ++col) {
                 auto column = batch.columns[col];
-
-                if (column->type == DataType::STRING) {
+                if(batch.nullset[col]->bitset_cpu[row]) { //* MUST Move To CPU Before
+                    csvData += "\"\"";
+                }
+                else if (column->type == DataType::STRING) {
                     auto* value = batch.getItem<const char>(col, row);
                     csvData += '"';
                     csvData += value; // Assumes null-terminated

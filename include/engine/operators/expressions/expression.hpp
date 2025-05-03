@@ -31,6 +31,8 @@ namespace our {
         void* result;
         // num of return values
         size_t batchSize;
+
+        std::shared_ptr<NullBitSet> nullset;
     };
 
     struct ExpressionArg {
@@ -39,7 +41,6 @@ namespace our {
 
     class Expression {
     protected:
-        void* accumlator;
     public:
         std::string alias;
         DataType returnType;
@@ -59,7 +60,6 @@ namespace our {
         // evaluate expression
         virtual ExpressionResult evaluate(ExpressionArg& arg) = 0;
 
-        virtual void* getAggregate() {};
 
         static std::unique_ptr<Expression> createExpression(duckdb::Expression &expr) ;
 

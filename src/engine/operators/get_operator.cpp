@@ -60,6 +60,7 @@ BatchID GetOperator::next(CacheManager& cacheManager) {
     // -- iterator loop --
     csv::CSVRow row;
     std::vector<std::string> row_data(table->columns.size());
+    std::vector<std::vector<char>> h_nullset(table->columns.size()); //[col][row]
 
     while(rowIndex < batchSize && reader->read_row(row)) {
        // Immediately copy ALL row data to local storage
@@ -70,19 +71,20 @@ BatchID GetOperator::next(CacheManager& cacheManager) {
         colIndex = 0;
         for(std::shared_ptr<Column> column: columns) {
             const std::string& valueStr = row_data[colIndex];
+            h_nullset[colIndex].push_back(valueStr.empty());
+
             if(column->type == DataType::INT) {
-                int value = std::stoi(valueStr);
+                int value = valueStr.empty() ? 0 : std::stoi(valueStr);
                 std::memcpy(buffer[colIndex] + rowIndex * column->bytes, &value, column->bytes);
             } else if(column->type == DataType::FLOAT) {
-                float value = std::stof(valueStr);
+                float value = valueStr.empty() ? 0 : std::stof(valueStr);
                 std::memcpy(buffer[colIndex] + rowIndex * column->bytes, &value, column->bytes);
             } else if(column->type == DataType::DATETIME) {
-                int64_t value = getDateTime(valueStr);
+                int64_t value = valueStr.empty() ? 0 : getDateTime(valueStr);
                 std::memcpy(buffer[colIndex] + rowIndex * column->bytes, &value, column->bytes);
             } else { //string
                 YallaSQL::Kernel::String value;
                 value.set(valueStr.c_str());
-
                 std::memcpy(buffer[colIndex] + rowIndex * column->bytes, &value, column->bytes); // 1 for \0
             }
             colIndex++;
@@ -95,7 +97,7 @@ BatchID GetOperator::next(CacheManager& cacheManager) {
         return 0;
     }
     // --- update state ---
-    std::unique_ptr<Batch> batch = storeBuffer(rowIndex);
+    std::unique_ptr<Batch> batch = storeBuffer(rowIndex, h_nullset);
     // batch->moveTo(Device::GPU);
     auto batchId = cacheManager.putBatch(std::move(batch));
     currRow += rowIndex;
@@ -117,28 +119,28 @@ GetOperator::~GetOperator() {
 }
 
 
-std::unique_ptr<Batch> GetOperator::storeBuffer(uint32_t batchSize) {
+std::unique_ptr<Batch> GetOperator::storeBuffer(uint32_t batchSize, std::vector<std::vector<char>>& h_nullset) {
     // need to store in column wise
     uint32_t stride = 0;
     uint32_t colIndex = 0;
     
     std::vector<void*> data(columns.size());
+    std::vector<std::shared_ptr<NullBitSet>> nullset(columns.size());
 
     for(std::shared_ptr<Column> column: columns) {
         unsigned int colSize = column->bytes * batchSize;
         // allocate memory for column
-        // CUDA_CHECK( cudaMallocHost(&data[colIndex], colSize) );
         CUDA_CHECK( cudaMalloc(&data[colIndex], colSize) );
         CUDA_CHECK( cudaMemcpy(data[colIndex], buffer[colIndex], colSize, cudaMemcpyHostToDevice) );
+        // Init & Move Nullset to device
+        nullset[colIndex] = std::shared_ptr<NullBitSet>( new NullBitSet(h_nullset[colIndex].data(), h_nullset[colIndex].size())  );
 
-        // std::memcpy(data[colIndex], buffer[colIndex], colSize);
-        // update 
         stride += colSize;
         ++colIndex;
     }
     // I hate myself alot
     cudaStreamSynchronize(cudaStreamDefault);
 
-    return std::unique_ptr<Batch>(new Batch(data, Device::GPU, batchSize, columns));
+    return std::unique_ptr<Batch>(new Batch(data, Device::GPU, batchSize, columns, nullset));
 }
 }
