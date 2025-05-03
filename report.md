@@ -255,3 +255,12 @@ Mean: 2827.4ms, Median: 2921 ms, Min: 2236 ms, Max: 3159 ms, StdDev: 274.761 ms
 select min(revenue) as min_revenue from lineorder;
 ```
 Mean: 2898.4ms, Median: 2886 ms, Min: 2537 ms, Max: 3566 ms, StdDev: 303.469 ms
+
+>>>>>>>>>>>>>>>>> taken using compute-santizier <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+ 23:07   yallaSQL λ  select revenue, quantity from lineorder where quantity<25;
+<⏱️  execute time> 
+Mean: 5983.5ms, Median: 6026 ms, Min: 5730 ms, Max: 6447 ms, StdDev: 188.66 ms
+Query executed successfully
+ 23:09   yallaSQL λ  select min(revenue) from lineorder where quantity<25;
+<⏱️  execute time> 
+Mean: 5393.8ms, Median: 5526 ms, Min: 4930 ms, Max: 5964 ms, StdDev: 354.487 ms

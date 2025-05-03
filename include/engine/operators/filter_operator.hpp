@@ -36,13 +36,16 @@ public:
         if(childBatchId == 0) {isFinished = true; return 0;}
         // get ownership of child
         auto childBatch = cacheManager.getBatch(childBatchId);
-        size_t oldBatchSize = childBatch->batchSize;
         cudaStream_t stream = childBatch->stream;
         childBatch->moveTo(Device::GPU);
         // 1. get mask
         our::ExpressionArg arg {};
         arg.batchs.push_back(childBatch.get());
-        bool *mask = static_cast<bool*>(expressions[0]->evaluate(arg).result);
+
+        // evaluate expression
+        auto exprResult = expressions[0]->evaluate(arg);
+        bool *mask = static_cast<bool*>(exprResult.result);
+        size_t oldBatchSize = exprResult.batchSize;
 
         // 2. cast to uint32 + get prefix sum
         uint32_t* map;
@@ -61,23 +64,23 @@ public:
             CUDA_CHECK( cudaMallocAsync(&newColumnData[currIdx], newBatchSize * columns[currIdx]->bytes, stream)  );
             switch (columns[currIdx]->type){
             case DataType::INT:
-                YallaSQL::Kernel::launch_move_rows_filter_kernel(static_cast<int*>(oldCol), static_cast<int*>(newColumnData[currIdx]), map, mask, oldBatchSize, stream);
+                YallaSQL::Kernel::launch_move_rows_filter_kernel(static_cast<int*>(oldCol), static_cast<int*>(newColumnData[currIdx]), map, mask, childBatch->nullset[currIdx]->bitset, oldBatchSize, stream);
                 break;
             case DataType::FLOAT:
-                YallaSQL::Kernel::launch_move_rows_filter_kernel(static_cast<float*>(oldCol), static_cast<float*>(newColumnData[currIdx]), map, mask, oldBatchSize, stream);
+                YallaSQL::Kernel::launch_move_rows_filter_kernel(static_cast<float*>(oldCol), static_cast<float*>(newColumnData[currIdx]), map, mask, childBatch->nullset[currIdx]->bitset, oldBatchSize, stream);
                 break;
             case DataType::DATETIME:
-                YallaSQL::Kernel::launch_move_rows_filter_kernel(static_cast<int64_t*>(oldCol), static_cast<int64_t*>(newColumnData[currIdx]), map, mask, oldBatchSize, stream);
+                YallaSQL::Kernel::launch_move_rows_filter_kernel(static_cast<int64_t*>(oldCol), static_cast<int64_t*>(newColumnData[currIdx]), map, mask, childBatch->nullset[currIdx]->bitset, oldBatchSize, stream);
                 break;
             case DataType::STRING:
-                YallaSQL::Kernel::launch_move_rows_filter_kernel(static_cast<YallaSQL::Kernel::String*>(oldCol), static_cast<YallaSQL::Kernel::String*>(newColumnData[currIdx]), map, mask, oldBatchSize, stream);
+                YallaSQL::Kernel::launch_move_rows_filter_kernel(static_cast<YallaSQL::Kernel::String*>(oldCol), static_cast<YallaSQL::Kernel::String*>(newColumnData[currIdx]), map, mask, childBatch->nullset[currIdx]->bitset, oldBatchSize, stream);
                 break;
             default:
                 break;
             }
             // null set
             nullset[currIdx] = std::shared_ptr<NullBitSet>(new NullBitSet(newBatchSize, stream));
-            YallaSQL::Kernel::launch_move_rows_filter_kernel(childBatch->nullset[currIdx]->bitset, nullset[currIdx]->bitset, map, mask, oldBatchSize, stream);
+            CUDA_CHECK( cudaMemsetAsync(nullset[currIdx]->bitset, 0, newBatchSize, stream)); // set all to no nulls
 
             currIdx++;
         }

@@ -163,6 +163,7 @@ def generate_random_schema(prev_primary_keys: dict):
 def create_csv_file(file_path, num_records, schema, table_name, foreign_keys, prev_primary_keys):
     """Create a CSV file for a table with random data based on the schema and foreign key relationships."""
     data = {}
+    
     for column_type, column_name in tqdm(schema):
         if column_name.endswith("(P)"):
             rows = generate_unique_values(column_type, num_records)
@@ -170,6 +171,8 @@ def create_csv_file(file_path, num_records, schema, table_name, foreign_keys, pr
         else:
             rows = [generate_random_values(column_type) for _ in range(num_records)]
         data[column_name] = rows
+        
+        
     
     for column_name in foreign_keys:
         data[column_name] = random.choices(prev_primary_keys[column_name], k=num_records)
