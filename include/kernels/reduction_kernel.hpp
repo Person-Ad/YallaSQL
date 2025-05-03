@@ -4,12 +4,15 @@
 #include <cuda_runtime.h>
 
 namespace YallaSQL::Kernel {
+    void launch_reduction_count_notnull(char* __restrict__ d_arr, int* __restrict__ res, char* __restrict__ isnull,  const uint32_t sz, cudaStream_t& stream, const int inital);
+    
     void launch_convert_double_to_float_kernel(const double* __restrict__ input, float* __restrict__ output);
     
-    void launch_sum_double_precision(float* __restrict__ d_arr, double* __restrict__ res, char* __restrict__ isnull,  const uint32_t sz, cudaStream_t& stream, const double inital);
+    template <typename T>
+    void launch_div_avg(const int* __restrict__ counter, const T* __restrict__ sum, float* __restrict__ avg);
 
-    template <typename T, typename Op>
-    void launch_reduction_operators(T* __restrict__ d_arr, T* __restrict__ res, char* __restrict__ isnull, const uint32_t sz, cudaStream_t& stream, const T inital) ;
+    template <typename T, typename T_res, typename Op>
+    void launch_reduction_operators(T* __restrict__ d_arr, T_res* __restrict__ res, char* __restrict__ isnull, const uint32_t sz, cudaStream_t& stream, const T_res inital) ;
 
 
     template <typename T>
@@ -31,7 +34,6 @@ namespace YallaSQL::Kernel {
     template <typename T>
     struct SumOperator : AggOperator<T> {
         __device__ T apply(T &a, T &b) const override { return a + b; }
-
     };
 
 }

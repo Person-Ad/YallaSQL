@@ -12,6 +12,7 @@ namespace our {
         if(str == "max") return AggType::MAX;
         if(str == "min") return AggType::MIN;
         if(str == "sum") return AggType::SUM;
+        if(str == "count") return AggType::COUNT;
         return AggType::AVG;
     } 
     
@@ -24,6 +25,9 @@ class AggregateExpression: public Expression {
     float *tempAcc = nullptr;
     std::vector<int> batchSizes;
     void* accumlator;
+    int* counter;// counter for average
+
+    DataType srcType;
 public:
 
     std::vector<std::unique_ptr<Expression>> children;
@@ -39,6 +43,7 @@ public:
         for(auto& child: castExpr.children) {
             children.push_back( Expression::createExpression(*child) );
         }
+        srcType = children[0]->returnType;
         // set inital value in accumlater ... can be done in more cleaner way
         initalizeAccumlator();
     } 
@@ -61,17 +66,17 @@ public:
         
         switch (agg_type) {
         case AggType::MIN:
-        switch (returnType) {
+        switch (srcType) {
             case DataType::INT:
-                YallaSQL::Kernel::launch_reduction_operators<int, YallaSQL::Kernel::MinOperator<int>>(
+                YallaSQL::Kernel::launch_reduction_operators<int, int, YallaSQL::Kernel::MinOperator<int>>(
                     static_cast<int*>(src_data), static_cast<int*>(accumlator), nullset, batchSize, stream, initial_value_int);
                 break;
             case DataType::FLOAT:
-                YallaSQL::Kernel::launch_reduction_operators<float, YallaSQL::Kernel::MinOperator<float>>(
+                YallaSQL::Kernel::launch_reduction_operators<float, float, YallaSQL::Kernel::MinOperator<float>>(
                     static_cast<float*>(src_data), static_cast<float*>(accumlator), nullset, batchSize, stream, initial_value_float);
                 break;
             case DataType::DATETIME:
-                YallaSQL::Kernel::launch_reduction_operators<int64_t, YallaSQL::Kernel::MinOperator<int64_t>>(
+                YallaSQL::Kernel::launch_reduction_operators<int64_t, int64_t, YallaSQL::Kernel::MinOperator<int64_t>>(
                     static_cast<int64_t*>(src_data), static_cast<int64_t*>(accumlator), nullset, batchSize, stream, initial_value_date);
                 break;
             default:
@@ -79,36 +84,40 @@ public:
         }
         break;
         case AggType::MAX:
-        switch (returnType) {
+        switch (srcType) {
             case DataType::INT:
-                YallaSQL::Kernel::launch_reduction_operators<int, YallaSQL::Kernel::MaxOperator<int>>(
+                YallaSQL::Kernel::launch_reduction_operators<int, int, YallaSQL::Kernel::MaxOperator<int>>(
                     static_cast<int*>(src_data), static_cast<int*>(accumlator), nullset,  batchSize, stream, initial_value_int);
                 break;
             case DataType::FLOAT:
-                YallaSQL::Kernel::launch_reduction_operators<float, YallaSQL::Kernel::MaxOperator<float>>(
+                YallaSQL::Kernel::launch_reduction_operators<float, float, YallaSQL::Kernel::MaxOperator<float>>(
                     static_cast<float*>(src_data), static_cast<float*>(accumlator), nullset, batchSize, stream, initial_value_float);
                 break;
             case DataType::DATETIME:
-                YallaSQL::Kernel::launch_reduction_operators<int64_t, YallaSQL::Kernel::MaxOperator<int64_t>>(
+                YallaSQL::Kernel::launch_reduction_operators<int64_t, int64_t, YallaSQL::Kernel::MaxOperator<int64_t>>(
                     static_cast<int64_t*>(src_data), static_cast<int64_t*>(accumlator), nullset, batchSize, stream, initial_value_date);
                 break;
             default:
                 throw std::runtime_error("Unsupported data type");
         }
         break;
+        case AggType::COUNT:
+            YallaSQL::Kernel::launch_reduction_count_notnull(nullset, static_cast<int*>(accumlator), nullset, batchSize, stream, initial_value_int);
+            break;
         case AggType::AVG:
+            YallaSQL::Kernel::launch_reduction_count_notnull(nullset, counter, nullset, batchSize, stream, initial_value_int);
         case AggType::SUM:
-        switch (returnType) {
+        switch (srcType) {
             case DataType::INT:
-                YallaSQL::Kernel::launch_reduction_operators<int, YallaSQL::Kernel::SumOperator<int>>(
+                YallaSQL::Kernel::launch_reduction_operators<int, int, YallaSQL::Kernel::SumOperator<int>>(
                     static_cast<int*>(src_data), static_cast<int*>(accumlator), nullset, batchSize, stream, initial_value_int);
                 break;
             case DataType::FLOAT:
-                YallaSQL::Kernel::launch_sum_double_precision(
+                YallaSQL::Kernel::launch_reduction_operators<float, double, YallaSQL::Kernel::SumOperator<double>>(
                     static_cast<float*>(src_data), static_cast<double*>(accumlator), nullset, batchSize, stream, initial_value_double);
                 break;
             case DataType::DATETIME:
-                YallaSQL::Kernel::launch_reduction_operators<int64_t, YallaSQL::Kernel::SumOperator<int64_t>>(
+                YallaSQL::Kernel::launch_reduction_operators<int64_t, int64_t, YallaSQL::Kernel::SumOperator<int64_t>>(
                     static_cast<int64_t*>(src_data), static_cast<int64_t*>(accumlator), nullset, batchSize, stream, initial_value_date);
                 break;
             default:
@@ -127,33 +136,38 @@ public:
 
     //!must syncronize before calling
     void* getAggregate() {
+        cudaStream_t stream = cudaStreamDefault;
         // cast double to float
-        if(!tempAcc && returnType == DataType::FLOAT &&  agg_type == AggType::SUM) {
-            CUDA_CHECK( cudaMalloc(&tempAcc, sizeof(double)) );
+        if(agg_type == AggType::SUM && srcType == DataType::FLOAT) {
+            if(tempAcc) return tempAcc;
+
+            CUDA_CHECK( cudaMalloc(&tempAcc, sizeof(float)) );
             YallaSQL::Kernel::launch_convert_double_to_float_kernel(static_cast<double*>(accumlator), tempAcc);
-            cudaStreamSynchronize(cudaStreamDefault);
+            cudaStreamSynchronize(stream);
             return tempAcc;
         }
 
-        // if (agg_type == AggType::AVG) {
-        //     int* d_batchSizes;
-        //     int *sum; 
-        //     initial_value_int = 0;
-            
-        //     CUDA_CHECK( cudaMalloc((void**)&d_batchSizes, sizeof(int)*batchSizes.size())  );
-        //     CUDA_CHECK( cudaMemcpy(d_batchSizes, batchSizes.data(), sizeof(int)*batchSizes.size(), cudaMemcpyHostToDevice) );
-        //     CUDA_CHECK( cudaMalloc((void**)&sum, sizeof(int))  );
-        //     CUDA_CHECK( cudaMemcpy(sum, &initial_value_int, sizeof(int), cudaMemcpyHostToDevice) );
+        if (agg_type == AggType::AVG) {
+            if(tempAcc) return tempAcc;
+            //
+            CUDA_CHECK( cudaMalloc(&tempAcc, sizeof(float)) );
+            switch (srcType){
+            case DataType::INT:
+                YallaSQL::Kernel::launch_div_avg<int>(counter, static_cast<int*>(accumlator), tempAcc);
+            break;
+            case DataType::FLOAT:
+                YallaSQL::Kernel::launch_div_avg<double>(counter, static_cast<double*>(accumlator), tempAcc);
+            break;
+            case DataType::DATETIME:
+                YallaSQL::Kernel::launch_div_avg<int64_t>(counter, static_cast<int64_t*>(accumlator), tempAcc);
+            break;
+            default:
+                break;
+            }
+            cudaStreamSynchronize(stream);
 
-        //     cudaStream_t st = cudaStreamDefault;
-        //     YallaSQL::Kernel::launch_reduction_operators<int, YallaSQL::Kernel::SumOperator<int>>(
-        //         static_cast<int*>(d_batchSizes), static_cast<int*>(sum), (uint32_t)batchSizes.size(), st, initial_value_int
-        //     );
-            
-        //     //TODO: complete here...
-        //     CUDA_CHECK(cudaFree(d_batchSizes));
-        //     CUDA_CHECK(cudaFree(sum));
-        // }
+            return tempAcc;
+        }
 
         return accumlator;
     }
@@ -166,13 +180,15 @@ public:
 
 private:
     void initalizeAccumlator() {
-        const int bytes = returnType == DataType::FLOAT ? sizeof(double) :  getDataTypeNumBytes(returnType);
+        // allocate double in this case only for stability division
+        const int bytes = (srcType == DataType::FLOAT && (agg_type == AggType::SUM || agg_type == AggType::AVG)) ? 
+                            sizeof(double) :  getDataTypeNumBytes(srcType);
         CUDA_CHECK( cudaMalloc(&accumlator, bytes) );
 
         
         switch (agg_type) {
         case AggType::MIN:
-        switch (returnType) {
+        switch (srcType) {
             case DataType::INT:
                 initial_value_int = std::numeric_limits<int>::max();
                 CUDA_CHECK( cudaMemcpy(accumlator, &initial_value_int, bytes, cudaMemcpyHostToDevice) );
@@ -191,7 +207,7 @@ private:
         break;
 
         case AggType::MAX:
-        switch (returnType) {
+        switch (srcType) {
             case DataType::INT:
                 initial_value_int = std::numeric_limits<int>::min();
                 CUDA_CHECK( cudaMemcpy(accumlator, &initial_value_int, bytes, cudaMemcpyHostToDevice) );
@@ -209,9 +225,16 @@ private:
         }
         break;
 
+        case AggType::COUNT:
+            initial_value_int = 0;
+            CUDA_CHECK( cudaMemcpy(accumlator, &initial_value_int, bytes, cudaMemcpyHostToDevice) );
+            break;
         case AggType::AVG:
+            initial_value_int = 0;
+            CUDA_CHECK( cudaMalloc(&counter, sizeof(int)) );
+            CUDA_CHECK( cudaMemcpy(counter, &initial_value_int, sizeof(int), cudaMemcpyHostToDevice) );
         case AggType::SUM:
-        switch (returnType) {
+        switch (srcType) {
             case DataType::INT:
                 initial_value_int = 0;
                 CUDA_CHECK( cudaMemcpy(accumlator, &initial_value_int, bytes, cudaMemcpyHostToDevice) );
