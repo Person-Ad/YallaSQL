@@ -13,7 +13,7 @@ namespace YallaSQL::Kernel
     }
 
 
-    __global__ void sum_double_precision(float* __restrict__ arr, double* __restrict__ res, const uint32_t sz, const double inital) {
+    __global__ void sum_double_precision(float* __restrict__ arr, double* __restrict__ res, char* __restrict__ isnull, const uint32_t sz, const double inital) {
         __shared__ double wrap_reductions[BLOCK_DIM/32];
         __shared__ double sh_res;
         if(threadIdx.x == 0)  
@@ -28,7 +28,7 @@ namespace YallaSQL::Kernel
         #pragma unroll
         for(uint32_t k = 0;k < COARSENING_FACTOR;k++) {
             // 1. get local value for each ele in wrap
-            localVal = globalIdx < sz ? arr[globalIdx] : inital;
+            localVal = globalIdx < sz && !isnull[globalIdx] ? arr[globalIdx] : inital;
             // 2. each wrap reduce
             #pragma unroll
             for(uint32_t d = 16; d > 0; d>>=1){
@@ -56,11 +56,11 @@ namespace YallaSQL::Kernel
             atomicAdd(res, sh_res);
     }
 
-    void launch_sum_double_precision(float* __restrict__ d_arr, double* __restrict__ res,  const uint32_t sz, cudaStream_t& stream, const double inital) {
+    void launch_sum_double_precision(float* __restrict__ d_arr, double* __restrict__ res, char* __restrict__ isnull,  const uint32_t sz, cudaStream_t& stream, const double inital) {
         dim3 threads(BLOCK_DIM);
         dim3 blocks(CEIL_DIV(sz, COARSENING_FACTOR*BLOCK_DIM));
 
-        sum_double_precision<<<blocks, threads, 0, stream>>>(d_arr, res, sz, inital);
+        sum_double_precision<<<blocks, threads, 0, stream>>>(d_arr, res, isnull, sz, inital);
         CUDA_CHECK_LAST();
 
     }

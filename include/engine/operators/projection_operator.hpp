@@ -45,6 +45,7 @@ public:
         childBatch->moveTo(Device::GPU);
         // pass batch to references & store them
         std::vector<void*> resultData(columns.size());
+        std::vector<std::shared_ptr<NullBitSet>> nullset(columns.size()); //TODO:
         // pass to expression
         our::ExpressionArg arg {};
         arg.batchs.push_back(childBatch.get());
@@ -52,11 +53,12 @@ public:
         uint32_t expIdx = 0;
         for(auto& expr: expressions) {
             our::ExpressionResult res = expr->evaluate(arg);
+            nullset[expIdx] = res.nullset;
             resultData[expIdx++] = res.result;
         }
 
         
-        auto batch = std::unique_ptr<Batch>(new Batch( resultData, Device::GPU,  batchSize, columns, stream));
+        auto batch = std::unique_ptr<Batch>(new Batch( resultData, Device::GPU,  batchSize, columns, nullset, stream));
         return cacheManager.putBatch(std::move(batch));
     }
     

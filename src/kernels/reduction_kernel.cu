@@ -51,7 +51,7 @@ namespace YallaSQL::Kernel
 
 
     template <typename T, typename Op>
-    __global__ void reduction_sum_wrap(T* __restrict__ arr, T* __restrict__ res, const uint32_t sz, const T inital) {
+    __global__ void reduction_sum_wrap(T* __restrict__ arr, T* __restrict__ res, char* __restrict__ isnull, const uint32_t sz, const T inital) {
         __shared__ T wrap_reductions[BLOCK_DIM/32];
         __shared__ T sh_res;
         Op op;
@@ -67,7 +67,7 @@ namespace YallaSQL::Kernel
         #pragma unroll
         for(uint32_t k = 0;k < COARSENING_FACTOR;k++) {
             // 1. get local value for each ele in wrap
-            localVal = globalIdx < sz ? arr[globalIdx] : inital;
+            localVal = globalIdx < sz && !isnull[globalIdx] ? arr[globalIdx] : inital;
             // 2. each wrap reduce
             #pragma unroll
             for(uint32_t d = 16; d > 0; d>>=1){
@@ -89,6 +89,7 @@ namespace YallaSQL::Kernel
                 if(laneIdx == 0) 
                     sh_res = op.apply(localVal, sh_res);
             }
+            __syncthreads();
             globalIdx += blockDim.x;
         }
         if(threadIdx.x == 0) atomicReduction(res, sh_res, op); 
@@ -97,25 +98,25 @@ namespace YallaSQL::Kernel
     }
 
     template <typename T, typename Op>
-    void launch_reduction_operators(T* __restrict__ d_arr, T* __restrict__ res,  const uint32_t sz, cudaStream_t& stream, const T inital) {
+    void launch_reduction_operators(T* __restrict__ d_arr, T* __restrict__ res, char* __restrict__ isnull,  const uint32_t sz, cudaStream_t& stream, const T inital) {
         dim3 threads(BLOCK_DIM);
         dim3 blocks(CEIL_DIV(sz, COARSENING_FACTOR*BLOCK_DIM));
 
-        reduction_sum_wrap<T, Op><<<blocks, threads, 0, stream>>>(d_arr, res, sz, inital);
+        reduction_sum_wrap<T, Op><<<blocks, threads, 0, stream>>>(d_arr, res, isnull, sz, inital);
         CUDA_CHECK_LAST();
 
     }
 
-    template void launch_reduction_operators<int, MaxOperator<int>>(int* __restrict__, int* __restrict__, const uint32_t, cudaStream_t&, const int);
-    template void launch_reduction_operators<int, MinOperator<int>>(int* __restrict__, int* __restrict__, const uint32_t, cudaStream_t&, const int);
-    template void launch_reduction_operators<int, SumOperator<int>>(int* __restrict__, int* __restrict__, const uint32_t, cudaStream_t&, const int);
+    template void launch_reduction_operators<int, MaxOperator<int>>(int* __restrict__, int* __restrict__, char* __restrict__, const uint32_t, cudaStream_t&, const int);
+    template void launch_reduction_operators<int, MinOperator<int>>(int* __restrict__, int* __restrict__, char* __restrict__, const uint32_t, cudaStream_t&, const int);
+    template void launch_reduction_operators<int, SumOperator<int>>(int* __restrict__, int* __restrict__, char* __restrict__, const uint32_t, cudaStream_t&, const int);
 
-    template void launch_reduction_operators<float, MaxOperator<float>>(float* __restrict__, float* __restrict__, const uint32_t, cudaStream_t&, const float);
-    template void launch_reduction_operators<float, MinOperator<float>>(float* __restrict__, float* __restrict__, const uint32_t, cudaStream_t&, const float);
-    template void launch_reduction_operators<float, SumOperator<float>>(float* __restrict__, float* __restrict__, const uint32_t, cudaStream_t&, const float);
+    template void launch_reduction_operators<float, MaxOperator<float>>(float* __restrict__, float* __restrict__, char* __restrict__, const uint32_t, cudaStream_t&, const float);
+    template void launch_reduction_operators<float, MinOperator<float>>(float* __restrict__, float* __restrict__, char* __restrict__, const uint32_t, cudaStream_t&, const float);
+    template void launch_reduction_operators<float, SumOperator<float>>(float* __restrict__, float* __restrict__, char* __restrict__, const uint32_t, cudaStream_t&, const float);
 
-    template void launch_reduction_operators<int64_t, MaxOperator<int64_t>>(int64_t* __restrict__, int64_t* __restrict__, const uint32_t, cudaStream_t&, const int64_t);
-    template void launch_reduction_operators<int64_t, MinOperator<int64_t>>(int64_t* __restrict__, int64_t* __restrict__, const uint32_t, cudaStream_t&, const int64_t);
-    template void launch_reduction_operators<int64_t, SumOperator<int64_t>>(int64_t* __restrict__, int64_t* __restrict__, const uint32_t, cudaStream_t&, const int64_t);
+    template void launch_reduction_operators<int64_t, MaxOperator<int64_t>>(int64_t* __restrict__, int64_t* __restrict__, char* __restrict__, const uint32_t, cudaStream_t&, const int64_t);
+    template void launch_reduction_operators<int64_t, MinOperator<int64_t>>(int64_t* __restrict__, int64_t* __restrict__, char* __restrict__, const uint32_t, cudaStream_t&, const int64_t);
+    template void launch_reduction_operators<int64_t, SumOperator<int64_t>>(int64_t* __restrict__, int64_t* __restrict__, char* __restrict__, const uint32_t, cudaStream_t&, const int64_t);
 
 }

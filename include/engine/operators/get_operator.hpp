@@ -33,6 +33,6 @@ public:
 
 private:
     // store buffer into new pointer to pass it
-    std::unique_ptr<Batch> storeBuffer(uint32_t batchSize);
+    std::unique_ptr<Batch> storeBuffer(uint32_t batchSize, std::vector<std::vector<char>>& h_nullset);
 };
 } // YallaSQL

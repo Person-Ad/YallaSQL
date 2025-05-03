@@ -38,6 +38,7 @@ public:
 
         result.batchSize = child->batchSize;
         result.result = data;
+        result.nullset = child->nullset[idx];
         return result;
     }
 

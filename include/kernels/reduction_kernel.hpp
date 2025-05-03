@@ -6,10 +6,10 @@
 namespace YallaSQL::Kernel {
     void launch_convert_double_to_float_kernel(const double* __restrict__ input, float* __restrict__ output);
     
-    void launch_sum_double_precision(float* __restrict__ d_arr, double* __restrict__ res,  const uint32_t sz, cudaStream_t& stream, const double inital);
+    void launch_sum_double_precision(float* __restrict__ d_arr, double* __restrict__ res, char* __restrict__ isnull,  const uint32_t sz, cudaStream_t& stream, const double inital);
 
     template <typename T, typename Op>
-    void launch_reduction_operators(T* __restrict__ d_arr, T* __restrict__ res, const uint32_t sz, cudaStream_t& stream, const T inital) ;
+    void launch_reduction_operators(T* __restrict__ d_arr, T* __restrict__ res, char* __restrict__ isnull, const uint32_t sz, cudaStream_t& stream, const T inital) ;
 
 
     template <typename T>

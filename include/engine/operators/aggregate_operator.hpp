@@ -13,7 +13,7 @@
 namespace YallaSQL {
     class AggregateOperator final: public Operator {
     private:
-        std::vector<std::unique_ptr<our::Expression>> expressions;
+        std::vector<std::unique_ptr<our::AggregateExpression>> expressions;
     
 public:
     // inherit from operator
@@ -33,6 +33,9 @@ public:
         
         std::vector<cudaStream_t> streams;
         std::vector<void*> resultData(columns.size());
+
+        std::vector<std::shared_ptr<NullBitSet>> nullset(columns.size()); // no nulls here :love
+        char nonull = 0;
         // pass batch to references & store them
         uint32_t batchNum = 0;
         auto childBatchId = children[0]->next(cacheManager);
@@ -66,11 +69,12 @@ public:
         }
         uint32_t expIdx = 0;
         for(auto& expr: expressions) {
+            nullset[expIdx] = std::shared_ptr<NullBitSet>(new NullBitSet(&nonull, 1));
             resultData[expIdx++] = expr->getAggregate();
         }
 
         //TODO: optimize it :xd by using default but don't destroy it :xdxdxd
-        auto batch = std::unique_ptr<Batch>(new Batch( resultData, Device::GPU,  1, columns));
+        auto batch = std::unique_ptr<Batch>(new Batch( resultData, Device::GPU,  1, columns, nullset));
 
         return cacheManager.putBatch(std::move(batch));
     }
@@ -89,10 +93,11 @@ private:
         
         uint32_t index = 0;
         for (auto& expr : castOp.expressions) {
-            auto our_expr = our::Expression::createExpression(*expr);
-            if(our_expr->exprType != our::ExpressionType::AGGREGRATE) {
-                throw std::runtime_error("there's non aggergate expression in aggregate operator");
-            }
+            if(expr->type != duckdb::ExpressionType::AGGREGATE && expr->type != duckdb::ExpressionType::BOUND_AGGREGATE )
+                throw std::runtime_error("Found non aggregate expression in aggeregate operator");
+
+            auto our_expr = std::unique_ptr<our::AggregateExpression>(new our::AggregateExpression(*expr));
+
             columns.push_back(our_expr->column);
             expressions.push_back(std::move(our_expr));
 

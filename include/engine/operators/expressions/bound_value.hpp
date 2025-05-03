@@ -57,6 +57,7 @@ public:
         CUDA_CHECK( cudaStreamSynchronize(stream) );
         result.result = value;
         result.batchSize = 1;
+        result.nullset = nullptr;
         return result;
     }
 

@@ -23,6 +23,7 @@ class AggregateExpression: public Expression {
     double initial_value_double; // for float to not overflow in memset since it take int val
     float *tempAcc = nullptr;
     std::vector<int> batchSizes;
+    void* accumlator;
 public:
 
     std::vector<std::unique_ptr<Expression>> children;
@@ -52,7 +53,8 @@ public:
         batchSizes.push_back(batchSize);
 
         ExpressionResult src = children[0]->evaluate(arg);
-
+        
+        char* nullset = src.nullset->bitset;
         void* src_data = src.result;
 
         // Allocate result memory
@@ -62,15 +64,15 @@ public:
         switch (returnType) {
             case DataType::INT:
                 YallaSQL::Kernel::launch_reduction_operators<int, YallaSQL::Kernel::MinOperator<int>>(
-                    static_cast<int*>(src_data), static_cast<int*>(accumlator), batchSize, stream, initial_value_int);
+                    static_cast<int*>(src_data), static_cast<int*>(accumlator), nullset, batchSize, stream, initial_value_int);
                 break;
             case DataType::FLOAT:
                 YallaSQL::Kernel::launch_reduction_operators<float, YallaSQL::Kernel::MinOperator<float>>(
-                    static_cast<float*>(src_data), static_cast<float*>(accumlator), batchSize, stream, initial_value_float);
+                    static_cast<float*>(src_data), static_cast<float*>(accumlator), nullset, batchSize, stream, initial_value_float);
                 break;
             case DataType::DATETIME:
                 YallaSQL::Kernel::launch_reduction_operators<int64_t, YallaSQL::Kernel::MinOperator<int64_t>>(
-                    static_cast<int64_t*>(src_data), static_cast<int64_t*>(accumlator), batchSize, stream, initial_value_date);
+                    static_cast<int64_t*>(src_data), static_cast<int64_t*>(accumlator), nullset, batchSize, stream, initial_value_date);
                 break;
             default:
                 throw std::runtime_error("Unsupported data type");
@@ -80,15 +82,15 @@ public:
         switch (returnType) {
             case DataType::INT:
                 YallaSQL::Kernel::launch_reduction_operators<int, YallaSQL::Kernel::MaxOperator<int>>(
-                    static_cast<int*>(src_data), static_cast<int*>(accumlator),  batchSize, stream, initial_value_int);
+                    static_cast<int*>(src_data), static_cast<int*>(accumlator), nullset,  batchSize, stream, initial_value_int);
                 break;
             case DataType::FLOAT:
                 YallaSQL::Kernel::launch_reduction_operators<float, YallaSQL::Kernel::MaxOperator<float>>(
-                    static_cast<float*>(src_data), static_cast<float*>(accumlator), batchSize, stream, initial_value_float);
+                    static_cast<float*>(src_data), static_cast<float*>(accumlator), nullset, batchSize, stream, initial_value_float);
                 break;
             case DataType::DATETIME:
                 YallaSQL::Kernel::launch_reduction_operators<int64_t, YallaSQL::Kernel::MaxOperator<int64_t>>(
-                    static_cast<int64_t*>(src_data), static_cast<int64_t*>(accumlator), batchSize, stream, initial_value_date);
+                    static_cast<int64_t*>(src_data), static_cast<int64_t*>(accumlator), nullset, batchSize, stream, initial_value_date);
                 break;
             default:
                 throw std::runtime_error("Unsupported data type");
@@ -99,15 +101,15 @@ public:
         switch (returnType) {
             case DataType::INT:
                 YallaSQL::Kernel::launch_reduction_operators<int, YallaSQL::Kernel::SumOperator<int>>(
-                    static_cast<int*>(src_data), static_cast<int*>(accumlator), batchSize, stream, initial_value_int);
+                    static_cast<int*>(src_data), static_cast<int*>(accumlator), nullset, batchSize, stream, initial_value_int);
                 break;
             case DataType::FLOAT:
                 YallaSQL::Kernel::launch_sum_double_precision(
-                    static_cast<float*>(src_data), static_cast<double*>(accumlator), batchSize, stream, initial_value_double);
+                    static_cast<float*>(src_data), static_cast<double*>(accumlator), nullset, batchSize, stream, initial_value_double);
                 break;
             case DataType::DATETIME:
                 YallaSQL::Kernel::launch_reduction_operators<int64_t, YallaSQL::Kernel::SumOperator<int64_t>>(
-                    static_cast<int64_t*>(src_data), static_cast<int64_t*>(accumlator), batchSize, stream, initial_value_date);
+                    static_cast<int64_t*>(src_data), static_cast<int64_t*>(accumlator), nullset, batchSize, stream, initial_value_date);
                 break;
             default:
                 throw std::runtime_error("Unsupported data type");
@@ -154,6 +156,12 @@ public:
         // }
 
         return accumlator;
+    }
+    
+    ~AggregateExpression() {
+        if(tempAcc) { // keep only one value
+            CUDA_CHECK( cudaFree(accumlator) );
+        }
     }
 
 private:
@@ -230,11 +238,6 @@ private:
             
     }
 
-    ~AggregateExpression() {
-        if(tempAcc) { // keep only one value
-            CUDA_CHECK( cudaFree(accumlator) );
-        }
-    }
 
 };
 }
