@@ -8,14 +8,14 @@ import pandas as pd
 
 # =========== config ===========
 # Large Config
-min_num_records = 200_000
-max_num_record = 900_000
-min_columns = 30
-max_columns = 50
-min_pk_columns = 1
-max_pk_columns = 1
-folder_path = 'large_dataset'
-num_tables =  3
+# min_num_records = 200_000
+# max_num_record = 900_000
+# min_columns = 30
+# max_columns = 50
+# min_pk_columns = 1
+# max_pk_columns = 1
+# folder_path = 'large_dataset'
+# num_tables =  3
 
 # normal Config
 # min_num_records = 20_000
@@ -26,6 +26,20 @@ num_tables =  3
 # max_pk_columns = 1
 # folder_path = 'dataset'
 # num_tables=  5
+
+# max_val = max_num_record
+# max_str_len = 250
+
+min_num_records = 20_000
+max_num_record = 100_000
+min_columns = 3
+max_columns = 30
+max_val = 100
+max_str_len = 25
+min_pk_columns = 1
+max_pk_columns = 1
+folder_path = 'stable_dataset'
+num_tables=  5
 
 max_fk_columns = 5
 seed = 42
@@ -84,11 +98,11 @@ flattened = [(column_type, column_name + f" {map_column_types[column_type]} ") f
 def generate_random_values(column_type):
     """Generate random data based on the column schema and any foreign key relationships."""
     if column_type == 'int':
-        return random.randint(1, max_num_record)
+        return random.randint(1, max_val)
     elif column_type == 'float':
-        return round(random.uniform(1.0, max_num_record), 2)
+        return round(random.uniform(1.0, max_val), 2)
     elif column_type == 'text':
-        return fake.text(max_nb_chars=250).replace('\n', '\\n')
+        return fake.text(max_nb_chars=max_str_len).replace('\n', '\\n')
     elif column_type == 'datetime':
         # Generate a fake datetime and format it as 'yyyy-MM-dd HH:mm:ss'
         return fake.date_time_this_century().strftime('%Y-%m-%d %H:%M:%S')

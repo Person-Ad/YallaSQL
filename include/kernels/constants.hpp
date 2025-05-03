@@ -3,8 +3,8 @@
 #include <bits/stdint-intn.h>
 #include <bits/stdint-uintn.h>
 
-#define COARSENING_FACTOR 5
-#define BLOCK_DIM 256
+#define COARSENING_FACTOR 2
+#define BLOCK_DIM 256 //DON"T SET MORE THAN 1024 TILL HANDLE IT IN REDUCTION
 #define BLOCK_DIM_STR 128
 
 #define NUM_BANKS 32

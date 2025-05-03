@@ -39,7 +39,6 @@ public:
         for(auto& child: castExpr.children) {
             children.push_back( Expression::createExpression(*child) );
         }
-        //TODO: recheck is_scalar or not
 
     } 
 
@@ -156,9 +155,10 @@ public:
                 throw std::runtime_error("Unsupported function type");
         }
 
-
-        CUDA_CHECK(cudaFreeAsync(lhs, stream));
-        CUDA_CHECK(cudaFreeAsync(rhs, stream));
+        if(children[0]->exprType != ExpressionType::BOUND_VALUE)
+            CUDA_CHECK(cudaFreeAsync(lhs, stream));
+        if(children[1]->exprType != ExpressionType::BOUND_VALUE)
+            CUDA_CHECK(cudaFreeAsync(rhs, stream));
 
         result.batchSize = std::max(res_lhs.batchSize, res_rhs.batchSize);
         result.result = res;

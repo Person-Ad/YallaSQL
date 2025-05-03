@@ -12,7 +12,7 @@ namespace YallaSQL
     // Maximum string length in bytes
     constexpr size_t MAX_STR_LEN = 250;
     // Target maximum bytes per batch (16 mb)
-    constexpr size_t  MAX_BYTES_PER_BATCH = 16 * (1ULL << 20);
+    constexpr size_t  MAX_BYTES_PER_BATCH = 4 * (1ULL << 20);
     // Target maximum bytes per batch (6 gb)
     constexpr size_t  MAX_LIMIT_CPU_CACHE = 6 * (1ULL << 30);
     // Target maximum bytes per batch (3 gb)

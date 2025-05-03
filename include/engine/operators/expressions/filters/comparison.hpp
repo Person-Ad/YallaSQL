@@ -56,7 +56,6 @@ public:
 
         ExpressionResult res_lhs = children[0]->evaluate(arg);
         ExpressionResult res_rhs = children[1]->evaluate(arg);
-
         void* lhs = res_lhs.result;
         void* rhs = res_rhs.result; 
 
@@ -203,8 +202,11 @@ public:
             break;
         }
 
-        CUDA_CHECK(cudaFreeAsync(lhs, stream));
-        CUDA_CHECK(cudaFreeAsync(rhs, stream));
+
+        if(children[0]->exprType != ExpressionType::BOUND_VALUE)
+            CUDA_CHECK(cudaFreeAsync(lhs, stream));
+        if(children[1]->exprType != ExpressionType::BOUND_VALUE)
+            CUDA_CHECK(cudaFreeAsync(rhs, stream));
         
         result.batchSize = std::max(res_lhs.batchSize, res_rhs.batchSize);
         result.result = res; 

@@ -53,7 +53,7 @@ public:
 
     void reCreateDuckDBTable(bool insertInDuck = false) {
         // create table in duckdb 
-        const std::string query = generateCreateTableQuery();
+        const std::string query = insertInDuck ? generateSimpleCreateTableQuery() : generateCreateTableQuery();
         auto result = con.Query(query);
         
         if(result->HasError()) 
@@ -165,6 +165,35 @@ private:
             query += ") \n";
         }
 
+        query += ");";
+
+        return query;
+    }
+
+
+    [[nodiscard]] std::string generateSimpleCreateTableQuery() const {
+        // recreate table with all schema &
+        std::string query = "CREATE TABLE \"" + name + "\" (\n";
+        // Columns
+        size_t idx = 0;
+        for (const auto& col : columnsOrdered) {
+            query += "  \"" + col->name + "\" " + dataTypeToSQL(col->type);
+            if (idx++ < columns.size() - 1) query += ",";
+            query += "\n";
+        }
+
+        // Primary Key
+        if (!pkColumns.empty()) {
+            query += ",  PRIMARY KEY (";
+            idx = 0;
+            for (const auto& [colName, _] : pkColumns) {
+                query += "\"" + colName + "\"";
+                if (idx++ < pkColumns.size() - 1)  query += ", ";
+            }
+            query += ")\n";
+        }
+
+        // Foreign Keys
         query += ");";
 
         return query;

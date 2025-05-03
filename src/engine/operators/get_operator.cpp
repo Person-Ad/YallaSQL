@@ -136,8 +136,8 @@ std::unique_ptr<Batch> GetOperator::storeBuffer(uint32_t batchSize) {
         stride += colSize;
         ++colIndex;
     }
-
-
+    // I hate myself alot
+    cudaStreamSynchronize(cudaStreamDefault);
 
     return std::unique_ptr<Batch>(new Batch(data, Device::GPU, batchSize, columns));
 }

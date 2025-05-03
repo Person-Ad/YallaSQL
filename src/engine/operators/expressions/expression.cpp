@@ -27,6 +27,10 @@ namespace our {
             // case duckdb::ExpressionType::OPERATOR_NOT://TODO:
                 // auto& castExpr = expr.Cast<duckdb::NotOper
                 // return createExpression(expression.children);  
+            case duckdb::ExpressionType::BOUND_AGGREGATE:
+            case duckdb::ExpressionType::AGGREGATE:
+                return std::unique_ptr<Expression>(new AggregateExpression(expr));
+                break;
             default:
                 throw std::runtime_error("Expression Type Not Supported: " + expr.ToString());
         }

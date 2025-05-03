@@ -49,16 +49,14 @@ public:
         our::ExpressionArg arg {};
         arg.batchs.push_back(childBatch.get());
         // evaluate expression
-        uint expIdx = 0;
+        uint32_t expIdx = 0;
         for(auto& expr: expressions) {
             our::ExpressionResult res = expr->evaluate(arg);
             resultData[expIdx++] = res.result;
         }
 
+        
         auto batch = std::unique_ptr<Batch>(new Batch( resultData, Device::GPU,  batchSize, columns, stream));
-        //! testing
-        // batch->moveTo(Device::CPU);
-        // return new batch
         return cacheManager.putBatch(std::move(batch));
     }
     

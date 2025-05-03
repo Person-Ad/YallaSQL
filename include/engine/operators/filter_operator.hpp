@@ -43,7 +43,6 @@ public:
         our::ExpressionArg arg {};
         arg.batchs.push_back(childBatch.get());
         bool *mask = static_cast<bool*>(expressions[0]->evaluate(arg).result);
-        CUDA_CHECK_LAST();
 
         // 2. cast to uint32 + get prefix sum
         uint32_t* map;
@@ -69,7 +68,7 @@ public:
             case DataType::DATETIME:
                 YallaSQL::Kernel::launch_move_rows_filter_kernel(static_cast<int64_t*>(oldCol), static_cast<int64_t*>(newColumnData[currIdx]), map, mask, oldBatchSize, stream);
                 break;
-            case DataType::STRING://TODO:
+            case DataType::STRING:
                 YallaSQL::Kernel::launch_move_rows_filter_kernel(static_cast<YallaSQL::Kernel::String*>(oldCol), static_cast<YallaSQL::Kernel::String*>(newColumnData[currIdx]), map, mask, oldBatchSize, stream);
                 break;
             default:
@@ -81,7 +80,7 @@ public:
         // free data
         CUDA_CHECK(cudaFreeAsync(mask, stream));
         CUDA_CHECK(cudaFreeAsync(map, stream));
-
+        LOG_TRACE_L2(logger, "Filtered from {} to {}", oldBatchSize, newBatchSize);
         auto batch = std::unique_ptr<Batch>(new Batch( newColumnData, Device::GPU,  newBatchSize, columns, stream));
 
         return cacheManager.putBatch(std::move(batch));
