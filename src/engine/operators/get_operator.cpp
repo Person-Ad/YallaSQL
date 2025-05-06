@@ -31,6 +31,9 @@ void GetOperator::init() {
     csvNames.reserve(columnIndexs.size());
     for(auto& columnIndex : columnIndexs) {
         auto idxInTable = columnIndex.GetPrimaryIndex();
+        if(idxInTable > table->columnsOrdered.size()) {
+            idxInTable = 0;
+        }
         columns.push_back(table->columnsOrdered[idxInTable]);
         csvNames.push_back(table->csvNameColumn[idxInTable]);
         columnsType.push_back(table->columnsType[idxInTable]);

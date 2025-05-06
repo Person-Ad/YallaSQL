@@ -5,7 +5,7 @@
 namespace our {
 
     enum class AggType : __uint8_t {
-        MAX, MIN, SUM, AVG, COUNT
+        MAX, MIN, SUM, AVG, COUNT, COUNT_STAR
     };
 
     [[nodiscard]] inline AggType getAggType(std::string str) {
@@ -13,6 +13,7 @@ namespace our {
         if(str == "min") return AggType::MIN;
         if(str == "sum") return AggType::SUM;
         if(str == "count") return AggType::COUNT;
+        if(str == "count_star") return AggType::COUNT_STAR;
         return AggType::AVG;
     } 
     
@@ -28,6 +29,7 @@ class AggregateExpression: public Expression {
     int* counter;// counter for average
 
     DataType srcType;
+    int total_rows = 0;
 public:
 
     std::vector<std::unique_ptr<Expression>> children;
@@ -43,12 +45,18 @@ public:
         for(auto& child: castExpr.children) {
             children.push_back( Expression::createExpression(*child) );
         }
-        srcType = children[0]->returnType;
+        if(children.size() > 0) {
+            srcType = children[0]->returnType;
+        }
         // set inital value in accumlater ... can be done in more cleaner way
         initalizeAccumlator();
     } 
 
     ExpressionResult evaluate(ExpressionArg& arg) {
+        if(agg_type == AggType::COUNT_STAR) {
+            total_rows += arg.batchs[0]->batchSize;
+            return ExpressionResult();
+        }
         if (children.size() != 1) 
             throw std::runtime_error("AGG operator requires exactly 1 children");
         
@@ -65,6 +73,9 @@ public:
         // Allocate result memory
         
         switch (agg_type) {
+        case AggType::COUNT_STAR:
+            total_rows += batchSize; 
+            break; 
         case AggType::MIN:
         switch (srcType) {
             case DataType::INT:
@@ -128,7 +139,7 @@ public:
             break;
         }
         
-        if(children[0]->exprType != ExpressionType::BOUND_VALUE)
+        if(agg_type != AggType::COUNT_STAR &&  children[0]->exprType != ExpressionType::BOUND_VALUE)
             CUDA_CHECK(cudaFreeAsync(src_data, stream));
 
         return ExpressionResult();
@@ -166,6 +177,14 @@ public:
             }
             cudaStreamSynchronize(stream);
 
+            return tempAcc;
+        }
+
+        if(agg_type == AggType::COUNT_STAR) {
+            if(tempAcc) return tempAcc;  
+            CUDA_CHECK( cudaMalloc(&tempAcc, sizeof(int)) );
+            CUDA_CHECK( cudaMemcpy(tempAcc, &total_rows, sizeof(int), cudaMemcpyHostToDevice) );
+            cudaStreamSynchronize(stream);
             return tempAcc;
         }
 

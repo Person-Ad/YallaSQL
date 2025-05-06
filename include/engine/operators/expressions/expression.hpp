@@ -61,7 +61,7 @@ namespace our {
         virtual ExpressionResult evaluate(ExpressionArg& arg) = 0;
 
 
-        static std::unique_ptr<Expression> createExpression(duckdb::Expression &expr) ;
+        static std::unique_ptr<Expression> createExpression(duckdb::Expression &expr, bool isneg = false) ;
 
         virtual ~Expression() {}
     };
