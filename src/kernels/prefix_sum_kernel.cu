@@ -136,7 +136,7 @@ __global__ void prefix_sum_mask(bool* arr, uint32_t* res,
 
 void launch_prefix_sum_mask(bool* arr, uint32_t* res, const uint32_t sz, cudaStream_t &stream) {
     dim3 threads(BLOCK_DIM);
-    dim3 blocks (CEIL_DIV(sz, threads.x * COARSENING_FACTOR));
+    dim3 blocks (CEIL_DIV(sz, 2 * threads.x * COARSENING_FACTOR));
      
     uint32_t *blocks_counter, *blocks_finished;
     CUDA_CHECK( cudaMallocAsync((void**)&blocks_counter, sizeof(uint32_t), stream) );
@@ -145,7 +145,7 @@ void launch_prefix_sum_mask(bool* arr, uint32_t* res, const uint32_t sz, cudaStr
     CUDA_CHECK( cudaMemsetAsync(blocks_counter, 0, sizeof(uint32_t), stream) );
     CUDA_CHECK( cudaMemsetAsync(blocks_finished, 0, sizeof(uint32_t), stream) );
 
-    prefix_sum_mask<<<blocks, threads, PREFIX_SH_MEM_SZ, stream>>>(arr, res, sz, *blocks_counter, *blocks_finished);
+    prefix_sum_mask<<<blocks, threads, 0, stream>>>(arr, res, sz, *blocks_counter, *blocks_finished);
     
     CUDA_CHECK_LAST();
 }

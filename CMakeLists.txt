@@ -33,7 +33,7 @@ elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -O3")
     set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} -O3")
 elseif(CMAKE_BUILD_TYPE STREQUAL "CUDADebug")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -g")
     set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} -G")
 endif()
@@ -63,6 +63,8 @@ set(ALL_SOURCES
     "${SOURCE_DIR}/kernels/cast_operators_kernel.cu"
     "${SOURCE_DIR}/kernels/prefix_sum_kernel.cu"
     "${SOURCE_DIR}/kernels/move_rows_kernel.cu"
+    "${SOURCE_DIR}/kernels/reduction_kernel.cu"
+    "${SOURCE_DIR}/kernels/sum_douple_kernel.cu"
     # main engine 
     "${SOURCE_DIR}/engine/query_engine.cpp"
     "${SOURCE_DIR}/engine/executor_engine.cpp"

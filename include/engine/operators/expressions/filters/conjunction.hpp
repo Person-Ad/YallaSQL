@@ -83,6 +83,7 @@ public:
         
         result.batchSize = std::max(res_lhs.batchSize, res_rhs.batchSize);
         result.result = res;
+        result.nullset = res_lhs.nullset;
         return result;
     }
 

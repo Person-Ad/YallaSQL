@@ -79,10 +79,11 @@ public:
         default:
             break;
         }
-
-        CUDA_CHECK(cudaFreeAsync(data, stream));
+        if(child->exprType != ExpressionType::BOUND_VALUE)
+            CUDA_CHECK(cudaFreeAsync(data, stream));
         result.result = res;
         result.batchSize = childRes.batchSize;
+        result.nullset = childRes.nullset;
         return result;
     }
 

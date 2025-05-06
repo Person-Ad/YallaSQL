@@ -25,6 +25,8 @@ namespace YallaSQL
         );
 
         auto* logger = quill::Frontend::create_or_get_logger("root", std::move(file_sink));
+        // Change the LogLevel to print everything
+        logger->set_log_level(quill::LogLevel::TraceL3);
         return logger;
     }
     // quill::Logger* yalla_logger = getLogger("");

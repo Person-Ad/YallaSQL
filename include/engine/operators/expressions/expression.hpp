@@ -19,7 +19,9 @@ namespace our {
        
         COMPARISON,
         CONJUNCTION,
-        NOT
+        NOT, //TODO
+
+        AGGREGRATE
         
     };
 
@@ -29,6 +31,8 @@ namespace our {
         void* result;
         // num of return values
         size_t batchSize;
+
+        std::shared_ptr<NullBitSet> nullset;
     };
 
     struct ExpressionArg {
@@ -36,13 +40,11 @@ namespace our {
     };
 
     class Expression {
+    protected:
     public:
         std::string alias;
         DataType returnType;
         std::shared_ptr<Column> column;
-        bool is_sync  = false; // if need all children to output Like Max, Min, ....
-        bool required_op_child = true; // not like constant value etc..
-        bool is_scalar = false;
         ExpressionType exprType;
 
 
@@ -59,7 +61,7 @@ namespace our {
         virtual ExpressionResult evaluate(ExpressionArg& arg) = 0;
 
 
-        static std::unique_ptr<Expression> createExpression(duckdb::Expression &expr) ;
+        static std::unique_ptr<Expression> createExpression(duckdb::Expression &expr, bool isneg = false) ;
 
         virtual ~Expression() {}
     };

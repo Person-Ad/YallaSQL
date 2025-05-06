@@ -42,6 +42,8 @@ void Batch::moveGpuToCpu() {
         CUDA_CHECK( cudaFreeAsync(columnData[i], stream) );
         // store pointer
         cpuData[i] = buffer;
+
+        nullset[i]->moveToCpu(batchSize, stream);
     }
 
     columnData = std::move(cpuData);

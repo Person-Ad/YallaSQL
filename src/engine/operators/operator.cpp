@@ -26,28 +26,16 @@ std::unique_ptr<Operator> Operator::CreateOperator(const duckdb::LogicalOperator
         return std::unique_ptr<Operator>(new FilterOperator(op, planner) );
     }
     else if(op.type == duckdb::LogicalOperatorType::LOGICAL_AGGREGATE_AND_GROUP_BY) {
-        auto &castOp = op.Cast<duckdb::LogicalAggregate>();
-        auto &expressions = castOp.expressions;
-        std::cout << "expression size: " << expressions.size() << "\n";
-        auto &groups = castOp.groups;
-        auto &groupsInd = castOp.groupings_index;
-
-        std::cout << "a\n";
+        return std::unique_ptr<Operator>(new AggregateOperator(op, planner) );
     }
     return nullptr;
     // else if(op.type == duckdb::LogicalOperatorType::LOGICAL_LIMIT) {
-
-    // }
-    // else if(op.type == duckdb::LogicalOperatorType::LOGICAL_FILTER) {
 
     // }
     // else if(op.type == duckdb::LogicalOperatorType::LOGICAL_ORDER_BY) {
 
     // }
     // else if(op.type == duckdb::LogicalOperatorType::LOGICAL_TOP_N) {
-
-    // }
-    // else if(op.type == duckdb::LogicalOperatorType::LOGICAL_AGGREGATE_AND_GROUP_BY) {
 
     // }
     // else if(op.type == duckdb::LogicalOperatorType::LOGICAL_DISTINCT) {

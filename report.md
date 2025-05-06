@@ -1,8 +1,11 @@
 # TODOs
 - [x] streams
-- [ ] add strings
-- [ ] ```SQL WHERE```
-    - [ ] compare for strings -> I think it can be done by filling zeros
+- [x] ```SQL WHERE```
+    - [x] add strings
+    - [ ] handle `NOT`
+- [x] ```SQL MAX, MIN, SUM```
+- [x] test more SUM
+- [ ] ```SQL MAX, MIN, SUM```
 - [ ] ```SQL SORT BY```
 - [ ] ```SQL Inner join```
 
@@ -214,3 +217,50 @@ small table
 1. Mean: 98.7ms, Median: 98 ms, Min: 82 ms, Max: 110 ms, StdDev: 7.96304 ms
 large table
 1. Mean: 759.7ms, Median: 748 ms, Min: 722 ms, Max: 856 ms, StdDev: 40.7874 ms
+
+ssb-benchmark
+- write 20mb
+```
+SELECT revenue, quantity FROM lineorder where quantity < 20;
+```
+using MAX_BYTES_PER_BATCH = 8mb, BLOCK_DIM=256, COARSENING_FACTOR=5
+1. Mean: 2858.6ms, Median: 2855 ms, Min: 2628 ms, Max: 3239 ms, StdDev: 188.652 ms
+using MAX_BYTES_PER_BATCH = 16mb, BLOCK_DIM=256, COARSENING_FACTOR=5
+1. Mean: 3011.8ms, Median: 2930 ms, Min: 2603 ms, Max: 3716 ms, StdDev: 358.025 ms
+using MAX_BYTES_PER_BATCH = 16mb, BLOCK_DIM=256, COARSENING_FACTOR=10
+1. Mean: 2993.7ms, Median: 3017 ms, Min: 2799 ms, Max: 3172 ms, StdDev: 123.509 ms
+using MAX_BYTES_PER_BATCH = 16mb, BLOCK_DIM=512, COARSENING_FACTOR=10
+1. Mean: 3238.7ms, Median: 3257 ms, Min: 3098 ms, Max: 3326 ms, StdDev: 57.5449 ms
+using MAX_BYTES_PER_BATCH = 16mb, BLOCK_DIM=512, COARSENING_FACTOR=5
+1. Mean: 3276.7ms, Median: 3273 ms, Min: 3025 ms, Max: 3780 ms, StdDev: 195.156 ms
+
+using MAX_BYTES_PER_BATCH = 4mb, BLOCK_DIM=256, COARSENING_FACTOR=5
+
+1. Mean: 3022.4ms, Median: 3046 ms, Min: 2872 ms, Max: 3204 ms, StdDev: 109.107 ms
+2. Mean: 2788.5ms, Median: 2805 ms, Min: 2683 ms, Max: 2864 ms, StdDev: 49.261 ms
+
+using MAX_BYTES_PER_BATCH = 4mb, BLOCK_DIM=256, COARSENING_FACTOR=2
+1. Mean: 2750.5ms, Median: 2749 ms, Min: 2705 ms, Max: 2822 ms, StdDev: 34.3344 ms
+2. Mean: 2683.4ms, Median: 2673 ms, Min: 2542 ms, Max: 2865 ms, StdDev: 88.98 ms
+
+
+## Aggregates
+use ssb-benchmark
+```SQL
+select max(revenue) as max_revenue from lineorder;
+```
+Mean: 2827.4ms, Median: 2921 ms, Min: 2236 ms, Max: 3159 ms, StdDev: 274.761 ms
+
+```SQL
+select min(revenue) as min_revenue from lineorder;
+```
+Mean: 2898.4ms, Median: 2886 ms, Min: 2537 ms, Max: 3566 ms, StdDev: 303.469 ms
+
+>>>>>>>>>>>>>>>>> taken using compute-santizier <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+ 23:07   yallaSQL λ  select revenue, quantity from lineorder where quantity<25;
+<⏱️  execute time> 
+Mean: 5983.5ms, Median: 6026 ms, Min: 5730 ms, Max: 6447 ms, StdDev: 188.66 ms
+Query executed successfully
+ 23:09   yallaSQL λ  select min(revenue) from lineorder where quantity<25;
+<⏱️  execute time> 
+Mean: 5393.8ms, Median: 5526 ms, Min: 4930 ms, Max: 5964 ms, StdDev: 354.487 ms

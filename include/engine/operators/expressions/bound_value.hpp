@@ -15,7 +15,6 @@ public:
     BoundValueExpression(duckdb::Expression &expr): Expression(expr) {
         CUDA_CHECK(cudaStreamCreate(&stream));
         exprType = ExpressionType::BOUND_VALUE;
-        is_scalar = true;
         
         auto& valueExp = expr.Cast<duckdb::BoundConstantExpression>().value;
         // allocate space on gpu for value
@@ -58,11 +57,12 @@ public:
         CUDA_CHECK( cudaStreamSynchronize(stream) );
         result.result = value;
         result.batchSize = 1;
+        result.nullset = nullptr;
         return result;
     }
 
     ~BoundValueExpression() {
-        // CUDA_CHECK( cudaFreeAsync(value, stream) );
+        CUDA_CHECK( cudaFreeAsync(value, stream) );
         CUDA_CHECK( cudaStreamDestroy(stream) );
     }
 

@@ -4,6 +4,7 @@
 #include <cuda_runtime.h>
 
 #include <vector>
+#include <memory>
 #include <mutex>
 #include <cstdio>
 #include "config.hpp"
@@ -11,14 +12,17 @@
 #include "enums/data_type_utils.hpp"
 #include "enums/device.hpp"
 #include "utils/macros.hpp"
+#include "null_bit_set.hpp"
 
 #define uint_32 unsigned int
+
 
 
 class Batch {
     // must access it using getColumn, getItem
 public:
     std::vector<void*> columnData;
+    std::vector<std::shared_ptr<NullBitSet>> nullset;
     // the actual data that will be move between cpu & gpu
     // void* data = nullptr;
     // batch metadata
@@ -29,28 +33,30 @@ public:
     time_t lastAccessed;
     std::string filePath;
     cudaStream_t stream;
+
     // columns returned
     std::vector<std::shared_ptr<Column>> columns;
     // Protects access to `data` to not access it while movingp
     mutable std::mutex dataMutex;  
 
 public:
-    Batch(const std::vector<void*>& columnData, Device location, uint_32 batchSize, std::vector<std::shared_ptr<Column>> columns, cudaStream_t st = nullptr)
-        : columnData(columnData), location(location), batchSize(batchSize), columns(columns) {
-        // num of cols = types.size()
+    Batch(const std::vector<void*>& columnData, Device location, uint_32 batchSize, std::vector<std::shared_ptr<Column>>& columns, std::vector<std::shared_ptr<NullBitSet>>& nullset, cudaStream_t st = nullptr)
+        : columnData(columnData), location(location), batchSize(batchSize), columns(columns), nullset(nullset) {
+        // Create steam
+        if(st) 
+            stream = st;
+        else 
+            CUDA_CHECK(cudaStreamCreate(&stream));
+        // Calculate total bytes for all column
         totalBytes = 0;
         for (size_t i = 0; i < columns.size(); ++i) {
             totalBytes += columns[i]->bytes * batchSize;
         }
-
+        
         lastAccessed = time(nullptr); // update last accessed time
         numCols = columnData.size();
-        if(st) {
-            stream = st;
-        } else {
-            CUDA_CHECK(cudaStreamCreate(&stream));
-        }
     }
+
 
   
     // will be used for projections

@@ -7,3 +7,4 @@
 #include "engine/operators/expressions/cast.hpp"
 #include "engine/operators/expressions/filters/comparison.hpp"
 #include "engine/operators/expressions/filters/conjunction.hpp"
+#include "engine/operators/expressions/aggregate.hpp"

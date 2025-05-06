@@ -1,6 +1,6 @@
 #pragma once
 enum class DataType : __uint8_t {
-    INT,
+    INT = 0,
     FLOAT,
     DATETIME,
     STRING

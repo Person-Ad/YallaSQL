@@ -41,7 +41,8 @@ void ExecutorEngine::saveBufferedBatchs(std::vector<BatchID>& buffer_ids, CacheM
     // Ensure batch is on CPU for CSV writing 
     // send multiple request Async
     for(auto& batch: buffer) {
-        batch->moveTo(Device::CPU);
+        if(batch->batchSize > 0) // due to filters
+            batch->moveTo(Device::CPU);
     }
     // write and ensure to sync
     for(auto& batch: buffer) {
