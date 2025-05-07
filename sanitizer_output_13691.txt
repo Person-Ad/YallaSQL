@@ -1,0 +1,1604 @@
+========= COMPUTE-SANITIZER
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0xa40 in merge_batchs.cu:62
+=========     by thread (160,0,0) in block (15,0,0)
+=========     Address 0x4e80 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0xa40 in merge_batchs.cu:62
+=========     by thread (161,0,0) in block (15,0,0)
+=========     Address 0x4e84 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0xa40 in merge_batchs.cu:62
+=========     by thread (162,0,0) in block (15,0,0)
+=========     Address 0x4e88 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0xa40 in merge_batchs.cu:62
+=========     by thread (163,0,0) in block (15,0,0)
+=========     Address 0x4e8c is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0xa40 in merge_batchs.cu:62
+=========     by thread (164,0,0) in block (15,0,0)
+=========     Address 0x4e90 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0xa40 in merge_batchs.cu:62
+=========     by thread (165,0,0) in block (15,0,0)
+=========     Address 0x4e94 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0xa40 in merge_batchs.cu:62
+=========     by thread (166,0,0) in block (15,0,0)
+=========     Address 0x4e98 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0xa40 in merge_batchs.cu:62
+=========     by thread (167,0,0) in block (15,0,0)
+=========     Address 0x4e9c is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0xa40 in merge_batchs.cu:62
+=========     by thread (168,0,0) in block (15,0,0)
+=========     Address 0x4ea0 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0xa40 in merge_batchs.cu:62
+=========     by thread (169,0,0) in block (15,0,0)
+=========     Address 0x4ea4 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0xa40 in merge_batchs.cu:62
+=========     by thread (170,0,0) in block (15,0,0)
+=========     Address 0x4ea8 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0xa40 in merge_batchs.cu:62
+=========     by thread (171,0,0) in block (15,0,0)
+=========     Address 0x4eac is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0xa40 in merge_batchs.cu:62
+=========     by thread (172,0,0) in block (15,0,0)
+=========     Address 0x4eb0 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0xa40 in merge_batchs.cu:62
+=========     by thread (173,0,0) in block (15,0,0)
+=========     Address 0x4eb4 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0xa40 in merge_batchs.cu:62
+=========     by thread (174,0,0) in block (15,0,0)
+=========     Address 0x4eb8 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0xa40 in merge_batchs.cu:62
+=========     by thread (175,0,0) in block (15,0,0)
+=========     Address 0x4ebc is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0xa40 in merge_batchs.cu:62
+=========     by thread (176,0,0) in block (15,0,0)
+=========     Address 0x4ec0 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0xa40 in merge_batchs.cu:62
+=========     by thread (177,0,0) in block (15,0,0)
+=========     Address 0x4ec4 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0xa40 in merge_batchs.cu:62
+=========     by thread (178,0,0) in block (15,0,0)
+=========     Address 0x4ec8 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0xa40 in merge_batchs.cu:62
+=========     by thread (179,0,0) in block (15,0,0)
+=========     Address 0x4ecc is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0xa40 in merge_batchs.cu:62
+=========     by thread (180,0,0) in block (15,0,0)
+=========     Address 0x4ed0 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0xa40 in merge_batchs.cu:62
+=========     by thread (181,0,0) in block (15,0,0)
+=========     Address 0x4ed4 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0xa40 in merge_batchs.cu:62
+=========     by thread (182,0,0) in block (15,0,0)
+=========     Address 0x4ed8 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0xa40 in merge_batchs.cu:62
+=========     by thread (183,0,0) in block (15,0,0)
+=========     Address 0x4edc is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0xa40 in merge_batchs.cu:62
+=========     by thread (184,0,0) in block (15,0,0)
+=========     Address 0x4ee0 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0xa40 in merge_batchs.cu:62
+=========     by thread (185,0,0) in block (15,0,0)
+=========     Address 0x4ee4 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0xa40 in merge_batchs.cu:62
+=========     by thread (186,0,0) in block (15,0,0)
+=========     Address 0x4ee8 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0xa40 in merge_batchs.cu:62
+=========     by thread (187,0,0) in block (15,0,0)
+=========     Address 0x4eec is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0xa40 in merge_batchs.cu:62
+=========     by thread (188,0,0) in block (15,0,0)
+=========     Address 0x4ef0 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0xa40 in merge_batchs.cu:62
+=========     by thread (189,0,0) in block (15,0,0)
+=========     Address 0x4ef4 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0xa40 in merge_batchs.cu:62
+=========     by thread (190,0,0) in block (15,0,0)
+=========     Address 0x4ef8 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0xa40 in merge_batchs.cu:62
+=========     by thread (191,0,0) in block (15,0,0)
+=========     Address 0x4efc is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0x980 in merge_batchs.cu:59
+=========     by thread (64,0,0) in block (16,0,0)
+=========     Address 0x4d00 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0x980 in merge_batchs.cu:59
+=========     by thread (65,0,0) in block (16,0,0)
+=========     Address 0x4d04 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0x980 in merge_batchs.cu:59
+=========     by thread (66,0,0) in block (16,0,0)
+=========     Address 0x4d08 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0x980 in merge_batchs.cu:59
+=========     by thread (67,0,0) in block (16,0,0)
+=========     Address 0x4d0c is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0x980 in merge_batchs.cu:59
+=========     by thread (68,0,0) in block (16,0,0)
+=========     Address 0x4d10 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0x980 in merge_batchs.cu:59
+=========     by thread (69,0,0) in block (16,0,0)
+=========     Address 0x4d14 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0x980 in merge_batchs.cu:59
+=========     by thread (70,0,0) in block (16,0,0)
+=========     Address 0x4d18 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0x980 in merge_batchs.cu:59
+=========     by thread (71,0,0) in block (16,0,0)
+=========     Address 0x4d1c is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0x980 in merge_batchs.cu:59
+=========     by thread (72,0,0) in block (16,0,0)
+=========     Address 0x4d20 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0x980 in merge_batchs.cu:59
+=========     by thread (73,0,0) in block (16,0,0)
+=========     Address 0x4d24 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0x980 in merge_batchs.cu:59
+=========     by thread (74,0,0) in block (16,0,0)
+=========     Address 0x4d28 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0x980 in merge_batchs.cu:59
+=========     by thread (75,0,0) in block (16,0,0)
+=========     Address 0x4d2c is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0x980 in merge_batchs.cu:59
+=========     by thread (76,0,0) in block (16,0,0)
+=========     Address 0x4d30 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0x980 in merge_batchs.cu:59
+=========     by thread (77,0,0) in block (16,0,0)
+=========     Address 0x4d34 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0x980 in merge_batchs.cu:59
+=========     by thread (78,0,0) in block (16,0,0)
+=========     Address 0x4d38 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0x980 in merge_batchs.cu:59
+=========     by thread (79,0,0) in block (16,0,0)
+=========     Address 0x4d3c is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0x980 in merge_batchs.cu:59
+=========     by thread (80,0,0) in block (16,0,0)
+=========     Address 0x4d40 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0x980 in merge_batchs.cu:59
+=========     by thread (81,0,0) in block (16,0,0)
+=========     Address 0x4d44 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0x980 in merge_batchs.cu:59
+=========     by thread (82,0,0) in block (16,0,0)
+=========     Address 0x4d48 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0x980 in merge_batchs.cu:59
+=========     by thread (83,0,0) in block (16,0,0)
+=========     Address 0x4d4c is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0x980 in merge_batchs.cu:59
+=========     by thread (84,0,0) in block (16,0,0)
+=========     Address 0x4d50 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0x980 in merge_batchs.cu:59
+=========     by thread (85,0,0) in block (16,0,0)
+=========     Address 0x4d54 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0x980 in merge_batchs.cu:59
+=========     by thread (86,0,0) in block (16,0,0)
+=========     Address 0x4d58 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0x980 in merge_batchs.cu:59
+=========     by thread (87,0,0) in block (16,0,0)
+=========     Address 0x4d5c is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0x980 in merge_batchs.cu:59
+=========     by thread (88,0,0) in block (16,0,0)
+=========     Address 0x4d60 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0x980 in merge_batchs.cu:59
+=========     by thread (89,0,0) in block (16,0,0)
+=========     Address 0x4d64 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0x980 in merge_batchs.cu:59
+=========     by thread (90,0,0) in block (16,0,0)
+=========     Address 0x4d68 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0x980 in merge_batchs.cu:59
+=========     by thread (91,0,0) in block (16,0,0)
+=========     Address 0x4d6c is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0x980 in merge_batchs.cu:59
+=========     by thread (92,0,0) in block (16,0,0)
+=========     Address 0x4d70 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0x980 in merge_batchs.cu:59
+=========     by thread (93,0,0) in block (16,0,0)
+=========     Address 0x4d74 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0x980 in merge_batchs.cu:59
+=========     by thread (94,0,0) in block (16,0,0)
+=========     Address 0x4d78 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0x980 in merge_batchs.cu:59
+=========     by thread (95,0,0) in block (16,0,0)
+=========     Address 0x4d7c is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0x980 in merge_batchs.cu:59
+=========     by thread (96,0,0) in block (16,0,0)
+=========     Address 0x4d80 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0x980 in merge_batchs.cu:59
+=========     by thread (97,0,0) in block (16,0,0)
+=========     Address 0x4d84 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0x980 in merge_batchs.cu:59
+=========     by thread (98,0,0) in block (16,0,0)
+=========     Address 0x4d88 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0x980 in merge_batchs.cu:59
+=========     by thread (99,0,0) in block (16,0,0)
+=========     Address 0x4d8c is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0x980 in merge_batchs.cu:59
+=========     by thread (100,0,0) in block (16,0,0)
+=========     Address 0x4d90 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0x980 in merge_batchs.cu:59
+=========     by thread (101,0,0) in block (16,0,0)
+=========     Address 0x4d94 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0x980 in merge_batchs.cu:59
+=========     by thread (102,0,0) in block (16,0,0)
+=========     Address 0x4d98 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0x980 in merge_batchs.cu:59
+=========     by thread (103,0,0) in block (16,0,0)
+=========     Address 0x4d9c is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0x980 in merge_batchs.cu:59
+=========     by thread (104,0,0) in block (16,0,0)
+=========     Address 0x4da0 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0x980 in merge_batchs.cu:59
+=========     by thread (105,0,0) in block (16,0,0)
+=========     Address 0x4da4 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0x980 in merge_batchs.cu:59
+=========     by thread (106,0,0) in block (16,0,0)
+=========     Address 0x4da8 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0x980 in merge_batchs.cu:59
+=========     by thread (107,0,0) in block (16,0,0)
+=========     Address 0x4dac is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0x980 in merge_batchs.cu:59
+=========     by thread (108,0,0) in block (16,0,0)
+=========     Address 0x4db0 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0x980 in merge_batchs.cu:59
+=========     by thread (109,0,0) in block (16,0,0)
+=========     Address 0x4db4 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0x980 in merge_batchs.cu:59
+=========     by thread (110,0,0) in block (16,0,0)
+=========     Address 0x4db8 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0x980 in merge_batchs.cu:59
+=========     by thread (111,0,0) in block (16,0,0)
+=========     Address 0x4dbc is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0x980 in merge_batchs.cu:59
+=========     by thread (112,0,0) in block (16,0,0)
+=========     Address 0x4dc0 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0x980 in merge_batchs.cu:59
+=========     by thread (113,0,0) in block (16,0,0)
+=========     Address 0x4dc4 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0x980 in merge_batchs.cu:59
+=========     by thread (114,0,0) in block (16,0,0)
+=========     Address 0x4dc8 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0x980 in merge_batchs.cu:59
+=========     by thread (115,0,0) in block (16,0,0)
+=========     Address 0x4dcc is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0x980 in merge_batchs.cu:59
+=========     by thread (116,0,0) in block (16,0,0)
+=========     Address 0x4dd0 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0x980 in merge_batchs.cu:59
+=========     by thread (117,0,0) in block (16,0,0)
+=========     Address 0x4dd4 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0x980 in merge_batchs.cu:59
+=========     by thread (118,0,0) in block (16,0,0)
+=========     Address 0x4dd8 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0x980 in merge_batchs.cu:59
+=========     by thread (119,0,0) in block (16,0,0)
+=========     Address 0x4ddc is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0x980 in merge_batchs.cu:59
+=========     by thread (120,0,0) in block (16,0,0)
+=========     Address 0x4de0 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0x980 in merge_batchs.cu:59
+=========     by thread (121,0,0) in block (16,0,0)
+=========     Address 0x4de4 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0x980 in merge_batchs.cu:59
+=========     by thread (122,0,0) in block (16,0,0)
+=========     Address 0x4de8 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0x980 in merge_batchs.cu:59
+=========     by thread (123,0,0) in block (16,0,0)
+=========     Address 0x4dec is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0x980 in merge_batchs.cu:59
+=========     by thread (124,0,0) in block (16,0,0)
+=========     Address 0x4df0 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0x980 in merge_batchs.cu:59
+=========     by thread (125,0,0) in block (16,0,0)
+=========     Address 0x4df4 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0x980 in merge_batchs.cu:59
+=========     by thread (126,0,0) in block (16,0,0)
+=========     Address 0x4df8 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0x980 in merge_batchs.cu:59
+=========     by thread (127,0,0) in block (16,0,0)
+=========     Address 0x4dfc is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0x980 in merge_batchs.cu:59
+=========     by thread (6,0,0) in block (16,0,0)
+=========     Address 0x4c18 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0x980 in merge_batchs.cu:59
+=========     by thread (7,0,0) in block (16,0,0)
+=========     Address 0x4c1c is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0x980 in merge_batchs.cu:59
+=========     by thread (8,0,0) in block (16,0,0)
+=========     Address 0x4c20 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Invalid __shared__ write of size 4 bytes
+=========     at YallaSQL::Kernel::merge_sorted_array_kernel(int *, int *, int *, int *, unsigned int, unsigned int, unsigned int)+0x980 in merge_batchs.cu:59
+=========     by thread (9,0,0) in block (16,0,0)
+=========     Address 0x4c24 is out of bounds
+=========     Saved host backtrace up to driver entry point at kernel launch time
+=========         Host Frame: YallaSQL::Kernel::launch_merge_sorted_array_kernel(int*, int*, int*, int*, unsigned int, unsigned int, unsigned int) in merge_batchs.cu:91 [0x10c040] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_two_runs(RUN*, RUN*, CacheManager&) in order_operator.cpp:61 [0x15c73f] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::merge_all_sorted(std::vector<RUN*, std::allocator<RUN*> >&, CacheManager&) [0x1334c9] in yallasql_cli
+=========         Host Frame: YallaSQL::OrderOperator::next(CacheManager&) in order_operator.hpp:62 [0x132f5a] in yallasql_cli
+=========         Host Frame: ExecutorEngine::execute(duckdb::LogicalOperator&, duckdb::Planner const&) in executor_engine.cpp:24 [0x11a37c] in yallasql_cli
+=========         Host Frame: QueryEngine::executeLogicalPlan(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in query_engine.cpp:98 [0x10d5cb] in yallasql_cli
+=========         Host Frame: QueryEngine::execute(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) in query_engine.cpp:174 [0x10e273] in yallasql_cli
+=========         Host Frame: YallaSQLShell::processInput(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) in shell.cpp:221 [0xa5fbe] in yallasql_cli
+=========         Host Frame: YallaSQLShell::run() in shell.cpp:256 [0xa6953] in yallasql_cli
+=========         Host Frame: main in main.cpp:12 [0x3069d] in yallasql_cli
+========= 
+========= Target application returned an error
+========= ERROR SUMMARY: 1906 errors
+========= ERROR SUMMARY: 1806 errors were not printed. Use --print-limit option to adjust the number of printed errors

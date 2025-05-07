@@ -26,8 +26,10 @@ endif()
 
 # Configure build-type specific flags
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -g")
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=address -g")
+    # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -g")
+    # set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=address -g")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -g")
 elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -O3")
@@ -45,7 +47,8 @@ find_package(quill REQUIRED CONFIG)
 
 # Configure duckdb link directories based on build type
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    link_directories(vendor/duckdb/build/debug/src)
+    # link_directories(vendor/duckdb/build/debug/src)
+    link_directories(vendor/duckdb/build/release/src)
 elseif(CMAKE_BUILD_TYPE STREQUAL "Release" OR CMAKE_BUILD_TYPE STREQUAL "CUDADebug")
     link_directories(vendor/duckdb/build/release/src)
 endif()
@@ -68,12 +71,14 @@ set(ALL_SOURCES
     "${SOURCE_DIR}/kernels/radix_sort_kernel.cu"
     "${SOURCE_DIR}/kernels/radix_sort_utils.cu"
     "${SOURCE_DIR}/kernels/radix_sort_uint32_kernel.cu"
+    "${SOURCE_DIR}/kernels/merge_batchs.cu"
     # main engine 
     "${SOURCE_DIR}/engine/query_engine.cpp"
     "${SOURCE_DIR}/engine/executor_engine.cpp"
     # Operators
     "${SOURCE_DIR}/engine/operators/operator.cpp"
     "${SOURCE_DIR}/engine/operators/get_operator.cpp"
+    "${SOURCE_DIR}/engine/operators/order_operator.cpp"
     "${SOURCE_DIR}/engine/operators/expressions/expression.cpp"
 )
 # Gather source files
@@ -103,6 +108,11 @@ target_link_libraries(yallasql_cli
         duckdb
 )
 
+target_compile_options(yallasql_cli PRIVATE $<$<COMPILE_LANGUAGE:CUDA>: 
+                        -v
+                        -g
+                        -lineinfo
+                        >)
 # Custom target for building Debug configuration
 # Run `ninja debug` to build with CMAKE_BUILD_TYPE=Debug
 # Custom targets

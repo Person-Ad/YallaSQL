@@ -2,7 +2,7 @@
 // [ ] get how to handle ASC, DESC
 // [x] sort one batch: int -> datetime -> float -> 
 //          !string
-// [ ] wrap it in runs 
+// [x] wrap it in runs 
 // [ ] build merging templates
 // [ ] merging runs & output batchs :ISA
 #pragma once
@@ -19,12 +19,16 @@
 #include <memory>
 
 
-namespace YallaSQL::KernelTest {
-        void launch_radix_sort(uint32_t* d_input, uint32_t* &d_idxs_in, const uint32_t N);
-}
 struct RUN {
     int total_rows = 0;
     std::vector<BatchID> batchs;
+    std::vector<int> prefix_sum_rows; 
+    RUN() { prefix_sum_rows.push_back(0); }
+    void init() {
+        for(int i = 1; i < prefix_sum_rows.size();i++) 
+            prefix_sum_rows[i] += prefix_sum_rows[i - 1];
+    }
+
 };
 
 namespace YallaSQL {
@@ -37,7 +41,12 @@ class OrderOperator final: public Operator {
     // sorting
     std::unique_ptr<our::BoundRefSortExpression> expression;
     duckdb::OrderType order;
-
+    std::vector<RUN*> runs;
+    uint32_t keyIndex;
+    //TODO: set it
+    uint32_t MAX_BATCH_SZ;
+    uint32_t BUFFER_SZ;
+    uint32_t currBatchIdx = 0;
 public:
     // inherit from operator
     using Operator::Operator; 
@@ -54,16 +63,14 @@ public:
         if(!isInitalized) init();
         if(isFinished || children.empty()) {isFinished = true; return 0;}
 
-        //!test cache manager
-        if(!first_pass) 
+        if(!first_pass) {
             firstPass(cacheManager);
-        if(!stack.empty()) {
-            BatchID top_batch = stack.top();
-            stack.pop();
-
-            // auto batch = cacheManager.getBatch(top_batch);
-
-            return top_batch;
+            //! test merging
+            merge_all_sorted(runs, cacheManager);
+        } 
+        
+        if(currBatchIdx < runs[0]->batchs.size()) {
+            return  runs[0]->batchs[currBatchIdx++];
         }
         
         
@@ -76,23 +83,62 @@ private:
         
         // 1. foreach batch in R
         BatchID batch_idx = children[0]->next(cacheManager);
+        MAX_BATCH_SZ = batch_idx != 0 ? cacheManager.refBatch(batch_idx).batchSize : 0;
+        BUFFER_SZ = MAX_BATCH_SZ;
+
         while(batch_idx) {
             // 2.1 convert it to comparable format
             auto batch = cacheManager.getBatch(batch_idx);
             auto countable_batch = expression->evaluate(*batch);
+            uint32_t batchSize = countable_batch.batchSize;
             // 2.2 sort batch locally
-            uint32_t* d_new_index = sortLocallyBatch(countable_batch.result, countable_batch.batchSize, batch->stream);
+            uint32_t* d_new_index = sortLocallyBatch(countable_batch.result, batchSize, batch->stream);
             // 2.3 use d_new_index to move rows locally
             auto new_batch = YallaSQL::Kernel::move_rows_batch(*batch, d_new_index);
             // 2.4 cache it no longer needed now
             BatchID referenceBatchID =  cacheManager.putBatch(std::move(new_batch));
-            stack.push(referenceBatchID);
+            // 2.5 create run with the batch
+            RUN* run = new RUN(); 
+            run->total_rows = batchSize;
+            run->batchs.push_back(referenceBatchID);
+            run->prefix_sum_rows.push_back(batchSize);
+            runs.push_back(run);
             // 3. get next batch
             batch_idx = children[0]->next(cacheManager);
         }
 
         first_pass = true;
     }
+    
+    void load_in_buffer(int* buffer, int &buffer_offset, int &run_offset, RUN* run, CacheManager& cacheManager);
+    
+    
+    void shift_buffer(int *buffer, int i_last, int m, int &buffer_offset);
+
+    RUN* merge_two_runs(RUN* left, RUN* right, CacheManager& cacheManager) ;
+
+    void merge_all_sorted(std::vector<RUN*>& in_runs, CacheManager& cacheManager) { 
+        std::vector<RUN*> out_runs;
+        while(in_runs.size() > 1) {
+            printf("start pass\n");
+            for(int i = 0; i < in_runs.size(); i+=2) {
+                printf("start merge run %i %i\n", i, i + 1);
+                // add last run as no one merged with
+                if(i == in_runs.size() - 1) {
+                    out_runs.push_back(in_runs[in_runs.size() - 1]);
+                } else {
+                    RUN* new_run = merge_two_runs(in_runs[i], in_runs[i+1], cacheManager);
+                    out_runs.push_back(new_run);
+                }
+            }
+            //!test
+            keyIndex = 0;
+    
+            in_runs = out_runs;
+            out_runs = std::vector<RUN*>();
+        }
+    }
+
     // sort batchs locally and get new idxs
     [[nodiscard]] uint32_t* sortLocallyBatch(void* data, uint32_t batchSize, cudaStream_t stream) {
         uint32_t* d_new_index;
@@ -178,7 +224,7 @@ private:
         const auto& order_ = castOp.orders[0];
         order = order_.type;
         expression = std::unique_ptr<our::BoundRefSortExpression> (new our::BoundRefSortExpression(*order_.expression));
-
+        keyIndex = expression->idx;
     }
 };
 }    

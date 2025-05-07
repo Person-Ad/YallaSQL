@@ -15,7 +15,9 @@ __device__ void _add_prev_block(T* res, T* sh_mem,
     __shared__ T prev_sum;
     while(atomicAdd(&blocks_finished, 0) != actualBlockIdx) {__nanosleep(100);}
     if(threadIdx.x == 0) {
-        prev_sum = actualBlockIdx == 0 ? 0 : res[2*blockDim.x - 1 + 2 * blockDim.x * (actualBlockIdx - 1)];
+        prev_sum = actualBlockIdx == 0 ? 0 : 
+                   (2 * blockDim.x * actualBlockIdx - 1 < sz ? res[2 * blockDim.x * actualBlockIdx - 1] : 0);
+        // prev_sum = actualBlockIdx == 0 ? 0 : res[2*blockDim.x - 1 + 2 * blockDim.x * (actualBlockIdx - 1)];
     }
     __syncthreads();
     // let's go & sum previous
@@ -157,7 +159,7 @@ template <typename T>
 void launch_prefix_sum(T* arr, T* res, const uint32_t sz, cudaStream_t &stream) {
     dim3 threads(BLOCK_DIM);
     dim3 blocks (CEIL_DIV(sz, 2 * threads.x * COARSENING_FACTOR));
-     
+    
     uint32_t *blocks_counter, *blocks_finished;
     CUDA_CHECK( cudaMallocAsync((void**)&blocks_counter, sizeof(uint32_t), stream) );
     CUDA_CHECK( cudaMallocAsync((void**)&blocks_finished, sizeof(uint32_t), stream) );

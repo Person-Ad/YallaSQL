@@ -91,7 +91,6 @@ private:
         // get logical operator
         const auto& castOp = logicalOp.Cast<duckdb::LogicalAggregate>();
         
-        uint32_t index = 0;
         for (auto& expr : castOp.expressions) {
             if(expr->type != duckdb::ExpressionType::AGGREGATE && expr->type != duckdb::ExpressionType::BOUND_AGGREGATE )
                 throw std::runtime_error("Found non aggregate expression in aggeregate operator");

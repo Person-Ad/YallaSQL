@@ -14,9 +14,9 @@ namespace YallaSQL
     // Target maximum bytes per batch (16 mb)
     constexpr size_t  MAX_BYTES_PER_BATCH = 16 * (1ULL << 20);
     // Target maximum bytes per batch (6 gb)
-    constexpr size_t  MAX_LIMIT_CPU_CACHE = 64 * (1ULL << 20);
+    constexpr size_t  MAX_LIMIT_CPU_CACHE = 2 * (1ULL << 30);
     // Target maximum bytes per batch (3 gb)
-    constexpr size_t  MAX_LIMIT_GPU_CACHE = 32 * (1ULL << 20);
+    constexpr size_t  MAX_LIMIT_GPU_CACHE = 1 * (1ULL << 30);
 
 
     const std::string cacheDir = ".cache";
