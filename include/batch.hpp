@@ -83,7 +83,7 @@ public:
             if (ptr) {
                 if (location == Device::CPU) {
                     CUDA_CHECK( cudaFreeHost(ptr) );
-                } else {
+                } else if(location == Device::GPU) {
                     CUDA_CHECK( cudaFreeAsync(ptr, stream) );
                 }
             }

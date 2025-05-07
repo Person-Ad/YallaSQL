@@ -19,9 +19,11 @@ namespace our {
        
         COMPARISON,
         CONJUNCTION,
-        NOT, //TODO
+        NOT,
 
-        AGGREGRATE
+        AGGREGRATE,
+
+        BOUND_REF_SORT
         
     };
 

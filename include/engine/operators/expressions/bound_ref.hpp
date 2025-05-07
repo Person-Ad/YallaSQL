@@ -43,10 +43,4 @@ public:
     }
 
 };
-// aggregate expression Max, Min, Sum, Avg, .... //internal state update inside it 
-// binary expression +, -, *, /, % ... // take two batchs or one with scalar or two scalar and return a value
-// unary expression -x, !x, ... // take one batch or one scalar and return a value
-// constant expression 1, 2, 3, "hello", ... // take no batch and return a value
-// bound_ref expression // take one batch and return a batch
-
 }
