@@ -7,6 +7,21 @@ namespace YallaSQL::Kernel {
     template <typename T, typename Op>
     void launch_conditional_operators(T* __restrict__ d_rhs, T* __restrict__ d_lhs, OperandType t_rhs, OperandType t_lhs, bool*  d_res, unsigned int sz, cudaStream_t& stream, bool isneg = false);
 
+    template <typename T, typename Op>
+    void launch_outer_join_operators(T* __restrict__ d_rhs, T* __restrict__ d_lhs, 
+                                    uint32_t* pairs, 
+                                    int* actualSz,
+                                    unsigned int left_rows,
+                                    unsigned int right_rows,
+                                    cudaStream_t stream);
+    void launch_and_join_operators(const uint32_t* __restrict__ l_pairs, const uint32_t* __restrict__ r_pairs, 
+        uint32_t* pairs, // out pairs
+        uint32_t* mask, // mark if I should or already written once // bitset
+        int* actualSz,
+        unsigned int left_rows,
+        unsigned int right_rows,
+        cudaStream_t stream);
+        
     template <typename T>
     struct ConditionalOperator {
         __device__ virtual bool apply(T& a, T& b) const = 0;

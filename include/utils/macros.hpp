@@ -23,6 +23,10 @@
 
 #define CEIL_DIV(X, Y) (X + Y - 1)/(Y)
 
+#define CEIL_DIVI(X, Y) int((X + Y - 1)/(Y))
+
+#define GET_IDX(y, x, cols) (x + y*cols)
+
 #define PROFILING(name, warmup_runs, num_runs, code) {                                              \
     std::vector<long long> durations;                                                               \
     /* Warmup runs */                                                                               \

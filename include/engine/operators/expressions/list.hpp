@@ -8,3 +8,6 @@
 #include "engine/operators/expressions/filters/comparison.hpp"
 #include "engine/operators/expressions/filters/conjunction.hpp"
 #include "engine/operators/expressions/aggregate.hpp"
+#include "engine/operators/expressions/bound_ref_sort.hpp"
+#include "engine/operators/expressions/filters/comparison_join.hpp"
+#include "engine/operators/expressions/filters/conjunction_join.hpp"

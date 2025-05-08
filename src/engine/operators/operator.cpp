@@ -11,12 +11,8 @@ Operator::~Operator() {
     // }
 }
 
-std::unique_ptr<Operator> Operator::CreateOperator(const duckdb::LogicalOperator& op, const duckdb::Planner &planner) {
+std::unique_ptr<Operator> Operator::CreateOperator(duckdb::LogicalOperator& op, const duckdb::Planner &planner) {
     if(op.type == duckdb::LogicalOperatorType::LOGICAL_GET) {
-        auto &castOp = op.Cast<duckdb::LogicalGet>();
-        // TODO:
-        auto &filters = castOp.table_filters.filters;
-
         return std::unique_ptr<Operator>(new GetOperator(op, planner) );
     } 
     else if(op.type == duckdb::LogicalOperatorType::LOGICAL_PROJECTION) {
@@ -28,11 +24,17 @@ std::unique_ptr<Operator> Operator::CreateOperator(const duckdb::LogicalOperator
     else if(op.type == duckdb::LogicalOperatorType::LOGICAL_AGGREGATE_AND_GROUP_BY) {
         return std::unique_ptr<Operator>(new AggregateOperator(op, planner) );
     }
+    else if(op.type == duckdb::LogicalOperatorType::LOGICAL_ORDER_BY) {
+        return std::unique_ptr<Operator>(new OrderOperator(op, planner) );
+    }
+    else if(op.type == duckdb::LogicalOperatorType::LOGICAL_CROSS_PRODUCT) {
+        return std::unique_ptr<Operator>(new CrossProductOperator(op, planner) );
+    }
+    else if(op.type == duckdb::LogicalOperatorType::LOGICAL_COMPARISON_JOIN) {
+        return std::unique_ptr<Operator>(new JoinOperator(op, planner) );
+    }
     return nullptr;
     // else if(op.type == duckdb::LogicalOperatorType::LOGICAL_LIMIT) {
-
-    // }
-    // else if(op.type == duckdb::LogicalOperatorType::LOGICAL_ORDER_BY) {
 
     // }
     // else if(op.type == duckdb::LogicalOperatorType::LOGICAL_TOP_N) {

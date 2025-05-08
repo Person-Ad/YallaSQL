@@ -3,3 +3,6 @@
 #include "engine/operators/aggregate_operator.hpp"
 #include "engine/operators/filter_operator.hpp"
 #include "engine/operators/csv_writer.hpp"
+#include "engine/operators/order_operator.hpp"
+#include "engine/operators/cross_product_operator.hpp"
+#include "engine/operators/join_operator.hpp"

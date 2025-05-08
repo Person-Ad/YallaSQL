@@ -19,9 +19,11 @@ namespace our {
        
         COMPARISON,
         CONJUNCTION,
-        NOT, //TODO
+        NOT,
 
-        AGGREGRATE
+        AGGREGRATE,
+
+        BOUND_REF_SORT
         
     };
 
@@ -32,11 +34,14 @@ namespace our {
         // num of return values
         size_t batchSize;
 
+        int* d_batchSize;
         std::shared_ptr<NullBitSet> nullset;
     };
 
     struct ExpressionArg {
         std::vector<Batch*> batchs;
+        //! only used in join
+        cudaStream_t stream = nullptr;
     };
 
     class Expression {
@@ -46,7 +51,8 @@ namespace our {
         DataType returnType;
         std::shared_ptr<Column> column;
         ExpressionType exprType;
-
+        //! used only in join
+        int table_idx = -1;
 
         Expression(duckdb::Expression &expr) {
             alias = expr.alias;
@@ -61,7 +67,7 @@ namespace our {
         virtual ExpressionResult evaluate(ExpressionArg& arg) = 0;
 
 
-        static std::unique_ptr<Expression> createExpression(duckdb::Expression &expr, bool isneg = false) ;
+        static std::unique_ptr<Expression> createExpression(duckdb::Expression &expr, bool isneg = false, bool isjoin = false) ;
 
         virtual ~Expression() {}
     };

@@ -34,6 +34,10 @@ public:
         // get batchId from children
         const auto childBatchId = children[0]->next(cacheManager);
         if(childBatchId == 0) {isFinished = true; return 0;}
+        //? if no expressions | happen due to join
+        if(expressions.size() == 0) {
+            return childBatchId;
+        }
         // get ownership of child
         auto childBatch = cacheManager.getBatch(childBatchId);
         cudaStream_t stream = childBatch->stream;
@@ -87,7 +91,7 @@ public:
         // free data
         CUDA_CHECK(cudaFreeAsync(mask, stream));
         CUDA_CHECK(cudaFreeAsync(map, stream));
-        LOG_TRACE_L2(logger, "Filtered from {} to {}", oldBatchSize, newBatchSize);
+        // LOG_TRACE_L2(logger, "Filtered from {} to {}", oldBatchSize, newBatchSize);
         auto batch = std::unique_ptr<Batch>(new Batch( newColumnData, Device::GPU,  newBatchSize, columns, nullset, stream));
 
         return cacheManager.putBatch(std::move(batch));
@@ -116,9 +120,10 @@ private:
     // if there's multiple individual expressions in filter -> and them
     void build_expressions(const std::vector<duckdb::unique_ptr<duckdb::Expression>>& duckExpressions) {
         if(duckExpressions.size() == 0) {
-            LOG_ERROR(logger, "No expressions in filter operation");
-            std::cout << "No expressions in filter operation\n";
-            throw std::runtime_error("No expressions in filter operation");
+            // LOG_ERROR(logger, "No expressions in filter operation");
+            // std::cout << "No expressions in filter operation\n";
+            // throw std::runtime_error("No expressions in filter operation");
+            return;
         }
 
         if(duckExpressions.size() == 1) {

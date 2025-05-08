@@ -24,4 +24,7 @@ namespace YallaSQL::Kernel {
                             uint32_t& blocks_finished); // number of blocks finished
 
     void launch_prefix_sum_mask(bool* arr, uint32_t* res, const uint32_t sz, cudaStream_t &stream);
+
+    template <typename T>
+    void launch_prefix_sum(T* arr, T* res, const uint32_t sz, cudaStream_t &stream);
 }
