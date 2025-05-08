@@ -27,7 +27,7 @@ namespace our {
         default:
             throw std::runtime_error("Expression Type Not Supported: " + expr.ToString());
         }
-    }  
+    } 
 
 class ComparisonExpression: public Expression {
     bool isneg;
@@ -36,7 +36,7 @@ public:
     std::vector<std::unique_ptr<Expression>> children;
     CompareType compare_type;
 
-    ComparisonExpression(duckdb::Expression &expr, bool isneg = false): Expression(expr), isneg(false) {
+    ComparisonExpression(duckdb::Expression &expr, bool isneg = false): Expression(expr), isneg(isneg) {
         exprType = ExpressionType::COMPARISON;
         compare_type = getCompareType(expr);
 

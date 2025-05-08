@@ -3,6 +3,31 @@
 
 namespace YallaSQL::Kernel {
 
+
+template<typename T>
+__global__ void move_rows_join_kernel(const T* __restrict__ src, T* __restrict__ res,
+                                    const uint32_t* __restrict__ pairs, // map[oldIdx] = newIdx + 1
+                                    const char* __restrict__ isnull,
+                                    char* __restrict__ out_isnull,
+                                    const uint32_t batchSize,
+                                    const bool isright) 
+{
+    const unsigned int oidx = (threadIdx.x + blockIdx.x * blockDim.x);
+    const unsigned int stride = blockDim.x * gridDim.x;
+    
+    #pragma unroll 
+    for (int k = 0; k < COARSENING_FACTOR; k++) {
+        const unsigned int global_idx = oidx + k * stride;
+        
+        if(global_idx < batchSize) {
+            const unsigned int pair_idx = 2 * global_idx; // leftIdx, rightIdx
+            const unsigned int idx = pairs[pair_idx + (isright ? 1 : 0)];
+
+            res[global_idx] = src[idx]; 
+            out_isnull[global_idx] = isnull[idx];
+        }
+    }
+}
 //TODO: make it coleased access IDK how
 template<typename T>
 __global__ void move_rows_filter_kernel(T* __restrict__ src, T* res,
@@ -43,6 +68,7 @@ __global__ void move_one_col(const T* __restrict__ src,
         }
     }
 }
+
 
 
 //TODO: make it coleased access IDK how
@@ -94,6 +120,19 @@ void launch_move_rows_filter_kernel(T* __restrict__ src, T* res, uint32_t* __res
     CUDA_CHECK_LAST();
 }
 
+
+template<typename T>
+void lanch_move_rows_join_kernel(const T* __restrict__ src, T* __restrict__ res,
+                                    const uint32_t* __restrict__ pairs, // map[oldIdx] = newIdx + 1
+                                    const char* __restrict__ isnull,
+                                    char* __restrict__ out_isnull,
+                                    const uint32_t batchSize,
+                                    const bool isright, cudaStream_t stream)  {
+    dim3 threads(BLOCK_DIM);
+    dim3 blocks (CEIL_DIV(batchSize+1, threads.x * COARSENING_FACTOR));
+    move_rows_join_kernel<<<blocks, threads, 0, stream>>>(src, res, pairs, isnull, out_isnull, batchSize, isright);
+}
+
     // Explicit template instantiations
     template void launch_move_rows_filter_kernel<int>(int* __restrict__, int*, uint32_t* __restrict__, bool* __restrict__, char* __restrict__, const uint32_t, cudaStream_t&);
     template void launch_move_rows_filter_kernel<float>(float* __restrict__, float*, uint32_t* __restrict__, bool* __restrict__, char* __restrict__, const uint32_t, cudaStream_t&);
@@ -106,4 +145,8 @@ void launch_move_rows_filter_kernel(T* __restrict__ src, T* res, uint32_t* __res
     template void launch_move_one_col<int>(const int* __restrict__ src, int* __restrict__  res,  const char* __restrict__ src_isnull, char* __restrict__ res_isnull, uint32_t* __restrict__ map, const uint32_t srcSz, cudaStream_t stream);
     // for nullset
     // template void launch_move_rows_filter_kernel<char>(char* __restrict__, char*, uint32_t* __restrict__, bool* __restrict__, bool* __restrict__, const uint32_t, cudaStream_t&);
+    template void lanch_move_rows_join_kernel<int>(const int* __restrict__, int* __restrict__, const uint32_t* __restrict__, const char* __restrict__, char* __restrict__, const uint32_t, const bool, cudaStream_t) ;
+    template void lanch_move_rows_join_kernel<float>(const float* __restrict__, float* __restrict__, const uint32_t* __restrict__, const char* __restrict__, char* __restrict__, const uint32_t, const bool, cudaStream_t) ;
+    template void lanch_move_rows_join_kernel<int64_t>(const int64_t* __restrict__, int64_t* __restrict__, const uint32_t* __restrict__, const char* __restrict__, char* __restrict__, const uint32_t, const bool, cudaStream_t) ;
+    template void lanch_move_rows_join_kernel<String>(const String* __restrict__, String* __restrict__, const uint32_t* __restrict__, const char* __restrict__, char* __restrict__, const uint32_t, const bool, cudaStream_t) ;
 }

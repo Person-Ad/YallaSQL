@@ -10,20 +10,17 @@
 #include "engine/operators/expressions/bound_ref.hpp"
 #include <memory>
 
-namespace YallaSQL::Kernel
-{
-    template <typename T>
-    void launch_cross_procut_col(const T* __restrict__ col, T* __restrict__ out_col, const char*  __restrict__ src_nullset, char*  __restrict__ out_nullset, const uint32_t leftBs, const uint32_t rightBs, cudaStream_t stream, const bool isleft) ;
-}
+#include "kernels/cross_product_kernel.hpp"
 
 namespace YallaSQL {
 
 class CrossProductOperator final: public Operator {
-
+    const size_t MAX_RIGHT_SZ = 256;
 private:
     std::vector<std::unique_ptr<our::Expression>> expressions;
     std::unique_ptr<Batch> rbatch = nullptr;
     std::stack<BatchID> left_stack[2];
+    int rrow_idx = 0;
     bool isFirstPass = false;
     bool currStack = 0;
 
@@ -74,7 +71,13 @@ public:
         auto resBatch = cross_product_batchs(*lbatch, *rbatch);
         BatchID leftBactchId = cacheManager.putBatch(std::move(lbatch));
         BatchID resBatchId = cacheManager.putBatch(std::move(resBatch));
-        left_stack[!currStack].push(leftBactchId);
+        if(rrow_idx < rbatch->batchSize) {
+            left_stack[currStack].push(leftBactchId);
+        }
+        else {
+            left_stack[!currStack].push(leftBactchId);
+            rrow_idx = 0;
+        }
 
         return resBatchId;
     }
@@ -82,8 +85,10 @@ public:
 private:
 
     std::unique_ptr<Batch> cross_product_batchs(Batch& l, Batch& r) {
-        size_t nrows = r.batchSize * l.batchSize; 
-        size_t ncols = l.columns.size() + l.columns.size();
+        // size_t nrows = r.batchSize * l.batchSize; 
+        int rrows = std::min(MAX_RIGHT_SZ, r.batchSize - rrow_idx);
+        size_t nrows = rrows * l.batchSize; 
+        size_t ncols = l.columns.size() + r.columns.size();
 
         cudaStreamSynchronize(r.stream);
         cudaStreamSynchronize(l.stream);
@@ -108,75 +113,16 @@ private:
 
         // 2. cross product rows
         for(int i = 0;i < l.columns.size(); i++) {
-            launch_cross_product_type(l.columnData[i], resultData[i], l.nullset[i]->bitset, nullset[i]->bitset, columns[i]->type, l.batchSize, r.batchSize, stream, true);
+            YallaSQL::Kernel::launch_cross_product_type(l.columnData[i], resultData[i], l.nullset[i]->bitset, nullset[i]->bitset, columns[i]->type, l.batchSize, rrows, stream, true);
         }
         for(int i = 0;i < r.columns.size(); i++) {
             int j = l.columns.size() + i;
-            launch_cross_product_type(r.columnData[i], resultData[j], r.nullset[i]->bitset, nullset[j]->bitset, columns[j]->type, l.batchSize, r.batchSize, stream, false);
+            YallaSQL::Kernel::launch_cross_product_one_type(r.columnData[i], resultData[j], rrow_idx, r.nullset[i]->bitset, nullset[j]->bitset, columns[j]->type, l.batchSize, rrows, stream, false);
         }
+        rrow_idx+=rrows;
         // 3. create batch and return it
         return std::unique_ptr<Batch>(new Batch(resultData, Device::GPU, nrows, columns, nullset, stream));
     }
-
-    void launch_cross_product_type(void* src, void* dist, char* src_nullset, char* dist_nullset, DataType type, const int lbs, const int rbs, cudaStream_t stream, bool isleft) {
-        switch (type)
-        {
-        case DataType::INT:
-            YallaSQL::Kernel::launch_cross_procut_col(
-                static_cast<int*>(src),
-                static_cast<int*>(dist),
-                src_nullset,
-                dist_nullset,
-                lbs,
-                rbs,
-                stream,
-                isleft
-            );
-            break;
-        case DataType::FLOAT:
-            YallaSQL::Kernel::launch_cross_procut_col(
-                static_cast<float*>(src),
-                static_cast<float*>(dist),
-                src_nullset,
-                dist_nullset,
-                lbs,
-                rbs,
-                stream,
-                isleft
-            );
-            break;
-        case DataType::DATETIME:
-            YallaSQL::Kernel::launch_cross_procut_col(
-                static_cast<int64_t*>(src),
-                static_cast<int64_t*>(dist),
-                src_nullset,
-                dist_nullset,
-                lbs,
-                rbs,
-                stream,
-                isleft
-            );
-            break;
-
-        case DataType::STRING:
-            YallaSQL::Kernel::launch_cross_procut_col(
-                static_cast<YallaSQL::Kernel::String*>(src),
-                static_cast<YallaSQL::Kernel::String*>(dist),
-                src_nullset,
-                dist_nullset,
-                lbs,
-                rbs,
-                stream,
-                isleft
-            );
-            break;
-        
-        default:
-            break;
-        }
-    }
-
-
 
     void cacheLeftChild(CacheManager& cacheManager) {
         if(isFirstPass) return;

@@ -11,7 +11,7 @@ Operator::~Operator() {
     // }
 }
 
-std::unique_ptr<Operator> Operator::CreateOperator(const duckdb::LogicalOperator& op, const duckdb::Planner &planner) {
+std::unique_ptr<Operator> Operator::CreateOperator(duckdb::LogicalOperator& op, const duckdb::Planner &planner) {
     if(op.type == duckdb::LogicalOperatorType::LOGICAL_GET) {
         return std::unique_ptr<Operator>(new GetOperator(op, planner) );
     } 
@@ -31,7 +31,7 @@ std::unique_ptr<Operator> Operator::CreateOperator(const duckdb::LogicalOperator
         return std::unique_ptr<Operator>(new CrossProductOperator(op, planner) );
     }
     else if(op.type == duckdb::LogicalOperatorType::LOGICAL_COMPARISON_JOIN) {
-        return std::unique_ptr<Operator>(new CrossProductOperator(op, planner) );
+        return std::unique_ptr<Operator>(new JoinOperator(op, planner) );
     }
     return nullptr;
     // else if(op.type == duckdb::LogicalOperatorType::LOGICAL_LIMIT) {
