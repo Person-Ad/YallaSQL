@@ -25,6 +25,24 @@ __host__ __device__ int find_corank(int* A, int* B, uint32_t m, uint32_t n, uint
     return l;
 }
 
+__global__ void merge_sorted_array_kernel_v1(int* A, int* B, int* C, int *lasti, const uint32_t k_mx, uint32_t m, uint32_t n) {
+    uint32_t k = ELE_PER_TH * (threadIdx.x + blockIdx.x * blockDim.x);
+    if(threadIdx.x == 0 && blockIdx.x == 0) {
+        *lasti = find_corank(A, B, m, n, k_mx);
+    }
+    if(k < n + m && k < k_mx) {
+        uint32_t i = find_corank(A, B, m, n, k);
+        uint32_t j = k - i;
+
+        for(int d = 0; d < ELE_PER_TH && k + d < k_mx && k + d < n + m; d++) {
+            if(j >= n) C[k + d] = A[i++];
+            else if(i >= m) C[k + d] = B[j++];
+            else if(A[i] <= B[j]) C[k + d] = A[i++];
+            else C[k + d] = B[j++];
+        }
+    }
+}
+
 __global__ void merge_sorted_array_kernel(int* A, int* B, int* C, int *lasti, const uint32_t k_mx, uint32_t m, uint32_t n) {
     // if(threadIdx.x == 0) {
     //     printf("Start where m %i, n %i   A[0]=%i B[0]=%i\n", m, n, A[0], B[0]);
@@ -58,6 +76,7 @@ __global__ void merge_sorted_array_kernel(int* A, int* B, int* C, int *lasti, co
     uint32_t m_sh = block_next_i - block_start_i;
     uint32_t n_sh = block_next_j - block_start_j;
     for(int i = threadIdx.x; i < m_sh; i += blockDim.x) {
+        if(block_start_i + i < ELE_PER_BLOCK)
         A_sh[i] = A[block_start_i + i];
     }
     for(int j = threadIdx.x;  j < n_sh; j += blockDim.x) {
@@ -81,16 +100,18 @@ __global__ void merge_sorted_array_kernel(int* A, int* B, int* C, int *lasti, co
 
     }
     __syncthreads();
-    for(int i = threadIdx.x; i < n_sh + m_sh; i+=blockDim.x){
-        C[block_start_k + i] = C_sh[i];
-        if(block_start_k + i < 10)
-            printf("out C[%i]=%i\n", block_start_k + i, C_sh[i]);
+    for(int i = threadIdx.x; i < block_next_k; i+=blockDim.x){
+        if(block_start_k + i < k_mx)
+            C[block_start_k + i] = C_sh[i];
+        // if(block_start_k + i < 10)
+            // printf("out C[%i]=%i\n", block_start_k + i, C_sh[i]);
     }
 }
 
-void launch_merge_sorted_array_kernel(int* A, int* B, int* C, int *lasti, const uint32_t k_mx, uint32_t m, uint32_t n) {
+void launch_merge_sorted_array_kernel(int* A, int* B, int* C, int *lasti, const uint32_t k_mx, uint32_t m, uint32_t n, cudaStream_t stream) {
     dim3 blocks(CEIL_DIV(k_mx, ELE_PER_BLOCK));
-    YallaSQL::Kernel::merge_sorted_array_kernel<<<blocks, BLOCK_DIM>>>(A, B, C, lasti, k_mx, m, n);    
+    // YallaSQL::Kernel::merge_sorted_array_kernel<<<blocks, BLOCK_DIM>>>(A, B, C, lasti, k_mx, m, n);    
+    YallaSQL::Kernel::merge_sorted_array_kernel_v1<<<blocks, BLOCK_DIM, 0, stream>>>(A, B, C, lasti, k_mx, m, n);    
 }
 
 }

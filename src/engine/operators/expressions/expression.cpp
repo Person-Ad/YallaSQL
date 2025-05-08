@@ -3,7 +3,21 @@
 
 namespace our {
 
-    std::unique_ptr<Expression> Expression::createExpression(duckdb::Expression &expr, bool isneg) {
+    std::unique_ptr<Expression> Expression::createExpression(duckdb::Expression &expr, bool isneg, bool isjoin) {
+        // if(isjoin) {
+        // switch(expr.type) {
+        //     case duckdb::ExpressionType::COMPARE_EQUAL:
+        //     case duckdb::ExpressionType::COMPARE_NOTEQUAL:
+        //     case duckdb::ExpressionType::COMPARE_LESSTHAN:
+        //     case duckdb::ExpressionType::COMPARE_GREATERTHAN:
+        //     case duckdb::ExpressionType::COMPARE_LESSTHANOREQUALTO:
+        //     case duckdb::ExpressionType::COMPARE_GREATERTHANOREQUALTO:
+        //         return std::unique_ptr<Expression>(new ComparisonJoinExpression(expr));  
+        //     case duckdb::ExpressionType::CONJUNCTION_AND:
+        //     case duckdb::ExpressionType::CONJUNCTION_OR:
+        //         return std::unique_ptr<Expression>(new ConjuntionJoinExpression(expr));  
+        // }
+        // }
         switch(expr.type) {
             case duckdb::ExpressionType::BOUND_REF:
                 return std::unique_ptr<Expression>(new BoundRefExpression(expr));

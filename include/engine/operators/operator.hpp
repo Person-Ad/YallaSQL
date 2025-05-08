@@ -22,7 +22,7 @@ protected:
     // children of operator
     std::vector<std::unique_ptr<Operator>> children;
     // logical operator reference 
-    const duckdb::LogicalOperator& logicalOp;
+    duckdb::LogicalOperator& logicalOp;
     // planner to get bindings
     const duckdb::Planner &planner;
     // logger
@@ -31,9 +31,9 @@ protected:
     bool isInitalized = false;
 
 public:
-    static std::unique_ptr<Operator> CreateOperator(const duckdb::LogicalOperator& op, const duckdb::Planner &planner);
+    static std::unique_ptr<Operator> CreateOperator(duckdb::LogicalOperator& op, const duckdb::Planner &planner);
     
-    Operator(const duckdb::LogicalOperator& op, const duckdb::Planner &planner): logicalOp(op), planner(planner) {
+    Operator(duckdb::LogicalOperator& op, const duckdb::Planner &planner): logicalOp(op), planner(planner) {
         for(auto childIt = op.children.begin(); childIt != op.children.end(); childIt++) {
             auto child = Operator::CreateOperator(**childIt, planner);
             if(child) {

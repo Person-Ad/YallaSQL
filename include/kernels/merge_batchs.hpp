@@ -11,5 +11,5 @@ namespace YallaSQL::Kernel {
 
     __global__ void merge_sorted_array_kernel(int* A, int* B, int* C, int *lasti, const uint32_t k_mx, uint32_t m, uint32_t n);
 
-    void launch_merge_sorted_array_kernel(int* A, int* B, int* C, int *lasti, const uint32_t k_mx, uint32_t m, uint32_t n);
+    void launch_merge_sorted_array_kernel(int* A, int* B, int* C, int *lasti, const uint32_t k_mx, uint32_t m, uint32_t n, cudaStream_t stream);
 }

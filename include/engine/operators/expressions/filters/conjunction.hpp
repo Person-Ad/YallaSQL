@@ -20,8 +20,19 @@ namespace our {
         }
     }  
 
+    [[nodiscard]] inline ConjuntionType getConjuntionType(duckdb::ExpressionType type) {
+        switch(type) {
+        case duckdb::ExpressionType::CONJUNCTION_AND:
+            return ConjuntionType::AND;  
+        case duckdb::ExpressionType::CONJUNCTION_OR:
+            return ConjuntionType::OR;  
+        default:
+            throw std::runtime_error("Expression Type Not Supported in Conjunction Join: ");
+        }
+    }  
+
 class ConjuntionExpression: public Expression {
-    bool isneg;
+    bool isneg, isjoin;
 public:
     std::vector<std::unique_ptr<Expression>> children;
     ConjuntionType conjunction_type;
@@ -30,6 +41,7 @@ public:
         exprType = ExpressionType::COMPARISON;
         conjunction_type = getConjuntionType(expr);
 
+        isjoin = false;
         // get left & right child
         auto& castExpr = expr.Cast<duckdb::BoundConjunctionExpression>();
 
@@ -38,8 +50,21 @@ public:
             children.push_back( Expression::createExpression(*child) );
         }
     } 
+    ConjuntionExpression(duckdb::JoinCondition& cond): isneg(false) {
+        exprType = ExpressionType::COMPARISON;
+        conjunction_type = getConjuntionType(cond.comparison);
+
+        isjoin = true;
+        
+        children.reserve(2);
+        children.push_back(Expression::createExpression(*cond.left));
+        children.push_back(Expression::createExpression(*cond.right));
+
+        children[0]->table_idx = 0;
+        children[1]->table_idx = 1;
+    } 
     // if there's multiple individual expressions in filter -> and them
-    ConjuntionExpression(std::unique_ptr<Expression> left, std::unique_ptr<Expression> right): isneg(false) {
+    ConjuntionExpression(std::unique_ptr<Expression> left, std::unique_ptr<Expression> right, bool isjoin = false): isneg(false), isjoin(isjoin) {
         exprType = ExpressionType::COMPARISON;
         conjunction_type = ConjuntionType::AND;
 
@@ -52,10 +77,10 @@ public:
         ExpressionResult result;
         
         cudaStream_t& stream = arg.batchs[0]->stream;
-        size_t batchSize = arg.batchs[0]->batchSize;
-
+        
         ExpressionResult res_lhs = children[0]->evaluate(arg);
         ExpressionResult res_rhs = children[1]->evaluate(arg);
+        size_t batchSize = std::max(res_rhs.batchSize, res_lhs.batchSize);
 
         bool* lhs = static_cast<bool*>(res_lhs.result);
         bool* rhs = static_cast<bool*>(res_rhs.result); 

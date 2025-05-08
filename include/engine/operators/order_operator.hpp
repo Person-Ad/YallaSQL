@@ -22,7 +22,8 @@
 struct RUN {
     int total_rows = 0;
     std::vector<BatchID> batchs;
-    std::vector<int> prefix_sum_rows; 
+    std::vector<int> prefix_sum_rows;
+    cudaStream_t stream = nullptr;
     RUN() { prefix_sum_rows.push_back(0); }
     void init() {
         for(int i = 1; i < prefix_sum_rows.size();i++) 
@@ -67,10 +68,14 @@ public:
             firstPass(cacheManager);
             //! test merging
             merge_all_sorted(runs, cacheManager);
+            //! delete to not use it by mistake
+            cudaStreamSynchronize(runs[0]->stream);
         } 
         
         if(currBatchIdx < runs[0]->batchs.size()) {
-            return  runs[0]->batchs[currBatchIdx++];
+            auto batch = cacheManager.getBatch(runs[0]->batchs[currBatchIdx++]);
+            cudaStreamCreate(&batch->stream);
+            return cacheManager.putBatch(std::move(batch));
         }
         
         
@@ -110,10 +115,10 @@ private:
         first_pass = true;
     }
     
-    void load_in_buffer(int* buffer, int &buffer_offset, int &run_offset, RUN* run, CacheManager& cacheManager);
+    void load_in_buffer(int* buffer, int &buffer_offset, int &run_offset, RUN* run, CacheManager& cacheManager, cudaStream_t stream);
     
     
-    void shift_buffer(int *buffer, int i_last, int m, int &buffer_offset);
+    void shift_buffer(int *buffer, int i_last, int m, int &buffer_offset, cudaStream_t stream);
 
     RUN* merge_two_runs(RUN* left, RUN* right, CacheManager& cacheManager) ;
 

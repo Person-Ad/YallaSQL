@@ -1,0 +1,1 @@
+cd build && make release && cd .. && ./build/release/yallasql_cli

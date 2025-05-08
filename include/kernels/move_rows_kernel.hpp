@@ -28,7 +28,17 @@ namespace YallaSQL::Kernel {
                             const char* __restrict__ src_isnull, char* __restrict__ res_isnull,
                             uint32_t* __restrict__ map, // map[oldIdx] = newIdx
                             const uint32_t srcSz, cudaStream_t stream);
-                            
+                 
+    template<typename T>
+    void lanch_move_rows_join_kernel(const T* __restrict__ src, T* __restrict__ res,
+        const uint32_t* __restrict__ pairs, // map[oldIdx] = newIdx + 1
+        const char* __restrict__ isnull,
+        char* __restrict__ out_isnull,
+        const uint32_t batchSize,
+        const bool isright, cudaStream_t stream);
+
+
+        
     inline std::unique_ptr<Batch> move_rows_batch(Batch& src_batch, uint32_t* __restrict__ map) {
         std::vector<void*> newColumnData(src_batch.columns.size()); 
         std::vector<std::shared_ptr<NullBitSet>> nullset(src_batch.columns.size()); 
