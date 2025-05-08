@@ -48,7 +48,8 @@ void ExecutorEngine::saveBufferedBatchs(std::vector<BatchID>& buffer_ids, CacheM
     for(auto& batch: buffer) {
         CUDA_CHECK(cudaStreamSynchronize(batch->stream));
         CUDA_CHECK(cudaStreamDestroy(batch->stream));
-        csvWriter.addBatch(*batch);
+        if(batch->batchSize > 0)
+            csvWriter.addBatch(*batch);
     }
 
     buffer_ids.clear();

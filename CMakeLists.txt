@@ -68,6 +68,7 @@ set(ALL_SOURCES
     "${SOURCE_DIR}/kernels/radix_sort_kernel.cu"
     "${SOURCE_DIR}/kernels/radix_sort_utils.cu"
     "${SOURCE_DIR}/kernels/radix_sort_uint32_kernel.cu"
+    "${SOURCE_DIR}/kernels/cross_product_kernel.cu"
     # main engine 
     "${SOURCE_DIR}/engine/query_engine.cpp"
     "${SOURCE_DIR}/engine/executor_engine.cpp"

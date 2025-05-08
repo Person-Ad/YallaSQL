@@ -27,6 +27,12 @@ std::unique_ptr<Operator> Operator::CreateOperator(const duckdb::LogicalOperator
     else if(op.type == duckdb::LogicalOperatorType::LOGICAL_ORDER_BY) {
         return std::unique_ptr<Operator>(new OrderOperator(op, planner) );
     }
+    else if(op.type == duckdb::LogicalOperatorType::LOGICAL_CROSS_PRODUCT) {
+        return std::unique_ptr<Operator>(new CrossProductOperator(op, planner) );
+    }
+    else if(op.type == duckdb::LogicalOperatorType::LOGICAL_COMPARISON_JOIN) {
+        return std::unique_ptr<Operator>(new CrossProductOperator(op, planner) );
+    }
     return nullptr;
     // else if(op.type == duckdb::LogicalOperatorType::LOGICAL_LIMIT) {
 

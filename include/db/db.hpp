@@ -36,7 +36,7 @@ private:
         duckdb_ = std::make_unique<DuckDB>(nullptr);
         con_ = std::make_unique<Connection>(*duckdb_);
         // to not optimize too much
-        con_->Query(" SET disabled_optimizers = 'late_materialization,compressed_materialization,unused_columns,column_lifetime,statistics_propagation,filter_pushdown';");
+        con_->Query(" SET disabled_optimizers = 'join_order,late_materialization,compressed_materialization,unused_columns,column_lifetime,statistics_propagation,filter_pushdown';");
         // con_->context->EnableProfiling();
         logger_ = YallaSQL::getLogger("./logs/database");
         refreshTables();
@@ -73,7 +73,7 @@ public:
         duckdb_ = std::make_unique<DuckDB>(nullptr);
         con_ = std::make_unique<Connection>(*duckdb_);
         // to not optimize too much
-        con_->Query(" SET disabled_optimizers = 'late_materialization,compressed_materialization,unused_columns,column_lifetime,statistics_propagation,filter_pushdown';");
+        con_->Query(" SET disabled_optimizers = 'join_order,late_materialization,compressed_materialization,unused_columns,column_lifetime,statistics_propagation,filter_pushdown';");
     }
     ~DB();
 };
