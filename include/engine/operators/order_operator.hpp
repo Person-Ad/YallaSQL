@@ -13,6 +13,7 @@
 #include "kernels/move_rows_kernel.hpp"
 #include "kernels/string_kernel.hpp"
 #include "kernels/radix_sort_kernel.hpp"
+#include "kernels/merge_batchs.hpp"
 
 #include <duckdb/planner/operator/list.hpp>
 #include <duckdb/planner/expression/list.hpp>
@@ -48,6 +49,8 @@ class OrderOperator final: public Operator {
     uint32_t MAX_BATCH_SZ;
     uint32_t BUFFER_SZ;
     uint32_t currBatchIdx = 0;
+    DataType keytype;
+
 public:
     // inherit from operator
     using Operator::Operator; 
@@ -100,6 +103,7 @@ private:
             uint32_t* d_new_index = sortLocallyBatch(countable_batch.result, batchSize, batch->stream);
             // 2.3 use d_new_index to move rows locally
             auto new_batch = YallaSQL::Kernel::move_rows_batch(*batch, d_new_index);
+            keytype = new_batch->columns[keyIndex]->type;
             // 2.4 cache it no longer needed now
             BatchID referenceBatchID =  cacheManager.putBatch(std::move(new_batch));
             // 2.5 create run with the batch
@@ -115,12 +119,23 @@ private:
         first_pass = true;
     }
     
-    void load_in_buffer(int* buffer, int &buffer_offset, int &run_offset, RUN* run, CacheManager& cacheManager, cudaStream_t stream);
+    template <typename T>
+    void load_in_buffer(T* buffer, int &buffer_offset, int &run_offset, RUN* run, CacheManager& cacheManager, cudaStream_t stream);
     
-    
-    void shift_buffer(int *buffer, int i_last, int m, int &buffer_offset, cudaStream_t stream);
+    template <typename T>
+    void shift_buffer(T *buffer, int i_last, int m, int &buffer_offset, cudaStream_t stream);
 
+    template <typename T>
     RUN* merge_two_runs(RUN* left, RUN* right, CacheManager& cacheManager) ;
+
+    template <typename T>
+    void launch_kernel_by_type(T* l_buffer, T* r_buffer, T*o_buffer, int *i_last_d, const uint32_t k, uint32_t m, uint32_t n, cudaStream_t stream ) {
+        YallaSQL::Kernel::launch_merge_sorted_array_kernel(l_buffer, r_buffer, o_buffer, i_last_d, k, m, n, stream);
+    }
+
+    void launch_kernel_by_type(YallaSQL::Kernel::String* l_buffer, YallaSQL::Kernel::String* r_buffer, YallaSQL::Kernel::String*o_buffer, int *i_last_d, const uint32_t k, uint32_t m, uint32_t n, cudaStream_t stream ) {
+        YallaSQL::Kernel::launch_merge_sorted_array_kernel_str(l_buffer, r_buffer, o_buffer, i_last_d, k, m, n, stream);
+    }
 
     void merge_all_sorted(std::vector<RUN*>& in_runs, CacheManager& cacheManager) { 
         std::vector<RUN*> out_runs;
@@ -132,7 +147,24 @@ private:
                 if(i == in_runs.size() - 1) {
                     out_runs.push_back(in_runs[in_runs.size() - 1]);
                 } else {
-                    RUN* new_run = merge_two_runs(in_runs[i], in_runs[i+1], cacheManager);
+                    RUN* new_run;
+                    switch (keytype)
+                    {
+                    case DataType::INT:
+                        new_run = merge_two_runs<int>(in_runs[i], in_runs[i+1], cacheManager);
+                        break;
+                    case DataType::FLOAT:
+                        new_run = merge_two_runs<float>(in_runs[i], in_runs[i+1], cacheManager);
+                        break;
+                    case DataType::DATETIME:
+                        new_run = merge_two_runs<int64_t>(in_runs[i], in_runs[i+1], cacheManager);
+                        break;
+                    case DataType::STRING:
+                        new_run = merge_two_runs<YallaSQL::Kernel::String>(in_runs[i], in_runs[i+1], cacheManager);
+                        break;
+                    default:
+                        break;
+                    }
                     out_runs.push_back(new_run);
                 }
             }

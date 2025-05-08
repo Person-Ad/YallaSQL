@@ -1,3 +1,4 @@
+#include "kernels/string_kernel.hpp"
 #include "kernels/merge_batchs.hpp"
 #include "kernels/constants.hpp"
 #include "utils/macros.hpp"
@@ -7,8 +8,26 @@ namespace YallaSQL::Kernel
 #define ELE_PER_TH 6
 #define ELE_PER_BLOCK (6*256)
 
+__device__ int find_corank_str(String* A, String* B, uint32_t m, uint32_t n, uint32_t k) {
+    uint32_t l = k > n ? k - n : 0; 
+    uint32_t r = k < m ? k : m; 
+    uint32_t i, j;
+    while(l <= r) {
+        i = (l + r) / 2;
+        j = k - i;
+        if(j > 0 && i < m  && strcmp_device(B[j - 1], A[i]) > 0 ) //B[j - 1] > A[i]
+            l = i + 1;
+        else if(i > 0 && j < n &&  strcmp_device(A[i - 1], B[j]) > 0) // A[i - 1] > B[j]
+            r = i - 1;
+        else
+            return i;
+    }
+    return l;
+}
 
-__host__ __device__ int find_corank(int* A, int* B, uint32_t m, uint32_t n, uint32_t k) {
+
+template <typename T>
+__host__ __device__ int find_corank(T* A, T* B, uint32_t m, uint32_t n, uint32_t k) {
     uint32_t l = k > n ? k - n : 0; 
     uint32_t r = k < m ? k : m; 
     uint32_t i, j;
@@ -25,7 +44,26 @@ __host__ __device__ int find_corank(int* A, int* B, uint32_t m, uint32_t n, uint
     return l;
 }
 
-__global__ void merge_sorted_array_kernel_v1(int* A, int* B, int* C, int *lasti, const uint32_t k_mx, uint32_t m, uint32_t n) {
+__global__ void merge_sorted_array_kernel_v1_str(String* A, String* B, String* C, int *lasti, const uint32_t k_mx, uint32_t m, uint32_t n) {
+    uint32_t k = ELE_PER_TH * (threadIdx.x + blockIdx.x * blockDim.x);
+    if(threadIdx.x == 0 && blockIdx.x == 0) {
+        *lasti = find_corank_str(A, B, m, n, k_mx);
+    }
+    if(k < n + m && k < k_mx) {
+        uint32_t i = find_corank_str(A, B, m, n, k);
+        uint32_t j = k - i;
+
+        for(int d = 0; d < ELE_PER_TH && k + d < k_mx && k + d < n + m; d++) {
+            if(j >= n) C[k + d] = A[i++];
+            else if(i >= m) C[k + d] = B[j++];
+            else if(strcmp_device(A[i], B[j]) <= 0) C[k + d] = A[i++]; //A[i] <= B[j]
+            else C[k + d] = B[j++];
+        }
+    }
+}
+
+template <typename T>
+__global__ void merge_sorted_array_kernel_v1(T* A, T* B, T* C, int *lasti, const uint32_t k_mx, uint32_t m, uint32_t n) {
     uint32_t k = ELE_PER_TH * (threadIdx.x + blockIdx.x * blockDim.x);
     if(threadIdx.x == 0 && blockIdx.x == 0) {
         *lasti = find_corank(A, B, m, n, k_mx);
@@ -108,10 +146,22 @@ __global__ void merge_sorted_array_kernel(int* A, int* B, int* C, int *lasti, co
     }
 }
 
-void launch_merge_sorted_array_kernel(int* A, int* B, int* C, int *lasti, const uint32_t k_mx, uint32_t m, uint32_t n, cudaStream_t stream) {
+template <typename T>
+void launch_merge_sorted_array_kernel(T* A, T* B, T* C, int *lasti, const uint32_t k_mx, uint32_t m, uint32_t n, cudaStream_t stream) {
     dim3 blocks(CEIL_DIV(k_mx, ELE_PER_BLOCK));
     // YallaSQL::Kernel::merge_sorted_array_kernel<<<blocks, BLOCK_DIM>>>(A, B, C, lasti, k_mx, m, n);    
     YallaSQL::Kernel::merge_sorted_array_kernel_v1<<<blocks, BLOCK_DIM, 0, stream>>>(A, B, C, lasti, k_mx, m, n);    
 }
+
+void launch_merge_sorted_array_kernel_str(String* A, String* B, String* C, int *lasti, const uint32_t k_mx, uint32_t m, uint32_t n, cudaStream_t stream) {
+    dim3 blocks(CEIL_DIV(k_mx, ELE_PER_BLOCK));
+    // YallaSQL::Kernel::merge_sorted_array_kernel<<<blocks, BLOCK_DIM>>>(A, B, C, lasti, k_mx, m, n);    
+    YallaSQL::Kernel::merge_sorted_array_kernel_v1_str<<<blocks, BLOCK_DIM, 0, stream>>>(A, B, C, lasti, k_mx, m, n);    
+}
+
+template void launch_merge_sorted_array_kernel<int>(int*, int*, int*, int*, const uint32_t, uint32_t, uint32_t, cudaStream_t);
+template void launch_merge_sorted_array_kernel<float>(float*, float*, float*, int*, const uint32_t, uint32_t, uint32_t, cudaStream_t);
+template void launch_merge_sorted_array_kernel<int64_t>(int64_t*, int64_t*, int64_t*, int*, const uint32_t, uint32_t, uint32_t, cudaStream_t);
+
 
 }

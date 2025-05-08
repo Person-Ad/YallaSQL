@@ -5,7 +5,13 @@
 
 namespace YallaSQL {
 
-void OrderOperator::load_in_buffer(int* buffer, int &buffer_offset, int &run_offset, RUN* run, CacheManager& cacheManager, cudaStream_t stream) {
+template RUN* OrderOperator::merge_two_runs<int>(RUN*, RUN*, CacheManager&);
+template RUN* OrderOperator::merge_two_runs<float>(RUN*, RUN*, CacheManager&);
+template RUN* OrderOperator::merge_two_runs<int64_t>(RUN*, RUN*, CacheManager&);
+template RUN* OrderOperator::merge_two_runs<YallaSQL::Kernel::String>(RUN*, RUN*, CacheManager&);
+
+template <typename T>
+void OrderOperator::load_in_buffer(T* buffer, int &buffer_offset, int &run_offset, RUN* run, CacheManager& cacheManager, cudaStream_t stream) {
     while(buffer_offset < BUFFER_SZ && run_offset < run->total_rows) {
         auto it = std::upper_bound(run->prefix_sum_rows.begin(), run->prefix_sum_rows.end(), run_offset);
         int batch_idx = std::distance(run->prefix_sum_rows.begin(), it) - 1;
@@ -16,8 +22,8 @@ void OrderOperator::load_in_buffer(int* buffer, int &buffer_offset, int &run_off
 
         int m = std::min((uint32_t)batch->batchSize - in_batch_idx,   BUFFER_SZ - buffer_offset);
         CUDA_CHECK( cudaMemcpyAsync(buffer + buffer_offset, 
-                                    static_cast<char*>(batch->columnData[keyIndex]) + in_batch_idx * sizeof(int), 
-                                    m * sizeof(int), 
+                                    static_cast<char*>(batch->columnData[keyIndex]) + in_batch_idx * sizeof(T), 
+                                    m * sizeof(T), 
                                     cudaMemcpyDeviceToDevice, 
                                     stream) );
 
@@ -29,18 +35,19 @@ void OrderOperator::load_in_buffer(int* buffer, int &buffer_offset, int &run_off
     }
 }
 
-void OrderOperator::shift_buffer(int *buffer, int i_last, int m, int &buffer_offset, cudaStream_t stream) {
+template <typename T>
+void OrderOperator::shift_buffer(T *buffer, int i_last, int m, int &buffer_offset, cudaStream_t stream) {
     int shift_m = m - i_last;
     if (shift_m > 0) {
         CUDA_CHECK(cudaMemcpyAsync(buffer, 
                                     buffer + i_last, 
-                                    shift_m * sizeof(int), 
+                                    shift_m * sizeof(T), 
                                     cudaMemcpyDeviceToDevice, 
                                     stream));
     }
     buffer_offset = shift_m;
 }
-
+template<typename T>
 RUN* OrderOperator::merge_two_runs(RUN* left, RUN* right, CacheManager& cacheManager) {
     left->init();
     right->init();
@@ -52,11 +59,11 @@ RUN* OrderOperator::merge_two_runs(RUN* left, RUN* right, CacheManager& cacheMan
     // cudaDeviceSynchronize();
     RUN* out_run = new RUN();
     out_run->stream = stream;
-    int* l_buffer, *r_buffer, *o_buffer;
+    T* l_buffer, *r_buffer, *o_buffer;
     int *i_last_d;
-    CUDA_CHECK( cudaMallocAsync((void**)&l_buffer, sizeof(int) * BUFFER_SZ, stream) );
-    CUDA_CHECK( cudaMallocAsync((void**)&r_buffer, sizeof(int) * BUFFER_SZ, stream) );
-    CUDA_CHECK( cudaMallocAsync((void**)&o_buffer, sizeof(int) * BUFFER_SZ, stream) );
+    CUDA_CHECK( cudaMallocAsync((void**)&l_buffer, sizeof(T) * BUFFER_SZ, stream) );
+    CUDA_CHECK( cudaMallocAsync((void**)&r_buffer, sizeof(T) * BUFFER_SZ, stream) );
+    CUDA_CHECK( cudaMallocAsync((void**)&o_buffer, sizeof(T) * BUFFER_SZ, stream) );
     CUDA_CHECK( cudaMallocAsync((void**)&i_last_d, sizeof(int), stream) );
 
     // cudaDeviceSynchronize();
@@ -72,16 +79,17 @@ RUN* OrderOperator::merge_two_runs(RUN* left, RUN* right, CacheManager& cacheMan
         int m = l_buffer_off, n = r_buffer_off;
         int k = std::min(n + m, (int)BUFFER_SZ);
         // 
-        YallaSQL::Kernel::launch_merge_sorted_array_kernel(l_buffer, r_buffer, o_buffer, i_last_d, k, m, n, stream);
+        // YallaSQL::Kernel::launch_merge_sorted_array_kernel(l_buffer, r_buffer, o_buffer, i_last_d, k, m, n, stream);
+        launch_kernel_by_type(l_buffer, r_buffer, o_buffer, i_last_d, k, m, n, stream);
         //! temprory
         std::vector<void*> newData(1);
         std::vector<std::shared_ptr<NullBitSet>> nullset(1);
         
         std::vector<std::shared_ptr<Column>> newCols(1);
-        newCols[0] = std::shared_ptr<Column>(new Column("idx", DataType::INT));
+        newCols[0] = std::shared_ptr<Column>(new Column("idx", keytype));
         
-        CUDA_CHECK( cudaMallocAsync(&newData[0], k * sizeof(int), stream) );
-        CUDA_CHECK( cudaMemcpyAsync(newData[0], o_buffer, k * sizeof(int), cudaMemcpyDeviceToDevice, stream) );
+        CUDA_CHECK( cudaMallocAsync(&newData[0], k * sizeof(T), stream) );
+        CUDA_CHECK( cudaMemcpyAsync(newData[0], o_buffer, k * sizeof(T), cudaMemcpyDeviceToDevice, stream) );
 
         nullset[0] =  std::shared_ptr<NullBitSet>(new NullBitSet(k, stream));
         CUDA_CHECK( cudaMemsetAsync(nullset[0]->bitset, 0, k, stream) );
