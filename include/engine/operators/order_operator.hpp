@@ -132,11 +132,29 @@ private:
 
     template <typename T>
     void launch_kernel_by_type(T* l_buffer, T* r_buffer, T*o_buffer, uint32_t* new_idxs, bool* table_idxs, int *i_last_d, const uint32_t k, uint32_t m, uint32_t n, cudaStream_t stream ) {
-        YallaSQL::Kernel::launch_merge_sorted_array_kernel(l_buffer, r_buffer, o_buffer, new_idxs, table_idxs,  i_last_d, k, m, n, stream);
+        switch (order)
+        {
+        case duckdb::OrderType::ORDER_DEFAULT:
+        case duckdb::OrderType::ASCENDING:
+            YallaSQL::Kernel::launch_merge_sorted_array_kernel<T, YallaSQL::Kernel::AscSortMergeOp<T>>(l_buffer, r_buffer, o_buffer, new_idxs, table_idxs,  i_last_d, k, m, n, stream);
+            break;
+        default:
+            YallaSQL::Kernel::launch_merge_sorted_array_kernel<T, YallaSQL::Kernel::DescSortMergeOp<T>>(l_buffer, r_buffer, o_buffer, new_idxs, table_idxs,  i_last_d, k, m, n, stream);
+            break;
+        }
     }
 
     void launch_kernel_by_type(YallaSQL::Kernel::String* l_buffer, YallaSQL::Kernel::String* r_buffer, YallaSQL::Kernel::String*o_buffer, uint32_t* new_idxs, bool* table_idxs, int *i_last_d, const uint32_t k, uint32_t m, uint32_t n, cudaStream_t stream ) {
-        YallaSQL::Kernel::launch_merge_sorted_array_kernel_str(l_buffer, r_buffer, o_buffer, new_idxs, table_idxs, i_last_d, k, m, n, stream);
+        switch (order)
+        {
+        case duckdb::OrderType::ORDER_DEFAULT:
+        case duckdb::OrderType::ASCENDING:
+            YallaSQL::Kernel::launch_merge_sorted_array_kernel<YallaSQL::Kernel::String, YallaSQL::Kernel::AscSortStrOp>(l_buffer, r_buffer, o_buffer, new_idxs, table_idxs,  i_last_d, k, m, n, stream);
+            break;
+        default:
+            YallaSQL::Kernel::launch_merge_sorted_array_kernel<YallaSQL::Kernel::String, YallaSQL::Kernel::DescSortStrOp>(l_buffer, r_buffer, o_buffer, new_idxs, table_idxs,  i_last_d, k, m, n, stream);
+            break;
+        }
     }
 
     void merge_all_sorted(std::vector<RUN*>& in_runs, CacheManager& cacheManager) { 

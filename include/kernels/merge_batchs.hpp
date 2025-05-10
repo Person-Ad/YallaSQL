@@ -47,14 +47,6 @@ namespace YallaSQL::Kernel {
         __device__ bool is_greater_or_equal(const String& a, const String& b) const override { return strcmp_device(a, b) <= 0; }
     };
 
-    template <typename T>
-    __device__ int find_corank(T* A, T* B, uint32_t m, uint32_t n, uint32_t k);
-
-    // template <typename T>
-    // __global__ void merge_sorted_array_kernel(T* A, T* B, T* C, int *lasti, const uint32_t k_mx, uint32_t m, uint32_t n);
-    
-    template <typename T>
+    template <typename T, typename OP>
     void launch_merge_sorted_array_kernel(T* A, T* B, T* C, uint32_t* new_idx, bool* table_idx, int *lasti, const uint32_t k_mx, uint32_t m, uint32_t n, cudaStream_t stream);
-
-    void launch_merge_sorted_array_kernel_str(String* A, String* B, String* C, uint32_t* new_idx, bool* table_idx, int *lasti, const uint32_t k_mx, uint32_t m, uint32_t n, cudaStream_t stream) ;
 }
