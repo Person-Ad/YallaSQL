@@ -63,7 +63,11 @@ void Table::inferDBSchema() {
     while (std::getline(ssHeader, column, ',') && std::getline(ssLine, lineV, ',')) {
         // Remove quotes if present
         column.erase(std::remove(column.begin(), column.end(), '"'), column.end());
+        column.erase(std::remove(column.begin(), column.end(), '\r'), column.end());
+        column.erase(std::remove(column.begin(), column.end(), '\n'), column.end());
         lineV.erase(std::remove(lineV.begin(), lineV.end(), '"'), lineV.end());
+        lineV.erase(std::remove(lineV.begin(), lineV.end(), '\r'), lineV.end());
+        lineV.erase(std::remove(lineV.begin(), lineV.end(), '\n'), lineV.end());
         
         columnNames.push_back(column);
         lineValues.push_back(lineV);

@@ -56,8 +56,17 @@ public:
         lastAccessed = time(nullptr); // update last accessed time
         numCols = columnData.size();
     }
-
-
+    //! used for empty initalizaitons
+    Batch(cudaStream_t stream, int ncols): stream(stream) {
+        totalBytes = 0;
+        batchSize = 0;
+        numCols = ncols;
+        columnData = std::vector<void*>(ncols);
+        nullset = std::vector<std::shared_ptr<NullBitSet>>(ncols);
+        for(int i = 0;i < ncols;i++) {
+            nullset[i] = std::make_shared<NullBitSet>(1, stream);
+        }
+    }
   
     // will be used for projections
     void updateColumns(const std::vector<void*>& columnData, std::vector<std::shared_ptr<Column>> columns) {

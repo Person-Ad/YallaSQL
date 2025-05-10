@@ -44,7 +44,7 @@ __host__ __device__ int find_corank(T* A, T* B, uint32_t m, uint32_t n, uint32_t
     return l;
 }
 
-__global__ void merge_sorted_array_kernel_v1_str(String* A, String* B, String* C, int *lasti, const uint32_t k_mx, uint32_t m, uint32_t n) {
+__global__ void merge_sorted_array_kernel_v1_str(String* A, String* B, String* C, uint32_t* new_idx, bool* table_idx, int *lasti, const uint32_t k_mx, uint32_t m, uint32_t n) {
     uint32_t k = ELE_PER_TH * (threadIdx.x + blockIdx.x * blockDim.x);
     if(threadIdx.x == 0 && blockIdx.x == 0) {
         *lasti = find_corank_str(A, B, m, n, k_mx);
@@ -54,33 +54,75 @@ __global__ void merge_sorted_array_kernel_v1_str(String* A, String* B, String* C
         uint32_t j = k - i;
 
         for(int d = 0; d < ELE_PER_TH && k + d < k_mx && k + d < n + m; d++) {
-            if(j >= n) C[k + d] = A[i++];
-            else if(i >= m) C[k + d] = B[j++];
-            else if(strcmp_device(A[i], B[j]) <= 0) C[k + d] = A[i++]; //A[i] <= B[j]
-            else C[k + d] = B[j++];
+            if(j >= n) {
+                C[k + d] = A[i++];
+                table_idx[k + d] = true; // first one
+                new_idx[k + d] = i - 1;
+            }
+            else if(i >= m) {
+                C[k + d] = B[j++];
+                table_idx[k + d] = false; // second one
+                new_idx[k + d] = j - 1;
+            }
+            else if(strcmp_device(A[i], B[j]) <= 0) {
+                C[k + d] = A[i++];
+                table_idx[k + d] = true; // first one
+                new_idx[k + d] = i - 1;
+            }
+            else {
+                C[k + d] = B[j++];
+                table_idx[k + d] = false; // second one
+                new_idx[k + d] = j - 1;
+            }
         }
     }
 }
 
 template <typename T>
-__global__ void merge_sorted_array_kernel_v1(T* A, T* B, T* C, int *lasti, const uint32_t k_mx, uint32_t m, uint32_t n) {
+__global__ void merge_sorted_array_kernel_v1(T* A, T* B, T* C, uint32_t* newIdxs, bool* tableIdxs, int* lasti, const uint32_t k_mx, uint32_t m, uint32_t n) {
     uint32_t k = ELE_PER_TH * (threadIdx.x + blockIdx.x * blockDim.x);
-    if(threadIdx.x == 0 && blockIdx.x == 0) {
+    
+    // Find the last position from A in the merged array
+    if (threadIdx.x == 0 && blockIdx.x == 0) {
         *lasti = find_corank(A, B, m, n, k_mx);
     }
-    if(k < n + m && k < k_mx) {
+    
+    if (k < n + m && k < k_mx) {
         uint32_t i = find_corank(A, B, m, n, k);
         uint32_t j = k - i;
-
-        for(int d = 0; d < ELE_PER_TH && k + d < k_mx && k + d < n + m; d++) {
-            if(j >= n) C[k + d] = A[i++];
-            else if(i >= m) C[k + d] = B[j++];
-            else if(A[i] <= B[j]) C[k + d] = A[i++];
-            else C[k + d] = B[j++];
+        
+        for (int d = 0; d < ELE_PER_TH && k + d < k_mx && k + d < n + m; d++) {
+            if (j >= n) {
+                // Take from A
+                C[k + d] = A[i];
+                tableIdxs[k + d] = true;  // From table A
+                newIdxs[k + d] = i;
+                i++;
+            }
+            else if (i >= m) {
+                // Take from B
+                C[k + d] = B[j];
+                tableIdxs[k + d] = false;  // From table B
+                newIdxs[k + d] = j;
+                j++;
+            }
+            else if (A[i] <= B[j]) {
+                // Take from A
+                C[k + d] = A[i];
+                tableIdxs[k + d] = true;  // From table A
+                newIdxs[k + d] = i;
+                i++;
+            }
+            else {
+                // Take from B
+                C[k + d] = B[j];
+                tableIdxs[k + d] = false;  // From table B
+                newIdxs[k + d] = j;
+                j++;
+            }
         }
     }
 }
-
 __global__ void merge_sorted_array_kernel(int* A, int* B, int* C, int *lasti, const uint32_t k_mx, uint32_t m, uint32_t n) {
     // if(threadIdx.x == 0) {
     //     printf("Start where m %i, n %i   A[0]=%i B[0]=%i\n", m, n, A[0], B[0]);
@@ -147,21 +189,21 @@ __global__ void merge_sorted_array_kernel(int* A, int* B, int* C, int *lasti, co
 }
 
 template <typename T>
-void launch_merge_sorted_array_kernel(T* A, T* B, T* C, int *lasti, const uint32_t k_mx, uint32_t m, uint32_t n, cudaStream_t stream) {
+void launch_merge_sorted_array_kernel(T* A, T* B, T* C, uint32_t* new_idx, bool* table_idx, int *lasti, const uint32_t k_mx, uint32_t m, uint32_t n, cudaStream_t stream) {
     dim3 blocks(CEIL_DIV(k_mx, ELE_PER_BLOCK));
     // YallaSQL::Kernel::merge_sorted_array_kernel<<<blocks, BLOCK_DIM>>>(A, B, C, lasti, k_mx, m, n);    
-    YallaSQL::Kernel::merge_sorted_array_kernel_v1<<<blocks, BLOCK_DIM, 0, stream>>>(A, B, C, lasti, k_mx, m, n);    
+    YallaSQL::Kernel::merge_sorted_array_kernel_v1<<<blocks, BLOCK_DIM, 0, stream>>>(A, B, C, new_idx, table_idx, lasti, k_mx, m, n);    
 }
 
-void launch_merge_sorted_array_kernel_str(String* A, String* B, String* C, int *lasti, const uint32_t k_mx, uint32_t m, uint32_t n, cudaStream_t stream) {
+void launch_merge_sorted_array_kernel_str(String* A, String* B, String* C, uint32_t* new_idx, bool* table_idx, int *lasti, const uint32_t k_mx, uint32_t m, uint32_t n, cudaStream_t stream) {
     dim3 blocks(CEIL_DIV(k_mx, ELE_PER_BLOCK));
     // YallaSQL::Kernel::merge_sorted_array_kernel<<<blocks, BLOCK_DIM>>>(A, B, C, lasti, k_mx, m, n);    
-    YallaSQL::Kernel::merge_sorted_array_kernel_v1_str<<<blocks, BLOCK_DIM, 0, stream>>>(A, B, C, lasti, k_mx, m, n);    
+    YallaSQL::Kernel::merge_sorted_array_kernel_v1_str<<<blocks, BLOCK_DIM, 0, stream>>>(A, B, C, new_idx, table_idx,  lasti, k_mx, m, n);    
 }
 
-template void launch_merge_sorted_array_kernel<int>(int*, int*, int*, int*, const uint32_t, uint32_t, uint32_t, cudaStream_t);
-template void launch_merge_sorted_array_kernel<float>(float*, float*, float*, int*, const uint32_t, uint32_t, uint32_t, cudaStream_t);
-template void launch_merge_sorted_array_kernel<int64_t>(int64_t*, int64_t*, int64_t*, int*, const uint32_t, uint32_t, uint32_t, cudaStream_t);
+template void launch_merge_sorted_array_kernel<int>(int*, int*, int*, uint32_t*, bool*, int*, const uint32_t, uint32_t, uint32_t, cudaStream_t);
+template void launch_merge_sorted_array_kernel<float>(float*, float*, float*, uint32_t*, bool*, int*, const uint32_t, uint32_t, uint32_t, cudaStream_t);
+template void launch_merge_sorted_array_kernel<int64_t>(int64_t*, int64_t*, int64_t*, uint32_t*, bool*, int*, const uint32_t, uint32_t, uint32_t, cudaStream_t);
 
 
 }

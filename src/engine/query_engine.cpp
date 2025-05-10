@@ -75,7 +75,7 @@ QueryEngine::QueryResult QueryEngine::getLogicalPlan(const std::string& query) {
 }
 
 
-void QueryEngine::executeLogicalPlan(const std::string& query) {
+void QueryEngine::executeLogicalPlan(const std::string& query, std::string filename) {
     if(!db_) db_ = DB::getInstance();
 
     try {
@@ -95,7 +95,7 @@ void QueryEngine::executeLogicalPlan(const std::string& query) {
 
 
         ExecutorEngine myExecutor;
-        myExecutor.execute(*logicalPlan, planner);
+        myExecutor.execute(*logicalPlan, planner, filename);
 
         db_->duckdb().Commit();
 
@@ -135,7 +135,7 @@ void QueryEngine::saveQueryResult(const QueryResult& result) {
     out.close();
 }
 
-std::string QueryEngine::execute(std::string query) {
+std::string QueryEngine::execute(std::string query, std::string filename) {
     try {
         // Trim query
         query.erase(0, query.find_first_not_of(" \t\n\r"));
@@ -153,7 +153,7 @@ std::string QueryEngine::execute(std::string query) {
             useDB(query);
             return "Database switched successfully";
         }
-
+        
         if(db_ == nullptr) 
             db_ = DB::getInstance();
 
@@ -171,7 +171,7 @@ std::string QueryEngine::execute(std::string query) {
         }
         else {
             DB::setPath(dbPath, false);
-            executeLogicalPlan(query);
+            executeLogicalPlan(query, filename);
         }
         
         return "Query executed successfully";

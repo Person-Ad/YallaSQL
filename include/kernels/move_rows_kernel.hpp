@@ -37,6 +37,15 @@ namespace YallaSQL::Kernel {
         const uint32_t batchSize,
         const bool isright, cudaStream_t stream);
 
+    template<typename T>
+    void launch_move_one_col_merge(const T* __restrict__ Asrc, const T* __restrict__ Bsrc, 
+                            T* __restrict__  res,
+                            const char* __restrict__ Aisnull, const char* __restrict__ Bisnull,
+                            char* __restrict__ res_isnull,
+                            const uint32_t* __restrict__ map, // map[newIdx] = oldIdx
+                            const bool* __restrict__ tableIdxs,
+                            bool isAsc,
+                            const uint32_t srcSz, cudaStream_t stream);
 
         
     inline std::unique_ptr<Batch> move_rows_batch(Batch& src_batch, uint32_t* __restrict__ map) {
@@ -72,34 +81,68 @@ namespace YallaSQL::Kernel {
         auto batch = std::unique_ptr<Batch>(new Batch( newColumnData, Device::GPU,  newBatchSize, src_batch.columns, nullset, stream));
         return batch;
     }
-    // Batch* launch_move_rows(Batch& src_batch) {
-    //     src_batch.moveTo(Device::GPU);
-    //     int ncols = src_batch.columns.size();
-    //     int nrows = src_batch.batchSize;
 
-    //     auto dist_batch = new SimplifiedBatch();
-    //     dist_batch->ncols = ncols;
-    //     dist_batch->nrows = nrows;
+    inline std::unique_ptr<Batch> move_rows_batch_merge(Batch& Abatch, Batch& Bbatch, uint32_t* __restrict__ newIdxs, bool* __restrict__ tableIdxs, const uint32_t srcSz, cudaStream_t stream, bool isAsc = true) {
+        int ncols = Abatch.columns.size();
+        std::vector<void*> newColumnData(ncols); 
+        std::vector<std::shared_ptr<NullBitSet>> nullset(ncols); 
+        int newBatchSize = srcSz;
 
-    //     // Allocate device memory for columns array
-    //     CUDA_CHECK(cudaMalloc(&dist_batch->columns, sizeof(void*) * ncols));
-    //     CUDA_CHECK(cudaMalloc(&dist_batch->types, sizeof(DataType) * ncols));
-        
-    //     // Copy column pointers
-    //     CUDA_CHECK(cudaMemcpy(dist_batch->columns, 
-    //                         src_batch.columnData.data(), 
-    //                         sizeof(void*) * ncols, 
-    //                         cudaMemcpyHostToDevice));
-    //     // Copy types
-        
+        for(int currIdx = 0;currIdx < ncols;currIdx++) {
+            CUDA_CHECK( cudaMallocAsync(&newColumnData[currIdx], newBatchSize * Abatch.columns[currIdx]->bytes, stream)  );
+            nullset[currIdx] = std::shared_ptr<NullBitSet>(new NullBitSet(newBatchSize, stream));
+            switch (Abatch.columns[currIdx]->type){
+                case DataType::INT:
+                    launch_move_one_col_merge(
+                        static_cast<int*>(Abatch.columnData[currIdx]), 
+                        static_cast<int*>(Bbatch.columnData[currIdx]), 
+                        static_cast<int*>(newColumnData[currIdx]), 
+                        Abatch.nullset[currIdx]->bitset, 
+                        Bbatch.nullset[currIdx]->bitset, 
+                        nullset[currIdx]->bitset,  
+                        newIdxs, tableIdxs, isAsc, newBatchSize, stream);
+                break;
+                case DataType::FLOAT:
+                    launch_move_one_col_merge(
+                        static_cast<float*>(Abatch.columnData[currIdx]), 
+                        static_cast<float*>(Bbatch.columnData[currIdx]), 
+                        static_cast<float*>(newColumnData[currIdx]), 
+                        Abatch.nullset[currIdx]->bitset, 
+                        Bbatch.nullset[currIdx]->bitset, 
+                        nullset[currIdx]->bitset,  
+                        newIdxs, tableIdxs, isAsc, newBatchSize, stream);
+                    break;
+                case DataType::DATETIME:
+                    launch_move_one_col_merge(
+                        static_cast<int64_t*>(Abatch.columnData[currIdx]), 
+                        static_cast<int64_t*>(Bbatch.columnData[currIdx]), 
+                        static_cast<int64_t*>(newColumnData[currIdx]), 
+                        Abatch.nullset[currIdx]->bitset, 
+                        Bbatch.nullset[currIdx]->bitset, 
+                        nullset[currIdx]->bitset,  
+                        newIdxs, tableIdxs, isAsc, newBatchSize, stream);
+                    break;
+                case DataType::STRING:
+                    launch_move_one_col_merge(
+                        static_cast<String*>(Abatch.columnData[currIdx]), 
+                        static_cast<String*>(Bbatch.columnData[currIdx]), 
+                        static_cast<String*>(newColumnData[currIdx]), 
+                        Abatch.nullset[currIdx]->bitset, 
+                        Bbatch.nullset[currIdx]->bitset, 
+                        nullset[currIdx]->bitset,  
+                        newIdxs, tableIdxs, isAsc, newBatchSize, stream);
+                    break;
+                default:
+                    break;
+                }
 
-    //     // Copy column types
-    //     for (int i = 0; i < ncols; ++i) {
-    //         DataType type = src_batch.columns[i]->type;
-    //         CUDA_CHECK(cudaMemcpy(dist_batch->types + i,  &type, sizeof(DataType), cudaMemcpyHostToDevice));
-    //     }
+        }
 
-    //     return dist_batch;
-    // }
+        auto batch = std::unique_ptr<Batch>(new Batch( newColumnData, Device::GPU,  newBatchSize, Abatch.columns, nullset, stream));
+        return batch;
+    }
+
+
+
 
 }

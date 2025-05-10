@@ -16,7 +16,7 @@
 class ExecutorEngine {
 
 public:
-    void execute(duckdb::LogicalOperator& logicalPlan, const duckdb::Planner& planner);
+    void execute(duckdb::LogicalOperator& logicalPlan, const duckdb::Planner& planner, std::string name = "");
 
 private:
     // void getPhysicalPlan(const duckdb::LogicalOperator& op, CacheManager &cacheManager);

@@ -92,6 +92,7 @@ private:
         // 1. foreach batch in R
         BatchID batch_idx = children[0]->next(cacheManager);
         MAX_BATCH_SZ = batch_idx != 0 ? cacheManager.refBatch(batch_idx).batchSize : 0;
+        columns = batch_idx != 0 ? cacheManager.refBatch(batch_idx).columns : std::vector<std::shared_ptr<Column>>();
         BUFFER_SZ = MAX_BATCH_SZ;
 
         while(batch_idx) {
@@ -119,30 +120,29 @@ private:
         first_pass = true;
     }
     
+    void add_to_bufferBatch(Batch& src, Batch& res, int in_offset, int out_offset, int size, cudaStream_t stream);
     template <typename T>
-    void load_in_buffer(T* buffer, int &buffer_offset, int &run_offset, RUN* run, CacheManager& cacheManager, cudaStream_t stream);
+    BatchID load_in_buffer(T* buffer, BatchID prev_buffer, int &buffer_offset, int &run_offset, RUN* run, CacheManager& cacheManager, cudaStream_t stream);
     
     template <typename T>
-    void shift_buffer(T *buffer, int i_last, int m, int &buffer_offset, cudaStream_t stream);
+    BatchID shift_buffer(T *buffer, std::unique_ptr<Batch> prev_batch, int i_last, int m, int &buffer_offset, CacheManager&cacheManager, cudaStream_t stream);
 
     template <typename T>
     RUN* merge_two_runs(RUN* left, RUN* right, CacheManager& cacheManager) ;
 
     template <typename T>
-    void launch_kernel_by_type(T* l_buffer, T* r_buffer, T*o_buffer, int *i_last_d, const uint32_t k, uint32_t m, uint32_t n, cudaStream_t stream ) {
-        YallaSQL::Kernel::launch_merge_sorted_array_kernel(l_buffer, r_buffer, o_buffer, i_last_d, k, m, n, stream);
+    void launch_kernel_by_type(T* l_buffer, T* r_buffer, T*o_buffer, uint32_t* new_idxs, bool* table_idxs, int *i_last_d, const uint32_t k, uint32_t m, uint32_t n, cudaStream_t stream ) {
+        YallaSQL::Kernel::launch_merge_sorted_array_kernel(l_buffer, r_buffer, o_buffer, new_idxs, table_idxs,  i_last_d, k, m, n, stream);
     }
 
-    void launch_kernel_by_type(YallaSQL::Kernel::String* l_buffer, YallaSQL::Kernel::String* r_buffer, YallaSQL::Kernel::String*o_buffer, int *i_last_d, const uint32_t k, uint32_t m, uint32_t n, cudaStream_t stream ) {
-        YallaSQL::Kernel::launch_merge_sorted_array_kernel_str(l_buffer, r_buffer, o_buffer, i_last_d, k, m, n, stream);
+    void launch_kernel_by_type(YallaSQL::Kernel::String* l_buffer, YallaSQL::Kernel::String* r_buffer, YallaSQL::Kernel::String*o_buffer, uint32_t* new_idxs, bool* table_idxs, int *i_last_d, const uint32_t k, uint32_t m, uint32_t n, cudaStream_t stream ) {
+        YallaSQL::Kernel::launch_merge_sorted_array_kernel_str(l_buffer, r_buffer, o_buffer, new_idxs, table_idxs, i_last_d, k, m, n, stream);
     }
 
     void merge_all_sorted(std::vector<RUN*>& in_runs, CacheManager& cacheManager) { 
         std::vector<RUN*> out_runs;
         while(in_runs.size() > 1) {
-            printf("start pass\n");
             for(int i = 0; i < in_runs.size(); i+=2) {
-                printf("start merge run %i %i\n", i, i + 1);
                 // add last run as no one merged with
                 if(i == in_runs.size() - 1) {
                     out_runs.push_back(in_runs[in_runs.size() - 1]);
@@ -168,8 +168,6 @@ private:
                     out_runs.push_back(new_run);
                 }
             }
-            //!test
-            keyIndex = 0;
     
             in_runs = out_runs;
             out_runs = std::vector<RUN*>();
@@ -262,6 +260,7 @@ private:
         order = order_.type;
         expression = std::unique_ptr<our::BoundRefSortExpression> (new our::BoundRefSortExpression(*order_.expression));
         keyIndex = expression->idx;
+        printf("======= %i ==========\n", keyIndex);
     }
 };
 }    

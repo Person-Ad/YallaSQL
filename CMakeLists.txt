@@ -100,8 +100,22 @@ add_executable(yallasql_cli
     ${ALL_SOURCES}
 )
 
+add_executable(yallasql
+    "main.cpp"
+    ${CLI_SOURCES}
+    ${ALL_SOURCES}
+)
+
 # Link libraries
 target_link_libraries(yallasql_cli
+    PUBLIC
+        CUDA::cudart
+        replxx::replxx
+        quill::quill
+        duckdb
+)
+
+target_link_libraries(yallasql
     PUBLIC
         CUDA::cudart
         replxx::replxx
