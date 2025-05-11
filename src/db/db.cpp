@@ -49,7 +49,7 @@ void DB::reCreateLinkedDuckDB(const std::string& tableName, std::unordered_map<s
     // ensure referenced tables are created first
     for (const auto& [refTable, _] : tables_.find(tableName)->second->fkColumns) {
         if (created.find(refTable->name) == created.end() || !created[refTable->name]) {
-            reCreateLinkedDuckDB(refTable->name, created);
+            reCreateLinkedDuckDB(refTable->name, created, insertInDuck);
         }
     }
 

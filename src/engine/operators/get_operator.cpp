@@ -77,10 +77,10 @@ BatchID GetOperator::next(CacheManager& cacheManager) {
             h_nullset[colIndex].push_back(valueStr.empty());
 
             if(column->type == DataType::INT) {
-                int value = valueStr.empty() ? 0 : std::stoi(valueStr);
+                int value = valueStr.empty() ? std::numeric_limits<int>::min() : std::stoi(valueStr);
                 std::memcpy(buffer[colIndex] + rowIndex * column->bytes, &value, column->bytes);
             } else if(column->type == DataType::FLOAT) {
-                float value = valueStr.empty() ? 0 : std::stof(valueStr);
+                float value = valueStr.empty() ? std::numeric_limits<float>::min() : std::stof(valueStr);
                 std::memcpy(buffer[colIndex] + rowIndex * column->bytes, &value, column->bytes);
             } else if(column->type == DataType::DATETIME) {
                 int64_t value = valueStr.empty() ? 0 : getDateTime(valueStr);

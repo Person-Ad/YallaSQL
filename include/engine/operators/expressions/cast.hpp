@@ -16,12 +16,13 @@ public:
         auto &castExpr = expr.Cast<duckdb::BoundCastExpression>();
         // castExpr.source_type
         child = Expression::createExpression(*castExpr.child);
-
+        
         childType = child->returnType;
     }
     
     ExpressionResult evaluate(ExpressionArg& arg) {
         ExpressionResult result;
+        child->table_idx = table_idx;
 
         cudaStream_t& stream = arg.batchs[0]->stream;
         auto childRes = child->evaluate(arg);

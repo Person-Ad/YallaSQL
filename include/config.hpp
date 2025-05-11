@@ -18,7 +18,7 @@ namespace YallaSQL
     // Target maximum bytes per batch (1 gb)
     constexpr size_t  MAX_LIMIT_GPU_CACHE = 1 * (1ULL << 30);
 
-    constexpr size_t MAX_ROWS_OUT_JOIN_OP = 1000000;
+    constexpr size_t MAX_ROWS_OUT_JOIN_OP = (MAX_BYTES_PER_BATCH + 3)/4;
 
     const std::string cacheDir = ".cache";
     const std::string resultDir = "results";

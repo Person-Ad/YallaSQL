@@ -54,7 +54,7 @@ namespace our {
         //! used only in join
         int table_idx = -1;
 
-        Expression(duckdb::Expression &expr) {
+        Expression(duckdb::Expression &expr, int table_idx = -1) {
             alias = expr.alias;
 
             returnType = getDataTypeFromDuck( expr.return_type.id() );
