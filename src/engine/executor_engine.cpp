@@ -1,17 +1,23 @@
 #include "engine/executor_engine.hpp"
 #include <chrono>
 
-void ExecutorEngine::execute(duckdb::LogicalOperator& op, const duckdb::Planner& planner) {
+void ExecutorEngine::execute(duckdb::LogicalOperator& op, const duckdb::Planner& planner, std::string name) {
     CacheManager cacheManager;
     // resolve to actual data
     ColumnBindingResolver resolver;
     resolver.VisitOperator(op);
-    // Initialize CSV writer with a timestamped file name
-    auto now = std::chrono::system_clock::now();
-    auto millis = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count();
-    std::string csvPath = YallaSQL::resultDir + "/our_output_" + std::to_string(millis) + ".csv";
-    CsvWriter csvWriter(csvPath);
 
+    std::string csvPath;
+    // Initialize CSV writer with a timestamped file name
+    if(name != "") csvPath = name;
+    else {
+        auto now = std::chrono::system_clock::now();
+        auto millis = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count();
+        csvPath = YallaSQL::resultDir + "/our_output_" + std::to_string(millis) + ".csv";
+    }
+    std::cout << "saving in: " << csvPath << std::endl;
+    CsvWriter csvWriter(csvPath);
+    
     auto rootOperator = YallaSQL::Operator::CreateOperator(op, planner);
     if (!rootOperator) {
         std::cerr << "Failed to create operator\n";

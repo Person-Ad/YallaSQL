@@ -22,6 +22,13 @@ std::unique_ptr<Operator> Operator::CreateOperator(duckdb::LogicalOperator& op, 
         return std::unique_ptr<Operator>(new FilterOperator(op, planner) );
     }
     else if(op.type == duckdb::LogicalOperatorType::LOGICAL_AGGREGATE_AND_GROUP_BY) {
+        const auto& castOp = op.Cast<duckdb::LogicalAggregate>();
+        if(op.expressions.size() == 1 && op.expressions[0]->type == duckdb::ExpressionType::BOUND_AGGREGATE) {
+            const auto& castExpr = op.expressions[0]->Cast<duckdb::BoundAggregateExpression>();
+            if(castExpr.function.name == "first") {
+                return CreateOperator(*castOp.children[0], planner);
+            }
+        }
         return std::unique_ptr<Operator>(new AggregateOperator(op, planner) );
     }
     else if(op.type == duckdb::LogicalOperatorType::LOGICAL_ORDER_BY) {

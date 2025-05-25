@@ -11,21 +11,18 @@ namespace YallaSQL
 {
     // Maximum string length in bytes
     constexpr size_t MAX_STR_LEN = MAX_STR;
-    // Target maximum bytes per batch (16 mb)
-    constexpr size_t  MAX_BYTES_PER_BATCH = 2 * (1ULL << 20);
-    // Target maximum bytes per batch (6 gb)
+    // Target maximum bytes per batch (4 mb)
+    constexpr size_t  MAX_BYTES_PER_BATCH = 4 * (1ULL << 20);
+    // Target maximum bytes per batch (2 gb)
     constexpr size_t  MAX_LIMIT_CPU_CACHE = 2 * (1ULL << 30);
-    // Target maximum bytes per batch (3 gb)
+    // Target maximum bytes per batch (1 gb)
     constexpr size_t  MAX_LIMIT_GPU_CACHE = 1 * (1ULL << 30);
 
-    constexpr size_t MAX_ROWS_OUT_JOIN_OP = 1000000;
+    constexpr size_t MAX_ROWS_OUT_JOIN_OP = (MAX_BYTES_PER_BATCH + 3)/4;
 
     const std::string cacheDir = ".cache";
     const std::string resultDir = "results";
-
-    // const unsigned int DEFAULE_BATCH_SIZE = 32;
     
-    // Default alignment for GPU operations (32 is common for many CUDA operations)
     constexpr unsigned int GPU_ALIGNMENT = BLOCK_DIM;
     
     inline unsigned int calculateOptimalBatchSize(const std::vector<DataType>& columnTypes) {

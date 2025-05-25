@@ -28,6 +28,8 @@ endif()
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -g")
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=address -g")
+    # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
+    # set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -g")
 elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -O3")
@@ -46,6 +48,7 @@ find_package(quill REQUIRED CONFIG)
 # Configure duckdb link directories based on build type
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     link_directories(vendor/duckdb/build/debug/src)
+    # link_directories(vendor/duckdb/build/release/src)
 elseif(CMAKE_BUILD_TYPE STREQUAL "Release" OR CMAKE_BUILD_TYPE STREQUAL "CUDADebug")
     link_directories(vendor/duckdb/build/release/src)
 endif()
@@ -68,6 +71,7 @@ set(ALL_SOURCES
     "${SOURCE_DIR}/kernels/radix_sort_kernel.cu"
     "${SOURCE_DIR}/kernels/radix_sort_utils.cu"
     "${SOURCE_DIR}/kernels/radix_sort_uint32_kernel.cu"
+    "${SOURCE_DIR}/kernels/merge_batchs.cu"
     "${SOURCE_DIR}/kernels/cross_product_kernel.cu"
     # main engine 
     "${SOURCE_DIR}/engine/query_engine.cpp"
@@ -75,6 +79,7 @@ set(ALL_SOURCES
     # Operators
     "${SOURCE_DIR}/engine/operators/operator.cpp"
     "${SOURCE_DIR}/engine/operators/get_operator.cpp"
+    "${SOURCE_DIR}/engine/operators/order_operator.cpp"
     "${SOURCE_DIR}/engine/operators/expressions/expression.cpp"
 )
 # Gather source files
@@ -95,8 +100,22 @@ add_executable(yallasql_cli
     ${ALL_SOURCES}
 )
 
+add_executable(yallasql
+    "main.cpp"
+    ${CLI_SOURCES}
+    ${ALL_SOURCES}
+)
+
 # Link libraries
 target_link_libraries(yallasql_cli
+    PUBLIC
+        CUDA::cudart
+        replxx::replxx
+        quill::quill
+        duckdb
+)
+
+target_link_libraries(yallasql
     PUBLIC
         CUDA::cudart
         replxx::replxx

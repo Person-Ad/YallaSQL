@@ -69,6 +69,41 @@ __global__ void move_one_col(const T* __restrict__ src,
     }
 }
 
+template<typename T>
+__global__ void move_one_col_merge(const T* __restrict__ Asrc, const T* __restrict__ Bsrc, 
+                            T* __restrict__  res,
+                            const char* __restrict__ Aisnull, const char* __restrict__ Bisnull,
+                            char* __restrict__ res_isnull,
+                            const uint32_t* __restrict__ map, // map[newIdx] = oldIdx
+                            const bool* __restrict__ tableIdxs,
+                            bool isAsc,
+                            const uint32_t srcSz) 
+{
+    const unsigned int idx = threadIdx.x + blockIdx.x * blockDim.x; // oldIdx
+    const unsigned int stride = blockDim.x * gridDim.x;
+
+    #pragma unroll 
+    for (int k = 0; k < COARSENING_FACTOR; k++) {
+        const unsigned int global_idx = idx + k * stride;
+        if(global_idx < srcSz) {
+            const unsigned int destIdx = isAsc ? global_idx : (srcSz - 1 - global_idx);
+            
+            // Get the table and source index
+            const bool isTableA = tableIdxs[global_idx];
+            const uint32_t srcIdx = map[global_idx];
+            
+            // Copy data and null info from the right source to the destination
+            if (isTableA) {
+                res[destIdx] = Asrc[srcIdx];
+                res_isnull[destIdx] = Aisnull[srcIdx];
+            } else {
+                res[destIdx] = Bsrc[srcIdx];
+                res_isnull[destIdx] = Bisnull[srcIdx];
+            }
+        }
+    }
+}
+
 
 
 //TODO: make it coleased access IDK how
@@ -108,6 +143,17 @@ void launch_move_one_col(const T* __restrict__ src, T* __restrict__  res,
 
 }
 
+template<typename T>
+void launch_move_one_col_merge(const T* __restrict__ Asrc, const T* __restrict__ Bsrc, 
+                            T* __restrict__  res,
+                            const char* __restrict__ Aisnull, const char* __restrict__ Bisnull,
+                            char* __restrict__ res_isnull,
+                            const uint32_t* __restrict__ map, // map[newIdx] = oldIdx
+                            const bool* __restrict__ tableIdxs,
+                            bool isAsc,
+                            const uint32_t srcSz, cudaStream_t stream) {
+    move_one_col_merge<T><<<CEIL_DIVI(srcSz, BLOCK_DIM), BLOCK_DIM, 0, stream>>>(Asrc, Bsrc, res, Aisnull, Bisnull, res_isnull, map, tableIdxs, isAsc, srcSz);
+}
 
 template<typename T>
 void launch_move_rows_filter_kernel(T* __restrict__ src, T* res, uint32_t* __restrict__ map, bool* __restrict__ mask, char* __restrict__ isnull, const uint32_t srcSz, cudaStream_t& stream) {
@@ -149,4 +195,26 @@ void lanch_move_rows_join_kernel(const T* __restrict__ src, T* __restrict__ res,
     template void lanch_move_rows_join_kernel<float>(const float* __restrict__, float* __restrict__, const uint32_t* __restrict__, const char* __restrict__, char* __restrict__, const uint32_t, const bool, cudaStream_t) ;
     template void lanch_move_rows_join_kernel<int64_t>(const int64_t* __restrict__, int64_t* __restrict__, const uint32_t* __restrict__, const char* __restrict__, char* __restrict__, const uint32_t, const bool, cudaStream_t) ;
     template void lanch_move_rows_join_kernel<String>(const String* __restrict__, String* __restrict__, const uint32_t* __restrict__, const char* __restrict__, char* __restrict__, const uint32_t, const bool, cudaStream_t) ;
+
+    template void launch_move_one_col_merge<int>(const int* __restrict__ Asrc, const int* __restrict__ Bsrc, int* __restrict__  res,
+                                                const char* __restrict__ Aisnull, const char* __restrict__ Bisnull,
+                                                char* __restrict__ res_isnull,
+                                                const uint32_t* __restrict__ map, // map[newIdx] = oldIdx
+                                                const bool* __restrict__ tableIdxs, bool isAsc, const uint32_t srcSz, cudaStream_t stream) ;
+    template void launch_move_one_col_merge<float>(const float* __restrict__ Asrc, const float* __restrict__ Bsrc, float* __restrict__  res,
+                                                    const char* __restrict__ Aisnull, const char* __restrict__ Bisnull,
+                                                    char* __restrict__ res_isnull,
+                                                    const uint32_t* __restrict__ map, // map[newIdx] = oldIdx
+                                                    const bool* __restrict__ tableIdxs, bool isAsc, const uint32_t srcSz, cudaStream_t stream) ;
+    template void launch_move_one_col_merge<int64_t>(const int64_t* __restrict__ Asrc, const int64_t* __restrict__ Bsrc, int64_t* __restrict__  res,
+                                                        const char* __restrict__ Aisnull, const char* __restrict__ Bisnull,
+                                                        char* __restrict__ res_isnull,
+                                                        const uint32_t* __restrict__ map, // map[newIdx] = oldIdx
+                                                        const bool* __restrict__ tableIdxs, bool isAsc, const uint32_t srcSz, cudaStream_t stream) ;
+    template void launch_move_one_col_merge<String>(const String* __restrict__ Asrc, const String* __restrict__ Bsrc, String* __restrict__  res,
+                                                            const char* __restrict__ Aisnull, const char* __restrict__ Bisnull,
+                                                            char* __restrict__ res_isnull,
+                                                            const uint32_t* __restrict__ map, // map[newIdx] = oldIdx
+                                                            const bool* __restrict__ tableIdxs, bool isAsc, const uint32_t srcSz, cudaStream_t stream) ;
+
 }

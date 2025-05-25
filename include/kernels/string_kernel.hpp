@@ -42,7 +42,9 @@ namespace YallaSQL::Kernel {
 
         
     };
-
+    // + if s1 > s2
+    // 0 if s1 == s2
+    // - if s1 < s2
     inline __device__ int strcmp_device(const String& s1, const String& s2) {
         uint32_t i = 0;
         while (i < MAX_STR && s1.data[i] && (s1.data[i] == s2.data[i])) {

@@ -32,14 +32,14 @@ private:
     void useDB(const std::string& input);
     void executeDuckDB(std::string& query);
     QueryResult getLogicalPlan(const std::string& query);
-    void executeLogicalPlan(const std::string& query);
+    void executeLogicalPlan(const std::string& query, std::string filename = "");
     void saveQueryResult(const QueryResult& result);
 
 
 public:
     QueryEngine() :logger_(YallaSQL::getLogger("")) {}
 
-    std::string execute(std::string query);
+    std::string execute(std::string query, std::string filename = "");
 
 };
 

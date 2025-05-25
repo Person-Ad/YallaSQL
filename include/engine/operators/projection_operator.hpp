@@ -79,7 +79,6 @@ private:
         // get logical operator
         const auto& castOp = logicalOp.Cast<duckdb::LogicalProjection>();
         
-        uint32_t index = 0;
         for (auto& expr : castOp.expressions) {
             auto our_expr = our::Expression::createExpression(*expr);
             columns.push_back(our_expr->column);
